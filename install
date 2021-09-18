@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="zsh"
+    STOW_FOLDERS="zsh,tmux"
 fi
 
 if [[ -z $DOTFILES ]]; then
@@ -10,6 +10,5 @@ fi
 
 # for each dotfiles folder, "stow" it
 for stow_folder in $(echo $STOW_FOLDERS | sed "s/,/ /g"); do
-    stow -D $stow_folder
-    stow $stow_folder
+    stow --restow --verbose --dir=$DOTFILES --target=$HOME $stow_folder
 done
