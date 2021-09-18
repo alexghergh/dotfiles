@@ -74,4 +74,8 @@ cnoremap { "w!!", "w !sudo tee % > /dev/null" }
 -- expands into the current file's working directory when typing '%%' in command line
 cnoremap { "%%", "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'" , expr = true }
 
+-- show color
+nnoremap { "<Leader>sc", "<Cmd>call functions#DisplayColorUnderCursorAsBackground()<CR>" }
+
+
 -- vim: set tw=0 fo-=r

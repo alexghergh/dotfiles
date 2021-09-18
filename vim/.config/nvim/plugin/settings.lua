@@ -1,13 +1,9 @@
--- Configuration ---------------------------------------------------------------
+-- Configuration
 
 -- Global
 
 -- python3 program, allows neovim to work in virtual environments
 vim.g.python3_host_prog = "/home/alex/.pyenv/versions/3.9.5/bin/python"
-
--- <Space> as leader key
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
 
 -- wrap line prefix
 vim.o.showbreak = "↪ "
