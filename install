@@ -1,14 +1,14 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 
-if [[ -z $STOW_FOLDERS ]]; then
+if [ -z "$STOW_FOLDERS" ]; then
     STOW_FOLDERS="zsh,tmux,git,vim"
 fi
 
-if [[ -z $DOTFILES ]]; then
+if [ -z "$DOTFILES" ]; then
     DOTFILES=$HOME/.dotfiles
 fi
 
 # for each dotfiles folder, "stow" it
-for stow_folder in $(echo $STOW_FOLDERS | sed "s/,/ /g"); do
-    stow --restow --verbose --dir=$DOTFILES --target=$HOME $stow_folder
+for stow_folder in $(echo "$STOW_FOLDERS" | sed "s/,/ /g"); do
+    stow --restow --verbose --dir="$DOTFILES" --target="$HOME" "$stow_folder"
 done
