@@ -220,6 +220,11 @@ export PATH="/usr/bin/vendor_perl/:$PATH" # for biber
 export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
 export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
 
+# set the xdg base directories specification
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
 # make sure tmux is always running
 
 if [[ -z "$TMUX" ]]; then
