@@ -131,16 +131,21 @@ word-style-transpose() {
 zle -N word-style-transpose
 bindkey '^[z' word-style-transpose
 
-
-# pyenv (python version manager) setup
-#export PYENV_ROOT="$HOME/.pyenv"
-#export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init -)"
+if [ -f /etc/os-release ]; then
+    os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
 fi
 
+# if we're on ubuntu
+if [ "$os_id" = 'ubuntu' ]; then
+    # pyenv (python version manager) setup
+    export PYENV_ROOT="$HOME/.pyenv"
+    export PATH="$PYENV_ROOT/bin:$PATH"
+    eval "$(pyenv init --path)"
+
+    if command -v pyenv 1>/dev/null 2>&1; then
+        eval "$(pyenv init -)"
+    fi
+fi
 
 # NVM lazy loading script
 #
@@ -221,18 +226,18 @@ export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
 export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
 
 # set the xdg base directories specification (https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html)
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_STATE_HOME="$HOME/.local/state"
+# export XDG_CONFIG_HOME="$HOME/.config"
+# export XDG_DATA_HOME="$HOME/.local/share"
+# export XDG_CACHE_HOME="$HOME/.cache"
+# export XDG_STATE_HOME="$HOME/.local/state"
 
-if [[ -z "$XDG_DATA_DIRS" ]]; then
-    export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
-fi
+# if [[ -z "$XDG_DATA_DIRS" ]]; then
+#     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
+# fi
 
-if [[ -z "$XDG_CONFIG_DIRS" ]]; then
-    export XDG_CONFIG_DIRS="/etc/xdg"
-fi
+# if [[ -z "$XDG_CONFIG_DIRS" ]]; then
+#     export XDG_CONFIG_DIRS="/etc/xdg"
+# fi
 
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
