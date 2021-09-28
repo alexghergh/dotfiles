@@ -137,14 +137,14 @@ fi
 
 # if we're on ubuntu
 if [ "$os_id" = 'ubuntu' ]; then
-    # pyenv (python version manager) setup
     export PYENV_ROOT="$HOME/.pyenv"
     export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init --path)"
+fi
 
-    if command -v pyenv 1>/dev/null 2>&1; then
-        eval "$(pyenv init -)"
-    fi
+# pyenv (python version manager) setup
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
 fi
 
 # NVM lazy loading script
