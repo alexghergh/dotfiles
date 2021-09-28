@@ -1,7 +1,10 @@
 -- Keymappings -----------------------------------------------------------------
 
 -- astronauta things
-require("astronauta.keymap")
+if not pcall(require, "astronauta.keymap") then
+    return
+end
+
 local map = vim.keymap.map
 local nmap = vim.keymap.nmap
 local noremap = vim.keymap.noremap
