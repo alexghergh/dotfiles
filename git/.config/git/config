@@ -1,0 +1,26 @@
+[user]
+    name = Alexandru Gherghescu
+    email = gherghescu_alex1@yahoo.ro
+    signingKey = FD4A60A10F9E464C9D8EA550C229603AB7CEA985 
+[commit]
+    gpgsign = true
+[core]
+    editor = nvim
+    pager = less -FR
+    askPass = ksshaskpass
+#[credential]
+#   helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+[sendemail]
+    smtpserver = smtp.mail.yahoo.com
+    smtpuser = gherghescu_alex1@yahoo.ro
+    smtpserverport = 587
+    smtpencryption = tls
+#this only works with vim-fugitive installed as a plugin
+[mergetool "nvim"]
+    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+[merge]
+    tool = nvim
+[mergetool]
+    prompt = false
+[init]
+    defaultBranch = main
