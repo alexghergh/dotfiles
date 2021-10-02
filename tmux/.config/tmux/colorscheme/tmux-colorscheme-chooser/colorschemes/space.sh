@@ -34,8 +34,9 @@ tmux set -g status-left-length 30
 
 battery_status="#[bold]#($helpers/battery_percent)%#[nobold] #{?#{==:#($helpers/battery_status),Discharging},Disch.,Ch.}"
 song_info="♪ #($helpers/song_info)"
+cpu_temp="#($helpers/cpu_temp)"
 
-tmux set -g status-right "#[fg=$color2,bg=$color7] $song_info #[fg=$color3,bg=#$color10] $battery_status |#[fg=$color3,bg=$color10] %A %d/%m/%Y #[bold]#[fg=$color9,bg=$color2] %T #[fg=$color9]"
+tmux set -g status-right "#[fg=$color2,bg=$color7] $song_info #[fg=$color3,bg=#$color10] $cpu_temp $battery_status |#[fg=$color3,bg=$color10] %A %d/%m/%Y #[bold]#[fg=$color9,bg=$color2] %T #[fg=$color9]"
 
 tmux set -g status-right-length 150
 

@@ -114,6 +114,8 @@ setopt NOCLOBBER        # prevents an existing file from being overwritten if it
 export EDITOR=nvim
 export VISUAL=nvim
 
+export BROWSER=firefox
+
 # unbind the arrow keys and the backspace key
 bindkey -s "^[[A" ""
 bindkey -s "^[[B" ""
@@ -226,18 +228,18 @@ export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
 export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
 
 # set the xdg base directories specification (https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html)
-# export XDG_CONFIG_HOME="$HOME/.config"
-# export XDG_DATA_HOME="$HOME/.local/share"
-# export XDG_CACHE_HOME="$HOME/.cache"
-# export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
 
-# if [[ -z "$XDG_DATA_DIRS" ]]; then
-#     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
-# fi
+if [[ -z "$XDG_DATA_DIRS" ]]; then
+    export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
+fi
 
-# if [[ -z "$XDG_CONFIG_DIRS" ]]; then
-#     export XDG_CONFIG_DIRS="/etc/xdg"
-# fi
+if [[ -z "$XDG_CONFIG_DIRS" ]]; then
+    export XDG_CONFIG_DIRS="/etc/xdg"
+fi
 
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
