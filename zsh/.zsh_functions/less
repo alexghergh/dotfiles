@@ -1,0 +1,31 @@
+# improved less pager
+# front-end to less, transforms zip files on the command line
+# into temp files, easy to read
+# (see https://zsh.sourceforge.io/Guide/zshguide05.html,
+# search for `Process substitution')
+function less() {
+    integer i=1
+    local args arg
+
+    # get all the function arguments into an array
+    args=($*)
+
+    for arg in $*; do
+        case $arg in
+            (*.bz2) args[$i]="=(bunzip2 -c ${(q)arg})"
+                ;;
+            (*.tar.gz) args[$i]="=(tar --list -f ${(q)arg})"
+                ;;
+            # this assumes your zcat is the one installed with gzip
+            (*.(gz|Z)) args[$i]="=(zcat ${(q)arg})"
+                ;;
+            (*) args=${(q)arg}
+                ;;
+        esac
+        (( i++ ))
+    done
+
+    eval command ${PAGER:-less} $args
+}
+
+less $*

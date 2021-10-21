@@ -1,0 +1,18 @@
+# usage: namedir <alias for directory>
+# useful for shortening long paths
+# after calling the command, it's possible to use cd ~<alias>, to quickly reach that dir again
+function namedir() {
+
+    if [ $# -eq 0 ]; then
+        echo "usage: namedir <directory alias>"
+        return
+    fi
+
+    # save the named directory in the named dirs hash table
+    # this doesn't pollute the environment
+    # to list all named dirs, do `hash -d'
+    hash -d "$1"="$PWD"
+    : ~$1
+}
+
+namedir $*
