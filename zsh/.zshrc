@@ -1,3 +1,244 @@
+# Author: alexghergh
+#
+# For more information on `autoload', `typeset' or other shell builtins, see
+# `man zshbuiltins', 'man zshzle'
+
+### environment variables
+
+# look for custom defined functions in the directory below and automatically
+# load them
+fpath=( "$HOME/.zsh_functions" $fpath )
+autoload -Uz ${fpath[1]}/*(:t)
+
+
+### autoload
+
+# -U suppress alias expansion when function is loaded
+# -z zsh-style
+#
+# load completion
+autoload -Uz compinit
+compinit
+
+# load the prompt theme system
+autoload -Uz promptinit
+promptinit
+
+
+# by default, run-help is aliased to man
+# to actually get useful help for shell builtins, load the run-help module
+autoload -Uz run-help
+(( ${+aliases[run-help]} )) && unalias run-help
+alias help=run-help
+# when running "run-help git commit" for example,
+# open man git-commit instead of man git
+autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
+
+
+### setopt
+
+# complete options to command aliases
+setopt completealiases
+
+# allow extended globbing (zsh specific, see https://zsh.sourceforge.io/Intro/intro_2.html#SEC2)
+setopt extendedglob
+
+# some better directory history options
+# use with cd -<dir number listed with dirl> or ls =<dir number listed with dirl>
+#
+# use a directory history of 8 directories
+DIRSTACKSIZE=8
+# use cd like a pushd (for different reasons not listed on the official page, you cannot simply
+# set cd=pushd)
+setopt autopushd
+# make cd -<dir number> work as expected
+setopt pushdminus
+# don't print the directory stack each time we do a cd
+setopt pushdsilent
+# add home to directory stack when doing `cd' alone
+setopt pushdtohome
+# ignore the duplicate directory entries
+setopt pushdignoredups
+# alias for easy directory stack listing
+alias dirl="dirs -v"
+
+# this makes it so that `foo/$vars' expands to `foo/$1 foo/$2...' instead of `foo/$1 $2...'
+setopt rcexpandparam
+
+# glob dotfiles when using globbing patterns
+setopt globdots
+
+# prevents an existing file from being overwritten if it exists;
+# if you still want to overwrite it, type >| instead of just >
+# !! don't use >!, as the `!' might be a history expansion
+setopt noclobber
+
+# allow comments in the middle of a command
+setopt interactivecomments
+
+# when executing a function that changes some setopts, they will be
+# put back when the function finishes
+setopt localoptions
+
+# when executing a function that needs to, say, ignore some traps
+# this helps with only changing the traps inside the function
+# (see https://zsh.sourceforge.io/Guide/zshguide02.html, search for LOCAL_TRAPS)
+setopt localtraps
+
+# ignore duplicate history entries when doing them one after the other
+setopt histignoredups
+
+# if the command begins with a space, it is not added to the history
+setopt histignorespace
+
+# when using bang-history (i.e. !!) with different modifiers, show a prompt for the
+# command execution with the substions in place (easy to see if the command
+# is actually what you want), before actually pressing enter
+# (see https://zsh.sourceforge.io/Guide/zshguide02.html, search for bang-history)
+setopt histverify
+
+# append to the history file instead of overwriting it
+setopt appendhistory
+
+# don't append a command to the history file (this NEEDS to be set off because
+# of the option below)
+setopt noincappendhistory
+
+# share history between shells; also appends history commands (as if
+# `incappendhistory' was set, see above)
+# by default, all the shells get the same history file (global)
+# but there are additional binds down below to only navigate LOCAL
+# history (local to a particular shell; only the commands issued in that
+# shell, for more info see
+# https://zsh.sourceforge.io/Doc/Release/Options.html#index-SHARE_005fHISTORY)
+setopt sharehistory
+
+# add more information to the history file, like date and time elapsed
+setopt extendedhistory
+
+# automatically cd into a directory if it exists just by typing the dir name
+setopt autocd
+
+
+### zle options and widgets
+
+# if you start a command with sudo, the completions will try
+# to also complete commands in the super user context
+# (commented due to the fact that this runs scripts with sudo permissions)
+# zstyle ':completion::complete:*' gain-privileges 1
+
+# when installing new packages, automatically rehash to get
+# completion for them
+# (commented due to the performance penalty involved)
+# zstyle ':completion:*' rehash true
+
+# emacs style keybindings
+bindkey -e
+
+# unbind the arrow keys and the backspace key
+bindkey -s "^[[A" ""
+bindkey -s "^[[B" ""
+bindkey -s "^[[C" ""
+bindkey -s "^[[D" ""
+bindkey -s "\x7f" ""
+
+# prefix searching
+#
+# search for identic history up from the beginning of the line up to the cursor
+# position
+# !! `^x^n' overwrites `infer-next-history' (for now not needed, maybe in the
+# future, for what it does, see https://zsh.sourceforge.io/Guide/zshguide04.html,
+# search for `infer-next-history')
+bindkey '^x^p' history-beginning-search-backward
+bindkey '^x^n' history-beginning-search-forward
+
+# copy the last shell argument
+# useful for cases when you want to `mv' something like a large directory
+# you only have to write the path once, then copy it and then simply change
+# the last word
+copy-prev-big-word() {
+    local WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>"
+    zle copy-prev-word
+}
+zle -N copy-prev-big-word
+bindkey '^[e' copy-prev-big-word
+
+# transpose 2 arguments in command line using Alt+z; the normal transpose-words
+# using Alt+t still works; this has the added benefit the cursor doesn't move,
+# though sometimes it might be an inconvenience
+word-style-transpose() {
+    emulate -L zsh
+    local cursor_pos
+    cursor_pos=$CURSOR
+
+    local WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>"
+    zle transpose-words
+
+    CURSOR=$cursor_pos
+}
+zle -N word-style-transpose
+bindkey '^[z' word-style-transpose
+
+# replace the default push-line by push-line-or-edit
+# has the same effect as normal <esc>-q when in the PS1 prompt, but has
+# a different effect in PS2; namely, it brings the multiline command on the
+# prompt, so you can scroll to lines above (this wasn't possible
+# otherwise)
+bindkey '^[q' push-line-or-edit
+
+# only navigate the local history (local to a shell, see `sharehistory' above)
+# (see https://superuser.com/questions/446594/separate-up-arrow-lookback-for-local-and-global-zsh-history)
+up-line-or-local-history() {
+    zle set-local-history 1
+    zle up-line-or-history
+    zle set-local-history 0
+}
+zle -N up-line-or-local-history
+bindkey "^x^h" up-line-or-local-history
+
+# only navigate the local history (local to a shell, see `sharehistory' above)
+# (see https://superuser.com/questions/446594/separate-up-arrow-lookback-for-local-and-global-zsh-history)
+down-line-or-local-history() {
+    zle set-local-history 1
+    zle down-line-or-history
+    zle set-local-history 0
+}
+zle -N down-line-or-local-history
+bindkey "^x^g" down-line-or-local-history
+
+
+### various exports (TODO probably move these to ~/.zshenv)
+
+# some basic setup
+export EDITOR=nvim
+export VISUAL=nvim
+export BROWSER=firefox
+export PAGER=less
+
+# set the xdg base directories specification
+# (https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html)
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# set the word chars that SHOULD also be considered as part of a word
+# the characters that are not in here from the default WORDCHARS are '/', '.'
+# and '-'
+export WORDCHARS="*?_[]~=&;!#$%^(){}<>"
+
+# increase history size for both session history and file
+# history, we're living in 2021
+export HISTSIZE=50000
+export SAVEHIST=50000
+# history file
+export HISTFILE="$HOME/.zsh_history"
+
+
+
+
+
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -73,7 +314,7 @@ plugins=(
     zsh-histdb                          # custom plugins added to `custom/plugins` directory
 )
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
@@ -103,35 +344,10 @@ source $ZSH/oh-my-zsh.sh
 
 # make sudo commands share the same init.vim config file as the regular user
 alias sudovim="sudo -E vim"
+alias ls="ls --color=tty"
+alias l="ls -lah"
+alias la="ls -lh"
 
-setopt extendedglob     # allow extended globbing (zsh specific)
-# setopt GLOBDOTS         # glob dotfiles when using globbing patterns
-setopt HISTIGNOREDUPS   # ignore duplicate history entries
-setopt HISTIGNORESPACE  # if the command begins with a space, it is not added to the history
-setopt NOCLOBBER        # prevents an existing file from being overwritten if it exists;
-                        #if you still want to overwrite it, type >! instead of just > 
-
-export EDITOR=nvim
-export VISUAL=nvim
-
-export BROWSER=firefox
-
-# unbind the arrow keys and the backspace key
-bindkey -s "^[[A" ""
-bindkey -s "^[[B" ""
-bindkey -s "^[[C" ""
-bindkey -s "^[[D" ""
-bindkey -s "\x7f" ""
-
-
-# transpose 2 arguments in command line using Alt+z
-# the normal transpose-words using Alt+t still works
-word-style-transpose() {
-    local WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>"
-    zle transpose-words
-}
-zle -N word-style-transpose
-bindkey '^[z' word-style-transpose
 
 if [ -f /etc/os-release ]; then
     os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
@@ -211,11 +427,11 @@ if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; 
 fi
 
 
-# custom made history search using zsh_histdb
-# this version checks for the command exit status
-# see /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-# the plugin was loaded above using `plugins` command
-ZSH_AUTOSUGGEST_STRATEGY=(histdb)
+## custom made history search using zsh_histdb
+## this version checks for the command exit status
+## see /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+## the plugin was loaded above using `plugins` command
+#ZSH_AUTOSUGGEST_STRATEGY=(histdb)
 
 # default fzf command
 export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
@@ -226,12 +442,6 @@ export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
 export PATH="/usr/bin/vendor_perl/:$PATH" # for biber
 export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
 export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
-
-# set the xdg base directories specification (https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html)
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_STATE_HOME="$HOME/.local/state"
 
 if [[ -z "$XDG_DATA_DIRS" ]]; then
     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
