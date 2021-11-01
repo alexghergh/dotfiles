@@ -40,7 +40,8 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 # complete options to command aliases
 setopt completealiases
 
-# allow extended globbing (zsh specific, see https://zsh.sourceforge.io/Intro/intro_2.html#SEC2)
+# allow extended globbing (zsh specific, see https://zsh.sourceforge.io/Intro/intro_2.html#SEC2 and
+# https://zsh.sourceforge.io/Guide/zshguide05.html#l139)
 setopt extendedglob
 
 # some better directory history options
@@ -118,6 +119,29 @@ setopt extendedhistory
 
 # automatically cd into a directory if it exists just by typing the dir name
 setopt autocd
+
+# don't beep when completion can't find a match
+setopt nobeep
+
+# one completion item is always inserted, then cycle through by using TAB
+setopt menucomplete
+
+# automatically remove slash after directory name completion
+# (see https://zsh.sourceforge.io/Guide/zshguide06.html#l150)
+setopt autoremoveslash
+
+# when typing e.g. `Maefile' and going back to complete, correctly complete
+# `Makefile' instead of `Maefile*'
+setopt completeinword
+
+# always move cursor to end of completion, even if the completion took place in
+# the middle of the word
+setopt alwaystoend
+
+# when completing items, list `/' for directories, `*' for executables, `@' for
+# links etc. (similar to ls -F)
+# (see https://zsh.sourceforge.io/Guide/zshguide06.html#l151)
+setopt listtypes
 
 
 ### zle options and widgets
@@ -205,6 +229,12 @@ down-line-or-local-history() {
 }
 zle -N down-line-or-local-history
 bindkey "^x^g" down-line-or-local-history
+
+
+### zstyles
+
+# highlight the entries in the completion menu
+zstyle ':completion:*' menu select=1
 
 
 ### various exports (TODO probably move these to ~/.zshenv)
