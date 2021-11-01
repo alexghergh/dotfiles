@@ -12,6 +12,8 @@ function less() {
 
     for arg in $*; do
         case $arg in
+            (*.zip) args[$i]="=(zip -sf ${(q)arg})"
+                ;;
             (*.bz2) args[$i]="=(bunzip2 -c ${(q)arg})"
                 ;;
             (*.tar.gz) args[$i]="=(tar --list -f ${(q)arg})"
