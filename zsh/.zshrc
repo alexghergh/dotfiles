@@ -10,6 +10,9 @@
 fpath=( "$HOME/.zsh_functions" $fpath )
 autoload -Uz ${fpath[1]}/*(:t)
 
+# look for custom defined prompts and load them
+fpath=( "$HOME/.zsh_prompts" $fpath )
+
 
 ### autoload
 
@@ -23,6 +26,9 @@ compinit
 # load the prompt theme system
 autoload -Uz promptinit
 promptinit
+
+# set the custom prompt theme
+prompt alex
 
 
 # by default, run-help is aliased to man

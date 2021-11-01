@@ -1,0 +1,17 @@
+# Custom theme created by alexghergh
+
+# check_return_code() {
+#     if ($? == 0) {
+#         echo "%F{green}Exit status: $?%f"
+#     } else {
+#         echo "%F{red}Exit status: $?%f"
+#     }
+# }
+
+PS1=$'%{\e[38;2;00;213;255m%}%n%{\e[0m%}@%{\e[38;2;255;42;0m%}%M:%{\e[38;2;255;179;102m%}%~%{\e[0m%}%(!.#.$) '
+
+# PS1=$'%{\e[38;2;00;213;255m%}%n%{\e[0m%}@%{\e[38;2;255;42;0m%}%M:%{\e[38;2;255;179;102m%}%~%{\e[0m%}$(git_prompt_info) %(!.#.$) '
+# RPS1=$'%(?.%F{green}Exit status: $?%f.%F{red}Exit status: $?%f)'
+
+# ZSH_THEME_GIT_PROMPT_PREFIX=" %{\e[38;5;135m%}git:("
+# ZSH_THEME_GIT_PROMPT_SUFFIX=")%{\e[0m%}"
