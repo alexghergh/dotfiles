@@ -3,15 +3,35 @@
 # For more information on `autoload', `typeset' or other shell builtins, see
 # `man zshbuiltins', 'man zshzle'
 
+
+
+
+
+
+# -U stands for unique
+
+# remove duplicates in both PATH and path
+# they are both synced anyway
+typeset -U PATH path
+
+# remove duplicates in both FPATH and fpath
+# they are both synced anyway
+typeset -U FPATH fpath
+
+
+
+
+
+
 ### environment variables
 
 # look for custom defined functions in the directory below and automatically
 # load them
-fpath=( "$HOME/.zsh_functions" $fpath )
+fpath=( "$HOME/.config/zsh/.zsh_functions" $fpath )
 autoload -Uz ${fpath[1]}/*(:t)
 
 # look for custom defined prompts and load them
-fpath=( "$HOME/.zsh_prompts" $fpath )
+fpath=( "$HOME/.config/zsh/.zsh_prompts" $fpath )
 
 
 ### autoload
@@ -152,16 +172,6 @@ setopt listtypes
 
 ### zle options and widgets
 
-# if you start a command with sudo, the completions will try
-# to also complete commands in the super user context
-# (commented due to the fact that this runs scripts with sudo permissions)
-# zstyle ':completion::complete:*' gain-privileges 1
-
-# when installing new packages, automatically rehash to get
-# completion for them
-# (commented due to the performance penalty involved)
-# zstyle ':completion:*' rehash true
-
 # emacs style keybindings
 bindkey -e
 
@@ -241,6 +251,19 @@ bindkey "^x^g" down-line-or-local-history
 
 # highlight the entries in the completion menu
 zstyle ':completion:*' menu select=1
+
+# max number of spelling errors
+zstyle ':completion:*' max-errors 2
+
+# if you start a command with sudo, the completions will try
+# to also complete commands in the super user context
+# (commented due to the fact that this runs scripts with sudo permissions)
+# zstyle ':completion::complete:*' gain-privileges 1
+
+# when installing new packages, automatically rehash to get
+# completion for them
+# (commented due to the performance penalty involved)
+# zstyle ':completion:*' rehash true
 
 
 ### various exports (TODO probably move these to ~/.zshenv)
@@ -493,3 +516,4 @@ if [[ -z "$TMUX" ]]; then
 fi
 
 alias gs="git status"
+alias myip="curl http://ipecho.net/plain; echo"
