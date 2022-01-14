@@ -100,6 +100,19 @@ setopt globdots
 # !! don't use >!, as the `!' might be a history expansion
 setopt noclobber
 
+# create a file if it does not exist when appending with `>> file'
+setopt appendcreate
+
+# output to multiple files at the same time, similar to `tee'
+# also causes filename expansion to happen inside redirections
+setopt multios
+
+# monitor the foreground and background jobs and notify about them
+setopt monitor
+
+# notify immediately on background jobs, don't wait until the next prompt
+setopt notify
+
 # allow comments in the middle of a command
 setopt interactivecomments
 
@@ -497,10 +510,11 @@ export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # add LaTeX to path
-export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
-export PATH="/usr/bin/vendor_perl/:$PATH" # for biber
-export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
-export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
+# export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
+# export PATH="/usr/bin/vendor_perl/:$PATH" # for biber
+# export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
+# export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
+alias tlmgr='/usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode'
 
 if [[ -z "$XDG_DATA_DIRS" ]]; then
     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
