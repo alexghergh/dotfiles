@@ -182,6 +182,16 @@ setopt alwaystoend
 # (see https://zsh.sourceforge.io/Guide/zshguide06.html#l151)
 setopt listtypes
 
+# allow parameter expansion, arithmetic expansion and command substitution to
+# be expanded inside the prompt string
+setopt prompt_subst
+
+# allow history expansion with `!' to happen inside the prompt string
+# setopt prompt_bang
+
+# allow certain escape sequences inside the prompt string
+setopt prompt_percent
+
 
 ### zle options and widgets
 
