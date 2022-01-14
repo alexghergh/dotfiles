@@ -64,44 +64,50 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 ### setopt
 
 # complete options to command aliases
-setopt completealiases
+setopt complete_aliases
 
 # allow extended globbing (zsh specific, see https://zsh.sourceforge.io/Intro/intro_2.html#SEC2 and
 # https://zsh.sourceforge.io/Guide/zshguide05.html#l139)
-setopt extendedglob
+setopt extended_glob
 
 # some better directory history options
 # use with cd -<dir number listed with dirl> or ls =<dir number listed with dirl>
 #
 # use a directory history of 8 directories
 DIRSTACKSIZE=8
+
 # use cd like a pushd (for different reasons not listed on the official page, you cannot simply
 # set cd=pushd)
-setopt autopushd
+setopt auto_pushd
+
 # make cd -<dir number> work as expected
-setopt pushdminus
+setopt pushd_minus
+
 # don't print the directory stack each time we do a cd
-setopt pushdsilent
+setopt pushd_silent
+
 # add home to directory stack when doing `cd' alone
-setopt pushdtohome
+setopt pushd_to_home
+
 # ignore the duplicate directory entries
-setopt pushdignoredups
+setopt pushd_ignore_dups
+
 # alias for easy directory stack listing
 alias dirl="dirs -v"
 
 # this makes it so that `foo/$vars' expands to `foo/$1 foo/$2...' instead of `foo/$1 $2...'
-setopt rcexpandparam
+setopt rc_expand_param
 
 # glob dotfiles when using globbing patterns
-setopt globdots
+setopt glob_dots
 
 # prevents an existing file from being overwritten if it exists;
 # if you still want to overwrite it, type >| instead of just >
 # !! don't use >!, as the `!' might be a history expansion
-setopt noclobber
+setopt no_clobber
 
 # create a file if it does not exist when appending with `>> file'
-setopt appendcreate
+setopt append_create
 
 # output to multiple files at the same time, similar to `tee'
 # also causes filename expansion to happen inside redirections
@@ -114,35 +120,35 @@ setopt monitor
 setopt notify
 
 # allow comments in the middle of a command
-setopt interactivecomments
+setopt interactive_comments
 
 # when executing a function that changes some setopts, they will be
 # put back when the function finishes
-setopt localoptions
+setopt local_options
 
 # when executing a function that needs to, say, ignore some traps
 # this helps with only changing the traps inside the function
 # (see https://zsh.sourceforge.io/Guide/zshguide02.html, search for LOCAL_TRAPS)
-setopt localtraps
+setopt local_traps
 
 # ignore duplicate history entries when doing them one after the other
-setopt histignoredups
+setopt hist_ignore_dups
 
 # if the command begins with a space, it is not added to the history
-setopt histignorespace
+setopt hist_ignore_space
 
 # when using bang-history (i.e. !!) with different modifiers, show a prompt for the
 # command execution with the substions in place (easy to see if the command
 # is actually what you want), before actually pressing enter
 # (see https://zsh.sourceforge.io/Guide/zshguide02.html, search for bang-history)
-setopt histverify
+setopt hist_verify
 
 # append to the history file instead of overwriting it
-setopt appendhistory
+setopt append_history
 
 # don't append a command to the history file (this NEEDS to be set off because
 # of the option below)
-setopt noincappendhistory
+setopt no_inc_append_history
 
 # share history between shells; also appends history commands (as if
 # `incappendhistory' was set, see above)
@@ -151,36 +157,36 @@ setopt noincappendhistory
 # history (local to a particular shell; only the commands issued in that
 # shell, for more info see
 # https://zsh.sourceforge.io/Doc/Release/Options.html#index-SHARE_005fHISTORY)
-setopt sharehistory
+setopt share_history
 
 # add more information to the history file, like date and time elapsed
-setopt extendedhistory
+setopt extended_history
 
 # automatically cd into a directory if it exists just by typing the dir name
-setopt autocd
+setopt auto_cd
 
 # don't beep when completion can't find a match
-setopt nobeep
+setopt no_beep
 
 # one completion item is always inserted, then cycle through by using TAB
-setopt menucomplete
+setopt menu_complete
 
 # automatically remove slash after directory name completion
 # (see https://zsh.sourceforge.io/Guide/zshguide06.html#l150)
-setopt autoremoveslash
+setopt auto_remove_slash
 
 # when typing e.g. `Maefile' and going back to complete, correctly complete
 # `Makefile' instead of `Maefile*'
-setopt completeinword
+setopt complete_in_word
 
 # always move cursor to end of completion, even if the completion took place in
 # the middle of the word
-setopt alwaystoend
+setopt always_to_end
 
 # when completing items, list `/' for directories, `*' for executables, `@' for
 # links etc. (similar to ls -F)
 # (see https://zsh.sourceforge.io/Guide/zshguide06.html#l151)
-setopt listtypes
+setopt list_types
 
 # allow parameter expansion, arithmetic expansion and command substitution to
 # be expanded inside the prompt string
