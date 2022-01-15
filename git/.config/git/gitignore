@@ -1,0 +1,9 @@
+# global gitignore file
+# the rules below apply to all the repositories on the local system
+
+# notes or todos for a specific repository
+NOTES.txt
+TODO.txt
+
+# neovim lsp cache
+.ccls-cache

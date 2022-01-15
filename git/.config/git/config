@@ -8,6 +8,7 @@
     editor = nvim
     pager = less -FR
     askPass = ksshaskpass
+    excludesfile = /home/alex/.config/git/gitignore
 #[credential]
 #   helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 [sendemail]
