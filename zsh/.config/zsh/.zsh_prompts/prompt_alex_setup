@@ -1,17 +1,40 @@
-# Custom theme created by alexghergh
+# Theme: Pastel Night
+# Author: alexghergh
+#
 
-# check_return_code() {
-#     if ($? == 0) {
-#         echo "%F{green}Exit status: $?%f"
-#     } else {
-#         echo "%F{red}Exit status: $?%f"
-#     }
-# }
+##
+## COLORS
+##
+_JOBS=$'%{\e[38;2;180;167;214m%}'
+_USRNM=$'%{\e[38;2;255;255;186m%}'
+_HSTNM=$'%{\e[38;2;234;153;153m%}'
+_PTH=$'%{\e[38;2;159;197;232m%}'
+_GIT=$'%{\e[38;2;182;215;168m%}'
+_PRMPT=$'%{\e[38;2;202;250;187m%}'
 
-PS1=$'%{\e[38;2;00;213;255m%}%n%{\e[0m%}@%{\e[38;2;255;42;0m%}%M:%{\e[38;2;255;179;102m%}%~%{\e[0m%}%(!.#.$) '
+_FG=$'%{\e[48;2;91;91;91m%}'
 
-# PS1=$'%{\e[38;2;00;213;255m%}%n%{\e[0m%}@%{\e[38;2;255;42;0m%}%M:%{\e[38;2;255;179;102m%}%~%{\e[0m%}$(git_prompt_info) %(!.#.$) '
-# RPS1=$'%(?.%F{green}Exit status: $?%f.%F{red}Exit status: $?%f)'
+_RESET=$'%{\e[0m%}'
 
-# ZSH_THEME_GIT_PROMPT_PREFIX=" %{\e[38;5;135m%}git:("
-# ZSH_THEME_GIT_PROMPT_SUFFIX=")%{\e[0m%}"
+## git status
+##
+git_current_branch() {
+    local ref
+    ref=$(git symbolic-ref --quiet HEAD 2> /dev/null)
+    local ret=$?
+    if [[ $ret != 0 ]]; then
+        [[ $ret == 128 ]] && return # no git repo
+        ref=$(git rev-parse --short HEAD 2> /dev/null) || return
+    fi
+    echo "(${ref#refs/heads/})"
+}
+
+##
+## Left prompt
+##
+PS1=$'$_JOBS(%j)$_RESET $_USRNM%n$_RESET@$_HSTNM%M$_RESET:$_PTH%~$_RESET $_GIT$(git_current_branch)$_RESET\n$_PRMPT\U279C %(!.#.$)$_RESET '
+
+##
+## Right prompt
+##
+RPS1=$'%(?.%F{green}\U2713%f.%F{red}$?%f)'
