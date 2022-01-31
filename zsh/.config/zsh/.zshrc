@@ -48,7 +48,7 @@ autoload -Uz promptinit
 promptinit
 
 # set the custom prompt theme
-prompt alex
+prompt pastel_night
 
 
 # by default, run-help is aliased to man
