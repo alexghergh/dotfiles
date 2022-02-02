@@ -33,6 +33,12 @@ autoload -Uz ${fpath[1]}/*(:t)
 # look for custom defined prompts and load them
 fpath=( "$HOME/.config/zsh/.zsh_prompts" $fpath )
 
+# load other custom defined functions that are not autoloaded
+for config_file in "$HOME"/.config/zsh/.zsh_misc_functions/*.zsh; do
+    [[ -f "$config_file" ]] && source "$config_file"
+done
+unset config_file
+
 
 ### autoload
 
