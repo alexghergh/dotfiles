@@ -5,7 +5,8 @@
 ##
 ## COLORS
 ##
-_JOBS=$'%{\e[38;2;104;84;200m%}'
+_JOBS0=$'%{\e[38;2;243;66;9m%}'
+_JOBS1=$'%{\e[38;2;104;84;200m%}'
 _USRNM=$'%{\e[38;2;247;213;145m%}'
 _HSTNM=$'%{\e[38;2;181;94;68m%}'
 _PTH=$'%{\e[38;2;119;171;185m%}'
@@ -19,7 +20,7 @@ _RESET=$'%{\e[0m%}'
 ##
 ## Left prompt
 ##
-PS1=$'$_JOBS(%j)$_RESET $_USRNM%n$_RESET@$_HSTNM%M$_RESET:$_PTH%~$_RESET $_GIT$(git_current_branch)$_RESET\n$_PRMPT\U279C %(!.#.$)$_RESET '
+PS1=$'%(1j.$_JOBS0.$_JOBS1)(%j)$_RESET $_USRNM%n$_RESET@$_HSTNM%M$_RESET:$_PTH%~$_RESET $_GIT$(git_current_branch)$_RESET\n$_PRMPT\U279C %(!.#.$)$_RESET '
 
 ##
 ## Right prompt
