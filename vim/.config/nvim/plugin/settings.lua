@@ -59,9 +59,6 @@ vim.opt.path:append { "**" }
 vim.o.list = true
 vim.opt.listchars = { ["tab"] = ">.", ["trail"] = "." , ["nbsp"] = "‸" }
 
--- enable spell-checking
--- vim.o.spell = true
-
 -- options for netrw
 vim.g.netrw_liststyle = 3       -- treestyle listing
 vim.g.netrw_banner = 0          -- don't show the banner at the top (toggle with <S-i>)
@@ -94,9 +91,10 @@ vim.o.autoindent = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.softtabstop = 4
-vim.o.tabstop=4
+vim.o.tabstop = 4
 
--- disable modelines in favor of secure modelines, see plugin below
+-- disable modelines in favor of secure modelines
+-- (see the secure modelines plugin)
 vim.o.modeline = false
 
 -- enable undo files, disable swap files

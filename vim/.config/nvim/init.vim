@@ -38,7 +38,7 @@ augroup _user_aug
     autocmd BufReadPost * if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit' | exe "normal! g`\"" | endif
 
     " clean extra spaces on some filetypes
-    autocmd BufWritePre *.zsh,*.vim,*.c,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.java,*.lua :call functions#CleanExtraSpaces()
+    autocmd BufWritePre *.zsh,*.vim,*.c,*.cpp,*.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.java,*.lua :call functions#CleanExtraSpaces()
 augroup END
 
 " stop highlighting on cursor movement
