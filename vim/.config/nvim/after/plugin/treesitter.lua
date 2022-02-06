@@ -1,7 +1,27 @@
 require("nvim-treesitter.configs").setup {
-    ensure_installed = { "c", "cpp", "java", "latex", "lua", "python", "query", "vim" },
 
-    hightlight = {
+    ensure_installed = {
+        "c",
+        "cpp",
+        "java",
+        "latex",
+        "lua",
+        "python",
+        "query",
+        "vim",
+        "cmake",
+        "make",
+        "markdown",
+        "bibtex"
+    },
+
+    -- nvim-treesitter highlighting
+    highlight = {
+        enable = true
+    },
+
+    -- nvim-treesitter indentation
+    indent = {
         enable = true
     },
 
