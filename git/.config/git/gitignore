@@ -7,3 +7,4 @@ TODO.txt
 
 # neovim lsp cache
 .ccls-cache
+.cache
