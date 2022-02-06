@@ -5,7 +5,7 @@
 -- file changed: vim-signify/autoload/sy/util.vim - L201
 
 -- show hunk diff preview window
-vim.api.nvim_set_keymap('n', "<Leader>sh", "<Cmd>SignifyHunkDiff<CR>", { noremap = true })
+vim.api.nvim_set_keymap('n', "<Leader>hs", "<Cmd>SignifyHunkDiff<CR>", { noremap = true })
 
 -- hunk undo (similar to git checkout)
 vim.api.nvim_set_keymap('n', "<Leader>hu", "<Cmd>SignifyHunkUndo<CR>", { noremap = true })
@@ -66,3 +66,8 @@ vim.api.nvim_set_keymap('o', "ih", "<Plug>(signify-motion-inner-pending)", {})
 vim.api.nvim_set_keymap('x', "ih", "<Plug>(signify-motion-inner-visual)", {})
 vim.api.nvim_set_keymap('o', "ah", "<Plug>(signify-motion-outer-pending)", {})
 vim.api.nvim_set_keymap('x', "ah", "<Plug>(signify-motion-outer-visual)", {})
+
+-- don't link these to the color scheme by default
+vim.cmd [[ highlight! SignifySignAdd NONE ]]
+vim.cmd [[ highlight! SignifySignChange NONE ]]
+vim.cmd [[ highlight! SignifySignDelete NONE ]]
