@@ -8,3 +8,5 @@ TODO.txt
 # neovim lsp cache
 .ccls-cache
 .cache
+
+compile_commands.json
