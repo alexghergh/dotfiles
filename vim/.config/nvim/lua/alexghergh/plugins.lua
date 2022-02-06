@@ -4,12 +4,12 @@ local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.n
 
 -- if packer is not installed, install it
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
+    packer_bootstrap = vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
     vim.api.nvim_command("packadd packer.nvim")
 end
 
 local use = require("packer").use
-require("packer").startup(function()
+require("packer").startup({function()
 
     -- Plugin manager can manage itself
     use "wbthomason/packer.nvim"
@@ -74,7 +74,20 @@ require("packer").startup(function()
     -- Colorschemes
     use { "savq/melange" }
 
-end)
+    -- automatically set up the config after cloning packer.nvim on a fresh
+    -- install
+    -- note: this needs to be at the end of the plugins
+    if packer_bootstrap then
+        require("packer").sync()
+    end
+
+end, config = {
+    display = {
+        open_fn = function()
+            return require("packer.util").float({ border = "rounded" })
+        end,
+    }
+}})
 
 vim.cmd [[autocmd ColorScheme * highlight NormalFloat guibg=#1f2335]]
 vim.cmd [[autocmd ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
