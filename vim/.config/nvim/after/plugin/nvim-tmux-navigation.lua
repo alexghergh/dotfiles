@@ -1,3 +1,8 @@
+-- error checking
+if not pcall(require, "nvim-tmux-navigation") then
+    return
+end
+
 require'nvim-tmux-navigation'.setup {
     disable_when_zoomed = true,
     keybindings = {

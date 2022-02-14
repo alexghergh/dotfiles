@@ -1,3 +1,8 @@
+-- error checking
+if not pcall(require, "lspconfig") then
+    return
+end
+
 -- use an on_attach function to only set things up
 -- after the language server attaches to a buffer
 local custom_attach = function(client, bufnr)
