@@ -39,7 +39,7 @@ vim.o.report = 0
 -- enable true 24-bit terminal colors
 vim.o.termguicolors = true
 vim.o.background = "dark"
-vim.cmd([[colorscheme melange]])
+vim.cmd([[silent! colorscheme melange]])
 
 -- ignore certain files when opening buffers from inside neovim
 vim.opt.wildignore:append { "*.o", "*.obj", "**/.git/*", "*.swp", "*.pyc", "*.class", "**/node_modules/*", "*.bak" }
