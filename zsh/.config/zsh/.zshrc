@@ -281,6 +281,9 @@ down-line-or-local-history() {
 zle -N down-line-or-local-history
 bindkey "^x^g" down-line-or-local-history
 
+# navigate backwards in the menu with shift-tab
+bindkey '^[[Z' reverse-menu-complete
+
 
 ### zstyles
 
