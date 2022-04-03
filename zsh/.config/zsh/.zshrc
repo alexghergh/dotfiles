@@ -4,9 +4,7 @@
 # `man zshbuiltins', 'man zshzle'
 
 
-
-
-
+###
 
 # -U stands for unique
 
@@ -17,10 +15,6 @@ typeset -U PATH path
 # remove duplicates in both FPATH and fpath
 # they are both synced anyway
 typeset -U FPATH fpath
-
-
-
-
 
 
 ### environment variables
