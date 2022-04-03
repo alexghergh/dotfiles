@@ -12,3 +12,6 @@ zstyle ':completion:*' max-errors 2
 # when installing new packages, automatically rehash to get
 # completion for them
 zstyle ':completion:*' rehash true
+
+# case insensitive path-completion 
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
