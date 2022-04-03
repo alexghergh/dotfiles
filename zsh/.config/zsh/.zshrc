@@ -18,7 +18,7 @@ typeset -U FPATH fpath
 
 
 # set a zsh config path
-ZSH_CONFIG_PATH=${ZSH_CONFIG_PATH:-"$HOME/.config/zsh"}
+ZSH_CONFIG_PATH="${ZSH_CONFIG_PATH:-"$HOME/.config/zsh"}"
 
 
 ### zsh functions and prompts
@@ -100,14 +100,6 @@ fi
 ## see /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 ## the plugin was loaded above using `plugins` command
 #ZSH_AUTOSUGGEST_STRATEGY=(histdb)
-
-# if [[ -z "$XDG_DATA_DIRS" ]]; then
-#     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
-# fi
-
-# if [[ -z "$XDG_CONFIG_DIRS" ]]; then
-#     export XDG_CONFIG_DIRS="/etc/xdg"
-# fi
 
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
