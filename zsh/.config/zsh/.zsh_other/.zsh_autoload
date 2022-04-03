@@ -1,0 +1,23 @@
+# -U suppress alias expansion when function is loaded
+# -z zsh-style
+#
+# load completion
+autoload -Uz compinit
+compinit
+
+# load the prompt theme system
+autoload -Uz promptinit
+promptinit
+
+# set the custom prompt theme
+prompt pastel_night
+
+
+# by default, run-help is aliased to man
+# to actually get useful help for shell builtins, load the run-help module
+autoload -Uz run-help
+(( ${+aliases[run-help]} )) && unalias run-help
+alias help=run-help
+# when running "run-help git commit" for example,
+# open man git-commit instead of man git
+autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo

@@ -89,7 +89,7 @@ setopt no_inc_append_history
 # share history between shells; also appends history commands (as if
 # `incappendhistory' was set, see above)
 # by default, all the shells get the same history file (global)
-# but there are additional binds down below to only navigate LOCAL
+# but there are additional binds in .zsh_keybinds to only navigate LOCAL
 # history (local to a particular shell; only the commands issued in that
 # shell, for more info see
 # https://zsh.sourceforge.io/Doc/Release/Options.html#index-SHARE_005fHISTORY)

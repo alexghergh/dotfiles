@@ -17,9 +17,11 @@ typeset -U PATH path
 typeset -U FPATH fpath
 
 
-### environment variables
-
+# set a zsh config path
 ZSH_CONFIG_PATH=${ZSH_CONFIG_PATH:-"$HOME/.config/zsh"}
+
+
+### zsh functions and prompts
 
 # look for custom defined functions in the directory below and automatically
 # load them
@@ -36,348 +38,50 @@ done
 unset config_file
 
 
-### autoload
+### environment variables and various exports
 
-# -U suppress alias expansion when function is loaded
-# -z zsh-style
-#
-# load completion
-autoload -Uz compinit
-compinit
-
-# load the prompt theme system
-autoload -Uz promptinit
-promptinit
-
-# set the custom prompt theme
-prompt pastel_night
+env_vars_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_env_vars"
+[[ -f $env_vars_file ]] && source $env_vars_file
+unset env_vars_file
 
 
-# by default, run-help is aliased to man
-# to actually get useful help for shell builtins, load the run-help module
-autoload -Uz run-help
-(( ${+aliases[run-help]} )) && unalias run-help
-alias help=run-help
-# when running "run-help git commit" for example,
-# open man git-commit instead of man git
-autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
+### autoloaded stuff (completion system, prompts etc.)
+
+autoload_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_autoload"
+[[ -f $autoload_file ]] && source $autoload_file
+unset autoload_file
 
 
 ### set zsh options
 
 options_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_options"
 [[ -f $options_file ]] && source $options_file
-
-# alias for easy directory stack listing
-alias dirl="dirs -v"
+unset options_file
 
 
-### zle options and widgets
+### zle keybinds (widgets)
 
-# emacs style keybindings
-bindkey -e
-
-# unbind the arrow keys and the backspace key
-bindkey -s "^[[A" ""
-bindkey -s "^[[B" ""
-bindkey -s "^[[C" ""
-bindkey -s "^[[D" ""
-bindkey -s "\x7f" ""
-
-# prefix searching
-#
-# search for identic history up from the beginning of the line up to the cursor
-# position
-# !! `^x^n' overwrites `infer-next-history' (for now not needed, maybe in the
-# future, for what it does, see https://zsh.sourceforge.io/Guide/zshguide04.html,
-# search for `infer-next-history')
-bindkey '^x^p' history-beginning-search-backward
-bindkey '^x^n' history-beginning-search-forward
-
-# copy the last shell argument
-# useful for cases when you want to `mv' something like a large directory
-# you only have to write the path once, then copy it and then simply change
-# the last word
-copy-prev-big-word() {
-    local WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>"
-    zle copy-prev-word
-}
-zle -N copy-prev-big-word
-bindkey '^[e' copy-prev-big-word
-
-# transpose 2 arguments in command line using Alt+z; the normal transpose-words
-# using Alt+t still works; this has the added benefit the cursor doesn't move,
-# though sometimes it might be an inconvenience
-word-style-transpose() {
-    emulate -L zsh
-    local cursor_pos
-    cursor_pos=$CURSOR
-
-    local WORDCHARS="*?_-.[]~=/&;!#$%^(){}<>"
-    zle transpose-words
-
-    CURSOR=$cursor_pos
-}
-zle -N word-style-transpose
-bindkey '^[z' word-style-transpose
-
-# replace the default push-line by push-line-or-edit
-# has the same effect as normal <esc>-q when in the PS1 prompt, but has
-# a different effect in PS2; namely, it brings the multiline command on the
-# prompt, so you can scroll to lines above (this wasn't possible
-# otherwise)
-bindkey '^[q' push-line-or-edit
-
-# only navigate the local history (local to a shell, see `sharehistory' above)
-# (see https://superuser.com/questions/446594/separate-up-arrow-lookback-for-local-and-global-zsh-history)
-up-line-or-local-history() {
-    zle set-local-history 1
-    zle up-line-or-history
-    zle set-local-history 0
-}
-zle -N up-line-or-local-history
-bindkey "^x^h" up-line-or-local-history
-
-# only navigate the local history (local to a shell, see `sharehistory' above)
-# (see https://superuser.com/questions/446594/separate-up-arrow-lookback-for-local-and-global-zsh-history)
-down-line-or-local-history() {
-    zle set-local-history 1
-    zle down-line-or-history
-    zle set-local-history 0
-}
-zle -N down-line-or-local-history
-bindkey "^x^g" down-line-or-local-history
-
-# navigate backwards in the menu with shift-tab
-bindkey '^[[Z' reverse-menu-complete
+zle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_keybinds"
+[[ -f $zle_file ]] && source $zle_file
+unset zle_file
 
 
 ### zstyles
 
-# highlight the entries in the completion menu
-zstyle ':completion:*' menu select=1
-
-# max number of spelling errors
-zstyle ':completion:*' max-errors 2
-
-# if you start a command with sudo, the completions will try
-# to also complete commands in the super user context
-# (commented due to the fact that this runs scripts with sudo permissions)
-# zstyle ':completion::complete:*' gain-privileges 1
-
-# when installing new packages, automatically rehash to get
-# completion for them
-# (commented due to the performance penalty involved)
-# zstyle ':completion:*' rehash true
+zstyle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_zstyle"
+[[ -f $zstyle_file ]] && source $zstyle_file
+unset zstyle_file
 
 
-### various exports (TODO probably move these to ~/.zshenv)
+### aliases
 
-# some basic setup
-export EDITOR=nvim
-export VISUAL=nvim
-export BROWSER=firefox
-export PAGER=less
-
-# set the xdg base directories specification
-# (https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html)
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_STATE_HOME="$HOME/.local/state"
-
-# set the word chars that SHOULD also be considered as part of a word
-# the characters that are not in here from the default WORDCHARS are '/', '.'
-# and '-'
-export WORDCHARS="*?_[]~=&;!#$%^(){}<>"
-
-# increase history size for both session history and file
-# history, we're living in 2021
-export HISTSIZE=50000
-export SAVEHIST=50000
-# history file
-export HISTFILE="$HOME/.zsh_history"
+alias_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_aliases"
+[[ -f $alias_file ]] && source $alias_file
+unset alias_file
 
 
+###
 
-
-
-
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Path to your oh-my-zsh installation.
-export ZSH="/home/alex/.oh-my-zsh"
-
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="alexghergh"
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    fancy-ctrl-z fzf safe-paste         # builtin plugins
-    zsh-histdb                          # custom plugins added to `custom/plugins` directory
-)
-
-# source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# make sudo commands share the same init.vim config file as the regular user
-alias sudovim="sudo -E vim"
-alias ls="ls --color=tty"
-alias l="ls -lah"
-alias la="ls -lh"
-
-
-if [ -f /etc/os-release ]; then
-    os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
-fi
-
-# if we're on ubuntu
-if [ "$os_id" = 'ubuntu' ]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-
-# pyenv (python version manager) setup
-if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-fi
-
-# NVM lazy loading script
-#
-# NVM takes on average half of a second to load, which is more than whole prezto takes to load.
-# This can be noticed when you open a new shell.
-# To avoid this, we are creating placeholder function
-# for nvm, node, and all the node packages previously installed in the system
-# to only load nvm when it is needed.
-#
-# This code is based on the scripts:
-# * https://www.reddit.com/r/node/comments/4tg5jg/lazy_load_nvm_for_faster_shell_start/d5ib9fs
-# * http://broken-by.me/lazy-load-nvm/
-# * https://github.com/creationix/nvm/issues/781#issuecomment-236350067
-#
-
-# NVM_DIR="$HOME/.nvm"
-
-# # Skip adding binaries if there is no node version installed yet
-# if [ -d $NVM_DIR/versions/node ]; then
-#   NODE_GLOBALS=(`find $NVM_DIR/versions/node -maxdepth 3 \( -type l -o -type f \) -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-# fi
-# NODE_GLOBALS+=("nvm")
-
-# load_nvm () {
-#   # Unset placeholder functions
-#   for cmd in "${NODE_GLOBALS[@]}"; do unset -f ${cmd} &>/dev/null; done
-
-#   # Load NVM
-#   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-#   # (Optional) Set the version of node to use from ~/.nvmrc if available
-#   nvm use 2> /dev/null 1>&2 || true
-
-#   # Do not reload nvm again
-#   export NVM_LOADED=1
-# }
-
-# for cmd in "${NODE_GLOBALS[@]}"; do
-#   # Skip defining the function if the binary is already in the PATH
-#   if ! which ${cmd} &>/dev/null; then
-#     eval "${cmd}() { unset -f ${cmd} &>/dev/null; [ -z \${NVM_LOADED+x} ] && load_nvm; ${cmd} \$@; }"
-#   fi
-# done
-
-# end of nvm setup --------------
-
-
-# source jabba (java version manager)
-export JABBA_HOME="$HOME/.jabba"
-[ -s "$JABBA_HOME/jabba.sh" ] && source "$JABBA_HOME/jabba.sh"
 
 
 # load zsh syntax highlighting
@@ -397,29 +101,26 @@ fi
 ## the plugin was loaded above using `plugins` command
 #ZSH_AUTOSUGGEST_STRATEGY=(histdb)
 
-# default fzf command
-export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# if [[ -z "$XDG_DATA_DIRS" ]]; then
+#     export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
+# fi
 
-# add LaTeX to path
-# export PATH="/usr/local/texlive/2020/bin/x86_64-linux:$PATH"
-# export PATH="/usr/bin/vendor_perl/:$PATH" # for biber
-# export MANPATH="/usr/local/texlive/2020/texmf-dist/doc/man:$MANPATH"
-# export INFOPATH="/usr/local/texlive/2020/texmf-dist/doc/info:$INFOPATH"
-alias tlmgr='/usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode'
-
-if [[ -z "$XDG_DATA_DIRS" ]]; then
-    export XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
-fi
-
-if [[ -z "$XDG_CONFIG_DIRS" ]]; then
-    export XDG_CONFIG_DIRS="/etc/xdg"
-fi
+# if [[ -z "$XDG_CONFIG_DIRS" ]]; then
+#     export XDG_CONFIG_DIRS="/etc/xdg"
+# fi
 
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
     tmux attach
 fi
 
-alias gs="git status"
-alias myip="curl http://ipecho.net/plain; echo"
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+#plugins=(
+#    fancy-ctrl-z fzf safe-paste         # builtin plugins
+#    zsh-histdb                          # custom plugins added to `custom/plugins` directory
+#)
