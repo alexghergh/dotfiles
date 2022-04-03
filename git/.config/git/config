@@ -1,14 +1,15 @@
 [user]
     name = Alexandru Gherghescu
     email = gherghescu_alex1@yahoo.ro
-    signingKey = FD4A60A10F9E464C9D8EA550C229603AB7CEA985 
+    signingKey = gherghescu_alex1@yahoo.ro 
 [commit]
     gpgsign = true
+    template = ~/.config/git/git-commit-template
 [core]
     editor = nvim
     pager = less -FR
     askPass = ksshaskpass
-    excludesfile = /home/alex/.config/git/gitignore
+    excludesfile = ~/.config/git/git-ignore
 #[credential]
 #   helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 [sendemail]

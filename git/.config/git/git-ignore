@@ -3,10 +3,13 @@
 
 # notes or todos for a specific repository
 NOTES.txt
+NOTES.md
 TODO.txt
+TODO.md
 
 # neovim lsp cache
 .ccls-cache
 .cache
 
+# compilation database
 compile_commands.json
