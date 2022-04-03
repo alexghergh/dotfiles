@@ -19,16 +19,18 @@ typeset -U FPATH fpath
 
 ### environment variables
 
+ZSH_CONFIG_PATH=${ZSH_CONFIG_PATH:-"$HOME/.config/zsh"}
+
 # look for custom defined functions in the directory below and automatically
 # load them
-fpath=( "$HOME/.config/zsh/.zsh_functions" $fpath )
+fpath=( "$ZSH_CONFIG_PATH/.zsh_functions" $fpath )
 autoload -Uz ${fpath[1]}/*(:t)
 
 # look for custom defined prompts and load them
-fpath=( "$HOME/.config/zsh/.zsh_prompts" $fpath )
+fpath=( "$ZSH_CONFIG_PATH/.zsh_prompts" $fpath )
 
 # load other custom defined functions that are not autoloaded
-for config_file in "$HOME"/.config/zsh/.zsh_misc_functions/*.zsh; do
+for config_file in "$ZSH_CONFIG_PATH"/.zsh_misc_functions/*.zsh; do
     [[ -f "$config_file" ]] && source "$config_file"
 done
 unset config_file
@@ -63,7 +65,7 @@ autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
 
 ### set zsh options
 
-options_file="$HOME/.config/zsh/.zsh_other/.zsh_options"
+options_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_options"
 [[ -f $options_file ]] && source $options_file
 
 # alias for easy directory stack listing
