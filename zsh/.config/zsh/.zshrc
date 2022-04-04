@@ -80,6 +80,16 @@ alias_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_aliases"
 unset alias_file
 
 
+### plugins
+
+for plugin_file in "$ZSH_CONFIG_PATH"/.zsh_plugins/*.zsh; do
+    if [[ -f $plugin_file ]]; then
+        source $plugin_file
+    fi
+done
+unset plugin_file
+
+
 ###
 
 
