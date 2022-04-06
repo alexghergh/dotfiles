@@ -1,6 +1,3 @@
-## TODO check if errors on arch appear on ubuntu as well,
-# both through an apt install as well as a git clone
-
 if [ -f /etc/os-release ]; then
     os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
 fi
