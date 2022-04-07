@@ -1,3 +1,5 @@
+return 0
+
 # don't run in non-interactive shells
 [[ -o interactive ]] || return 0
 

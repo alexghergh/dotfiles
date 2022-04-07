@@ -4,11 +4,6 @@ zstyle ':completion:*' menu select=1
 # max number of spelling errors
 zstyle ':completion:*' max-errors 2
 
-# if you start a command with sudo, the completions will try
-# to also complete commands in the super user context
-# (commented due to the fact that this runs scripts with sudo permissions)
-# zstyle ':completion::complete:*' gain-privileges 1
-
 # when installing new packages, automatically rehash to get
 # completion for them
 zstyle ':completion:*' rehash true

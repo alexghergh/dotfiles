@@ -1,3 +1,5 @@
+return 0
+
 ## jabba (java version manager) setup
 
 ## TODO

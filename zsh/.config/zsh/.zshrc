@@ -70,40 +70,9 @@ done
 unset plugin_file
 
 
-###
-
-
-
-# load zsh syntax highlighting
-if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 
-fi
-
-# load zsh autosuggestions
-if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
-
-
-## custom made history search using zsh_histdb
-## this version checks for the command exit status
-## see /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-## the plugin was loaded above using `plugins` command
-#ZSH_AUTOSUGGEST_STRATEGY=(histdb)
-
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
     tmux attach
 fi
 
 unset ZSH_CONFIG_PATH
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-#plugins=(
-#    fancy-ctrl-z fzf safe-paste         # builtin plugins
-#    zsh-histdb                          # custom plugins added to `custom/plugins` directory
-#)

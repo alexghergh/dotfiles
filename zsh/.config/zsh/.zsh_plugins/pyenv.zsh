@@ -1,3 +1,5 @@
+return 0
+
 ## pyenv (python version manager) setup
 
 if command -v pyenv 1>/dev/null 2>&1; then
