@@ -2,6 +2,7 @@
 # useful for shortening long paths
 # after calling the command, it's possible to use cd ~<alias>, to quickly reach that dir again
 function namedir() {
+    emulate -LR zsh
 
     if [ $# -eq 0 ]; then
         echo "usage: namedir <directory alias>"

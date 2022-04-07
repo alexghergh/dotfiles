@@ -1,17 +1,19 @@
 # -U suppress alias expansion when function is loaded
 # -z zsh-style
 #
-# load completion
+# load the completion system
 autoload -Uz compinit
 compinit
+
+# look for custom defined prompts and load them
+fpath=( "$ZSH_CONFIG_PATH/.zsh_prompts" $fpath )
 
 # load the prompt theme system
 autoload -Uz promptinit
 promptinit
 
 # set the custom prompt theme
-prompt pastel_night
-
+prompt "$PROMPT_THEME"
 
 # by default, run-help is aliased to man
 # to actually get useful help for shell builtins, load the run-help module
@@ -21,3 +23,17 @@ alias help=run-help
 # when running "run-help git commit" for example,
 # open man git-commit instead of man git
 autoload -Uz run-help-git run-help-ip run-help-openssl run-help-p4 run-help-sudo
+
+## autoload user defined functions
+
+# look for custom defined autoloaded functions in the directory below and
+# automatically load them; these are functions that are not needed right now
+fpath=( "$ZSH_CONFIG_PATH/.zsh_functions" $fpath )
+autoload -Uz ${fpath[1]}/*(:t)
+
+# load other custom defined functions that are not autoloaded
+# their definition is completely read now
+for config_file in "$ZSH_CONFIG_PATH"/.zsh_misc_functions/*.zsh; do
+    [[ -f "$config_file" ]] && source "$config_file"
+done
+unset config_file

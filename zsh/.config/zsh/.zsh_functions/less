@@ -4,6 +4,7 @@
 # (see https://zsh.sourceforge.io/Guide/zshguide05.html,
 # search for `Process substitution')
 function less() {
+    emulate -LR zsh
     integer i=1
     local args arg
 

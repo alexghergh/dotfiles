@@ -1,41 +1,21 @@
 # Author: alexghergh
 #
 # For more information on `autoload', `typeset' or other shell builtins, see
-# `man zshbuiltins', 'man zshzle'
+# `man zshbuiltins', 'man zshzle', as well as the Zsh manual
+#
+# Table of contents for the current file:
+#   1. environment variables and shell parameters
+#   2. shell options
+#   3. loaded stuff (prompts, completion, functions)
+#   4. zstyles
+#   5. aliases
+#   6. widgets and keybinds
+#   7. plugins
+#
 
 
-###
-
-# -U stands for unique
-
-# remove duplicates in both PATH and path
-# they are both synced anyway
-typeset -U PATH path
-
-# remove duplicates in both FPATH and fpath
-# they are both synced anyway
-typeset -U FPATH fpath
-
-
-# set a zsh config path
-ZSH_CONFIG_PATH="${ZSH_CONFIG_PATH:-"$HOME/.config/zsh"}"
-
-
-### zsh functions and prompts
-
-# look for custom defined functions in the directory below and automatically
-# load them
-fpath=( "$ZSH_CONFIG_PATH/.zsh_functions" $fpath )
-autoload -Uz ${fpath[1]}/*(:t)
-
-# look for custom defined prompts and load them
-fpath=( "$ZSH_CONFIG_PATH/.zsh_prompts" $fpath )
-
-# load other custom defined functions that are not autoloaded
-for config_file in "$ZSH_CONFIG_PATH"/.zsh_misc_functions/*.zsh; do
-    [[ -f "$config_file" ]] && source "$config_file"
-done
-unset config_file
+# set a zsh config path for the config of the shell
+ZSH_CONFIG_PATH="${ZDOTDIR:-"$HOME/.config/zsh"}"
 
 
 ### environment variables and various exports
@@ -45,25 +25,18 @@ env_vars_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_env_vars"
 unset env_vars_file
 
 
-### autoloaded stuff (completion system, prompts etc.)
-
-autoload_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_autoload"
-[[ -f $autoload_file ]] && source $autoload_file
-unset autoload_file
-
-
-### set zsh options
+### zsh options
 
 options_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_options"
 [[ -f $options_file ]] && source $options_file
 unset options_file
 
 
-### zle keybinds (widgets)
+### autoloaded stuff (prompts, completion, functions)
 
-zle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_keybinds"
-[[ -f $zle_file ]] && source $zle_file
-unset zle_file
+autoload_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_autoload"
+[[ -f $autoload_file ]] && source $autoload_file
+unset autoload_file
 
 
 ### zstyles
@@ -78,6 +51,13 @@ unset zstyle_file
 alias_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_aliases"
 [[ -f $alias_file ]] && source $alias_file
 unset alias_file
+
+
+### zle keybinds (widgets)
+
+zle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_keybinds"
+[[ -f $zle_file ]] && source $zle_file
+unset zle_file
 
 
 ### plugins
@@ -116,6 +96,7 @@ if [[ -z "$TMUX" ]]; then
     tmux attach
 fi
 
+unset ZSH_CONFIG_PATH
 
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/

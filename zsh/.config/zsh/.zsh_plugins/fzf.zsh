@@ -1,3 +1,10 @@
+# don't run in non-interactive shells
+[[ -o interactive ]] || return 0
+
+# default fzf command
+export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 if [ -f /etc/os-release ]; then
     os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
 fi

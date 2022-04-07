@@ -7,15 +7,12 @@ setopt extended_glob
 
 # with the option set, command substitutions' outputs are also subject to filename generation
 # (see https://zsh.sourceforge.io/Doc/Release/Expansion.html#Command-Substitution)
-# (note: fzf is broken with the above enabled)
+# (note: fzf is broken with this option enabled)
 #setopt glob_subst
 
 # some better directory history options
 # use with cd -<dir number listed with dirl> or ls =<dir number listed with dirl>
 #
-# use a directory history of 8 directories
-DIRSTACKSIZE=8
-
 # use cd like a pushd (for different reasons not listed on the official page, you cannot simply
 # set cd=pushd)
 setopt auto_pushd

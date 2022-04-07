@@ -1,3 +1,12 @@
+# -U stands for unique (don't allow duplicates)
+# remove duplicates in both PATH and path
+# they are both synced anyway
+typeset -U PATH path
+
+# remove duplicates in both FPATH and fpath
+# they are both synced anyway
+typeset -U FPATH fpath
+
 # some basic setup
 export EDITOR=nvim
 export VISUAL=nvim
@@ -14,95 +23,21 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-"$HOME/.local/state"}"
 export XDG_DATA_DIRS="${XDG_DATA_DIRS:-"/usr/local/share/:/usr/share/"}"
 export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-"/etc/xdg"}"
 
-# set the word chars that SHOULD also be considered as part of a word
-# the characters that are not in here from the default WORDCHARS are '/', '.'
-# and '-'
+# set the word chars that SHOULD also be considered as part of a word the
+# characters that are not in here from the default WORDCHARS are '/', '.' and
+# '-'
 export WORDCHARS="*?_[]~=&;!#$%^(){}<>"
 
-# increase history size for both session history and file
-# history, we're living in 2022
+# increase history size for both session history (shell-local history) and file
+# history (global history); we're living in 2022
 export HISTSIZE=50000
 export SAVEHIST=50000
 
 # history file
 export HISTFILE="$HOME/.zsh_history"
 
-# man path
-export MANPATH="/usr/local/man:$MANPATH"
+# use a directory history stack of 8 directories
+export DIRSTACKSIZE=8
 
-# default fzf command
-export FZF_DEFAULT_COMMAND="fd --type f --hidden --follow --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-
-## pyenv (python version manager) setup
-
-if command -v pyenv 1>/dev/null 2>&1; then
-
-    if [ -f /etc/os-release ]; then
-        os_id="$(sed '3q;d' /etc/os-release | sed 's/ID=//')"
-    fi
-
-    # if we're on ubuntu
-    if [ "$os_id" = 'ubuntu' ]; then
-        export PYENV_ROOT="$HOME/.pyenv"
-        export PATH="$PYENV_ROOT/bin:$PATH"
-    fi
-
-    eval "$(pyenv init --path)"
-    eval "$(pyenv init -)"
-fi
-
-
-## jabba (java version manager) setup
-
-if command -v jabba 1>/dev/null 2>&1; then
-    export JABBA_HOME="$HOME/.jabba"
-    [ -s "$JABBA_HOME/jabba.sh" ] && source "$JABBA_HOME/jabba.sh"
-fi
-
-
-# NVM lazy loading script
-#
-# NVM takes on average half of a second to load, which is more than whole prezto takes to load.
-# This can be noticed when you open a new shell.
-# To avoid this, we are creating placeholder function
-# for nvm, node, and all the node packages previously installed in the system
-# to only load nvm when it is needed.
-#
-# This code is based on the scripts:
-# * https://www.reddit.com/r/node/comments/4tg5jg/lazy_load_nvm_for_faster_shell_start/d5ib9fs
-# * http://broken-by.me/lazy-load-nvm/
-# * https://github.com/creationix/nvm/issues/781#issuecomment-236350067
-#
-
-# NVM_DIR="$HOME/.nvm"
-
-# # Skip adding binaries if there is no node version installed yet
-# if [ -d $NVM_DIR/versions/node ]; then
-#   NODE_GLOBALS=(`find $NVM_DIR/versions/node -maxdepth 3 \( -type l -o -type f \) -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-# fi
-# NODE_GLOBALS+=("nvm")
-
-# load_nvm () {
-#   # Unset placeholder functions
-#   for cmd in "${NODE_GLOBALS[@]}"; do unset -f ${cmd} &>/dev/null; done
-
-#   # Load NVM
-#   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-
-#   # (Optional) Set the version of node to use from ~/.nvmrc if available
-#   nvm use 2> /dev/null 1>&2 || true
-
-#   # Do not reload nvm again
-#   export NVM_LOADED=1
-# }
-
-# for cmd in "${NODE_GLOBALS[@]}"; do
-#   # Skip defining the function if the binary is already in the PATH
-#   if ! which ${cmd} &>/dev/null; then
-#     eval "${cmd}() { unset -f ${cmd} &>/dev/null; [ -z \${NVM_LOADED+x} ] && load_nvm; ${cmd} \$@; }"
-#   fi
-# done
-
-# end of nvm setup --------------
+# prompt theme to use
+export PROMPT_THEME="pastel_night"
