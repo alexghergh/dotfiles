@@ -12,3 +12,7 @@ fi
 for stow_folder in $(echo "$STOW_FOLDERS" | sed "s/,/ /g"); do
     stow --restow --verbose --dir="$DOTFILES" --target="$HOME" "$stow_folder"
 done
+unset stow_folder
+
+unset DOTFILES
+unset STOW_FOLDERS
