@@ -74,3 +74,25 @@ bindkey "^x^g" down-line-or-local-history   # ctrl + x, ctrl + g
 
 # navigate backwards in the menu with shift-tab
 bindkey '^[[Z' reverse-menu-complete        # shift + tab
+
+# cycle through the possible path displays
+# options are SHORT, LONG
+# (see .zsh_misc_functions/custom_path.zsh)
+cycle-path-display() {
+    local current_mode
+    current_mode=${_CURRENT_PATH_MODE:-LONG}
+
+    # check if the user supplied mode is a valid mode
+    if [[ ! "SHORT LONG" =~ "$current_mode" ]]; then
+        current_mode="LONG"
+    fi
+
+    if [[ "$current_mode" == "SHORT" ]]; then
+        _CURRENT_PATH_MODE="LONG"
+    elif [[ "$current_mode" == "LONG" ]]; then
+        _CURRENT_PATH_MODE="SHORT"
+    fi
+    zle reset-prompt
+}
+zle -N cycle-path-display
+bindkey "^x^r" cycle-path-display
