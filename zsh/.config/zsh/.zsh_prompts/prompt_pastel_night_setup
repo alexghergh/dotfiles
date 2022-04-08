@@ -20,7 +20,7 @@ _RESET=$'%{\e[0m%}'
 ##
 ## Left prompt
 ##
-PS1=$'%(1j.$_JOBS0.$_JOBS1)(%j)$_RESET $_USRNM%n$_RESET@$_HSTNM%M$_RESET:$_PTH$(_custom_current_path)$_RESET $_GIT$(git_current_branch)$_RESET\n$_PRMPT\U279C %(!.#.$)$_RESET '
+PS1=$'%(1j.$_JOBS0.$_JOBS1)(%j)$_RESET $_USRNM%n$_RESET@$_HSTNM%M$_RESET:$_PTH$(_custom_current_path)$_RESET $_GIT$(_git_current_branch)$_RESET\n$_PRMPT\U279C %(!.#.$)$_RESET '
 
 ##
 ## Right prompt

@@ -4,7 +4,7 @@
 
 ## current git branch
 ##
-git_current_branch() {
+_git_current_branch() {
     local ref
     ref=$(git symbolic-ref --quiet HEAD 2> /dev/null)
     local ret=$?
