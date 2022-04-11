@@ -62,12 +62,28 @@ unset zle_file
 
 ### plugins
 
-for plugin_file in "$ZSH_CONFIG_PATH"/.zsh_plugins/*.zsh; do
-    if [[ -f $plugin_file ]]; then
-        source $plugin_file
-    fi
-done
-unset plugin_file
+# create the plugin file if it doesn't exist
+[[ -f "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]] || touch "$ZSH_CONFIG_PATH"/.zsh_plugins.txt
+
+# source antidote
+source "$ZSH_CONFIG_PATH"/.antidote/antidote.zsh
+
+# clone antidote if necessary and generate a static plugin file
+if [[ ! "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh -nt "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]]; then
+
+    [[ -d "$ZSH_CONFIG_PATH"/.antidote ]] \
+        || git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZSH_CONFIG_PATH"/.antidote
+
+    (
+        antidote bundle <"$ZSH_CONFIG_PATH"/.zsh_plugins.txt >|"$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
+    )
+fi
+
+# for antidote commands (see antidote --help)
+autoload -Uz "$ZSH_CONFIG_PATH"/.antidote/functions/antidote
+
+# source static plugins file
+source "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
 
 
 # make sure tmux is always running
