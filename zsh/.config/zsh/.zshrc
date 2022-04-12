@@ -62,21 +62,19 @@ unset zle_file
 
 ### plugins
 
-# create the plugin file if it doesn't exist
-[[ -f "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]] || touch "$ZSH_CONFIG_PATH"/.zsh_plugins.txt
+# clone antidote if necessary
+[[ -d "$ZSH_CONFIG_PATH"/.antidote ]] \
+    || git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZSH_CONFIG_PATH"/.antidote
 
 # source antidote
 source "$ZSH_CONFIG_PATH"/.antidote/antidote.zsh
 
-# clone antidote if necessary and generate a static plugin file
+# create the plugin file if it doesn't exist
+[[ -f "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]] || touch "$ZSH_CONFIG_PATH"/.zsh_plugins.txt
+
+# generate a static plugin file if necessary
 if [[ ! "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh -nt "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]]; then
-
-    [[ -d "$ZSH_CONFIG_PATH"/.antidote ]] \
-        || git clone --depth=1 https://github.com/mattmc3/antidote.git "$ZSH_CONFIG_PATH"/.antidote
-
-    (
-        antidote bundle <"$ZSH_CONFIG_PATH"/.zsh_plugins.txt >|"$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
-    )
+    antidote bundle <"$ZSH_CONFIG_PATH"/.zsh_plugins.txt >|"$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
 fi
 
 # for antidote commands (see antidote --help)
