@@ -131,5 +131,3 @@ function check_fzf() {
 
     return 0
 }
-
-check_fzf

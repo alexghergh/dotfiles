@@ -22,6 +22,7 @@ CURRENT_DIR="${0:A:h}"
 TOOLS_DIR="$CURRENT_DIR/tools"
 
 main() {
+    emulate -LR zsh
 
     # TODO tools to check
     # fzf
@@ -35,8 +36,6 @@ main() {
     source "$TOOLS_DIR"/fzf.update.zsh
 
     check_fzf
-
-    emulate -LR zsh
 }
 
 main
