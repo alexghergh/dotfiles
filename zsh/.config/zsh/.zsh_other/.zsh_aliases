@@ -15,3 +15,6 @@ alias dirl="dirs -v"
 
 # texlive alias for tlmgr
 alias tlmgr='/usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode'
+
+# quick directory scan
+alias tla="tree -La"
