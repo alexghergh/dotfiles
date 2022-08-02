@@ -11,6 +11,7 @@
 #   5. aliases
 #   6. widgets and keybinds
 #   7. plugins
+#   8. other
 #
 
 
@@ -18,49 +19,49 @@
 ZSH_CONFIG_PATH="${ZDOTDIR:-"$HOME/.config/zsh"}"
 
 
-### environment variables and various exports
+### 1. environment variables and various exports
 
 env_vars_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_env_vars"
 [[ -f $env_vars_file ]] && source $env_vars_file
 unset env_vars_file
 
 
-### zsh options
+### 2. zsh options
 
 options_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_options"
 [[ -f $options_file ]] && source $options_file
 unset options_file
 
 
-### autoloaded stuff (prompts, completion, functions)
+### 3. autoloaded stuff (prompts, completion, functions)
 
 autoload_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_autoload"
 [[ -f $autoload_file ]] && source $autoload_file
 unset autoload_file
 
 
-### zstyles
+### 4. zstyles
 
 zstyle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_zstyle"
 [[ -f $zstyle_file ]] && source $zstyle_file
 unset zstyle_file
 
 
-### aliases
+### 5. aliases
 
 alias_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_aliases"
 [[ -f $alias_file ]] && source $alias_file
 unset alias_file
 
 
-### zle keybinds (widgets)
+### 6. zle keybinds (widgets)
 
 zle_file="$ZSH_CONFIG_PATH/.zsh_other/.zsh_keybinds"
 [[ -f $zle_file ]] && source $zle_file
 unset zle_file
 
 
-### plugins
+### 7. plugins
 
 # clone antidote if necessary
 [[ -d "$ZSH_CONFIG_PATH"/.antidote ]] \
@@ -83,6 +84,8 @@ autoload -Uz "$ZSH_CONFIG_PATH"/.antidote/functions/antidote
 # source static plugins file
 source "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
 
+
+### 8. other
 
 # make sure tmux is always running
 if [[ -z "$TMUX" ]]; then
