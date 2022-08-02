@@ -2,10 +2,21 @@
 # the rules below apply to all the repositories on the local system
 
 # notes or todos for a specific repository
+NOTES
 NOTES.txt
 NOTES.md
+TODO
 TODO.txt
 TODO.md
+WORKINGON
+WORKING_ON
+WORK_ON
+WORKINGON.txt
+WORKING_ON.txt
+WORK_ON.txt
+WORKINGON.md
+WORKING_ON.md
+WORK_ON.md
 
 # neovim lsp cache
 .ccls-cache
