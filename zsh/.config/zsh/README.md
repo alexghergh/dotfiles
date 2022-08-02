@@ -14,6 +14,7 @@ The file structure of the Zsh setup:
 │   └── ...
 ├── .zsh_plugins
 │   └── ...
+├── .zsh_plugins.txt
 ├── .zsh_prompts
 │   └── ...
 └── .zshrc
@@ -34,6 +35,8 @@ Explanation for each of the above directories and files (as needed):
   options, zstyle options.
 - `.zsh_plugins`: Contains setup for plugins of the shell. Such plugins are
   tools external to the shell (like fzf etc.).
+- `.zsh_plugins.txt`: Contains the zsh plugins to be installed by the zsh plugin
+  manager.
 - `.zsh_prompts`: Contains various user-defined prompts for the shell. The
   prompts are of the form `prompt_<name of prompt>_setup`, as dictated by Zsh.
 - `.zshrc`: The main configuration file. This defines all other setup necessary
