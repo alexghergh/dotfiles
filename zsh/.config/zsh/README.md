@@ -22,7 +22,7 @@ The file structure of the Zsh setup:
 
 Explanation for each of the above directories and files (as needed):
 - `README.md`: This file. Contains the explanation of the Zsh setup.
-- `.zprofile`: (TODO)
+- `.zprofile`: Runs before `.zshrc`. Currently is a no-op.
 - `.zsh_functions`: Contains various user-defined (autoloaded) functions. This
   means the functions are loaded on demand, and not when `.zshrc` is first
   sourced. This directory is added to the `fpath` Zsh variable.
