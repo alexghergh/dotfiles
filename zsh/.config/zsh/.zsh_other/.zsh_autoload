@@ -12,7 +12,7 @@ fpath=( "$ZSH_CONFIG_PATH/.zsh_prompts" $fpath )
 autoload -Uz promptinit
 promptinit
 
-# set the custom prompt theme
+# set the custom prompt theme (set in .zsh_other/.zsh_env_vars)
 prompt "$PROMPT_THEME"
 
 # by default, run-help is aliased to man

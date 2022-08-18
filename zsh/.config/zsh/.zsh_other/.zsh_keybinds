@@ -2,6 +2,7 @@
 bindkey -e
 
 # unbind the arrow keys and the backspace key
+# ! terminal specific
 bindkey -s "^[[A" ""
 bindkey -s "^[[B" ""
 bindkey -s "^[[C" ""
