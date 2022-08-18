@@ -70,19 +70,8 @@ unset zle_file
 # source antidote
 source "$ZSH_CONFIG_PATH"/.antidote/antidote.zsh
 
-# create the plugin file if it doesn't exist
-[[ -f "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]] || touch "$ZSH_CONFIG_PATH"/.zsh_plugins.txt
-
-# generate a static plugin file if necessary
-if [[ ! "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh -nt "$ZSH_CONFIG_PATH"/.zsh_plugins.txt ]]; then
-    antidote bundle <"$ZSH_CONFIG_PATH"/.zsh_plugins.txt >|"$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
-fi
-
-# for antidote commands (see antidote --help)
-autoload -Uz "$ZSH_CONFIG_PATH"/.antidote/functions/antidote
-
-# source static plugins file
-source "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
+# load the plugins
+antidote load "$ZSH_CONFIG_PATH"/.zsh_plugins.txt "$ZSH_CONFIG_PATH"/.zsh_plugins.zsh
 
 
 ### 8. other
