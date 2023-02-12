@@ -1,14 +1,6 @@
 # emacs style keybindings
 bindkey -e
 
-# unbind the arrow keys and the backspace key
-# ! terminal specific
-bindkey -s "^[[A" ""
-bindkey -s "^[[B" ""
-bindkey -s "^[[C" ""
-bindkey -s "^[[D" ""
-bindkey -s "\x7f" ""
-
 # prefix searching
 #
 # search for identic history up from the beginning of the line up to the cursor
