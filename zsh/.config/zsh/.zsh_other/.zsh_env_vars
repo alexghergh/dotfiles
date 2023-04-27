@@ -41,3 +41,12 @@ export DIRSTACKSIZE=8
 
 # prompt theme to use
 export PROMPT_THEME="pastel_night"
+
+# set python3 host program for neovim, needed for working inside virtual
+# environments; default to system's python3;
+# PYENV_PYTHON_VERSION should be set by the pyenv settings file
+if [ -e /home/alex/.pyenv/versions/"${PYENV_PYTHON_VERSION:-not_exist}"/bin/python ]; then
+    export VIM_PYTHON3_HOST_PROG="${HOME}/.pyenv/versions/${PYENV_PYTHON_VERSION}/bin/python"
+else
+    export VIM_PYTHON3_HOST_PROG="$(command -v python3)"
+fi
