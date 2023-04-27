@@ -1,62 +1,69 @@
--- Configuration
+-- neovim settings
 
--- Global
+--
+-- global
+--
 
 -- python3 program, allows neovim to work in virtual environments
+-- todo update this based on paths and environment variables, possibly set an
+-- environment variable inside zsh
 vim.g.python3_host_prog = "/home/alex/.pyenv/versions/3.9.5/bin/python"
 
 -- wrap line prefix
-vim.o.showbreak = "↪ "
+vim.opt.showbreak = "↪ "
 
 -- amount of lines to keep above and below the cursor at all times
-vim.o.scrolloff = 7
+vim.opt.scrolloff = 7
 
 -- smart search
-vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 -- highlight matched strings as typing occurs
-vim.o.incsearch = true
+vim.opt.incsearch = true
 
 -- allow neovim to copy and paste directly from the system clipboard
 vim.opt.clipboard:append { "unnamedplus" }
 
 -- don't unload buffers when switching, just hide them
-vim.o.hidden = true
+vim.opt.hidden = true
 
 -- show diffs in vertical splits by default
 vim.opt.diffopt:append { "vertical" }
 
 -- update every 1 second after not typing anything
-vim.o.updatetime = 1000
+vim.opt.updatetime = 1000
 
 -- preview menu options for autocompletion
 vim.opt.completeopt = { "menuone", "noselect" }
 
 -- show the total number of substitutions
-vim.o.report = 0
+vim.opt.report = 0
 
 -- enable true 24-bit terminal colors
-vim.o.termguicolors = true
-vim.o.background = "dark"
+vim.opt.termguicolors = true
+vim.opt.background = "dark"
+
+-- set colorscheme
+-- TODO move this somewhere else
 vim.cmd([[silent! colorscheme melange]])
 
 -- ignore certain files when opening buffers from inside neovim
 vim.opt.wildignore:append { "*.o", "*.obj", "**/.git/*", "*.swp", "*.pyc", "*.class", "**/node_modules/*", "*.bak" }
-vim.o.wildmode = "longest:full,full"
+vim.opt.wildmode = "longest:full,full"
 
 -- incremental live completion
-vim.o.inccommand = "nosplit"
+vim.opt.inccommand = "nosplit"
 
 -- prefer splitting windows below or to the right
-vim.o.splitbelow = true
-vim.o.splitright = true
+vim.opt.splitbelow = true
+vim.opt.splitright = true
 
 -- add directories upwards as search path
 vim.opt.path:append { "**" }
 
 -- show tab characters, line-endings
-vim.o.list = true
+vim.opt.list = true
 vim.opt.listchars = { ["tab"] = ">.", ["trail"] = "." , ["nbsp"] = "‸" }
 
 -- options for netrw
@@ -66,42 +73,46 @@ vim.g.netrw_browse_split = 4    -- open files in the previous window
 vim.g.netrw_winsize = 15        -- percent of window size
 
 
--- Window specific
+--
+-- window specific
+--
 
 -- show line numbers
-vim.o.number = true
-vim.o.relativenumber = true
+vim.opt.number = true
+vim.opt.relativenumber = true
 
 -- display the sign column
-vim.o.signcolumn = "yes"
+vim.opt.signcolumn = "yes"
 
 -- visually break lines at max width
-vim.o.linebreak = true
+vim.opt.linebreak = true
 
 -- show the cursor line
-vim.o.cursorline = true
+vim.opt.cursorline = true
 
 
--- Buffer specific
+--
+-- buffer specific
+--
 
 -- keep the same indentation level from previous line
-vim.o.autoindent = true
+vim.opt.autoindent = true
 
 -- tabs as spaces, tab size 4
-vim.o.expandtab = true
-vim.o.shiftwidth = 4
-vim.o.softtabstop = 4
-vim.o.tabstop = 4
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 4
 
 -- disable modelines in favor of secure modelines
 -- (see the secure modelines plugin)
-vim.o.modeline = false
+vim.opt.modeline = false
 
 -- enable undo files, disable swap files
-vim.o.undofile = true
-vim.o.swapfile = false
+vim.opt.undofile = true
+vim.opt.swapfile = false
 
 -- format options, describe how autoformatting is done
-vim.o.formatoptions = "tcrqnlj"
+vim.opt.formatoptions = "tcrqnlj"
 
 -- vim: set tw=0 fo-=r

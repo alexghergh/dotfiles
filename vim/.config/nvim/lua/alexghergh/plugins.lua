@@ -19,12 +19,12 @@ require("packer").startup({function()
         run = ":TSUpdate"
     }
     use { "nvim-treesitter/playground",
-        opt = true,
-        cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
+        -- opt = true,
+        -- cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
     }
 
     -- LSP
-    use { "neovim/nvim-lspconfig" }
+    -- use { "neovim/nvim-lspconfig" }
 
     -- -- TODO replace by nvim-cmp
     -- use { "hrsh7th/nvim-compe", config = function()
@@ -51,6 +51,7 @@ require("packer").startup({function()
 
     -- Neovim-Tmux Navigation
     use { "alexghergh/nvim-tmux-navigation" }
+    -- use { "~/projects/nvim-tmux-navigation/" }
 
     -- Visual selection search
     use { "bronson/vim-visual-star-search" }
@@ -68,16 +69,16 @@ require("packer").startup({function()
     use { "alexghergh/securemodelines" }
 
     -- Fade inactive window
-    use { "tadaa/vimade" }
+    use { "tadaa/vimade", disable = true }
 
     -- Undotree
     use { "mbbill/undotree" }
 
-    -- Easier lua keymappings
-    use { "tjdevries/astronauta.nvim" }
-
     -- Colorschemes
     use { "savq/melange" }
+
+    -- Formatting
+    use { "editorconfig/editorconfig-vim" }
 
 end})
 

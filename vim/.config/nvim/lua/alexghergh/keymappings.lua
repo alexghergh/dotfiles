@@ -1,84 +1,68 @@
 -- Keymappings -----------------------------------------------------------------
-
--- astronauta things
-if not pcall(require, "astronauta.keymap") then
-    return
-end
-
-local map = vim.keymap.map
-local nmap = vim.keymap.nmap
-local noremap = vim.keymap.noremap
-local nnoremap = vim.keymap.nnoremap
-local imap = vim.keymap.imap
-local inoremap = vim.keymap.inoremap
-local lmap = vim.keymap.lmap
-local lnoremap = vim.keymap.lnoremap
-local omap = vim.keymap.omap
-local onoremap = vim.keymap.onoremap
-local tmap = vim.keymap.tmap
-local tnoremap = vim.keymap.tnoremap
-local cmap = vim.keymap.cmap
-local cnoremap = vim.keymap.cnoremap
-local xmap = vim.keymap.xmap
-local xnoremap = vim.keymap.xnoremap
-local smap = vim.keymap.smap
-local snoremap = vim.keymap.snoremap
-local vmap = vim.keymap.vmap
-local vnoremap = vim.keymap.vnoremap
+--
+--
+-- see :help vim.keymap
+-- remap is false by default
+--
 
 
 -- map jk and kj to esc
-inoremap { "jk", "<Esc>" }
-inoremap { "kj", "<Esc>" }
+vim.keymap.set('i', "jk", "<Esc>")
+vim.keymap.set('i', "kj", "<Esc>")
 
 -- let j and k move inside a line visually even if it gets wrapped
-nnoremap { 'j', "gj" }
-nnoremap { 'k', "gk" }
-xnoremap { 'j', "gj" } -- TODO: this interferes with luasnip,
-xnoremap { 'k', "gk" } -- should find a workaround
+vim.keymap.set('n', 'j', "gj")
+vim.keymap.set('n', 'k', "gk")
+vim.keymap.set('x', 'j', "gj") -- TODO: this interferes with luasnip,
+vim.keymap.set('x', 'k', "gk") -- should find a workaround
+
+-- nnoremap j :<C-U>execute "if v:count1==1 <bar> normal gj <bar> endif"<CR>
+
+
+
+-- else echo v:count1 . 'j' endif"<CR>
 
 -- some binds to make neovim a more 'pleasant' experience
-noremap { "<Left>", "<Nop>" }
-noremap { "<Down>", "<Nop>" }
-noremap { "<Up>", "<Nop>" }
-noremap { "<Right>", "<Nop>" }
+vim.keymap.set('', "<Left>", "<Nop>")
+vim.keymap.set('', "<Down>", "<Nop>")
+vim.keymap.set('', "<Up>", "<Nop>")
+vim.keymap.set('', "<Right>", "<Nop>")
 
-inoremap { "<BS>", "<Nop>" }
+vim.keymap.set('', "<BS>", "<Nop>")
 
 -- make <C-w> and <C-u> undo friendly (see :h i_CTRL-G_U)
-inoremap { "<C-w>", "<C-g>u<C-w>" }
-inoremap { "<C-u>", "<C-g>u<C-u>" }
-
--- copy the rest of the line, instead of the whole line, similar to C or D
-nnoremap { 'Y', "y$" }
+vim.keymap.set('i', "<C-w>", "<C-g>u<C-w>")
+vim.keymap.set('i', "<C-u>", "<C-g>u<C-u>")
 
 -- source vimrc
-nnoremap { "<Leader>sv", "<Cmd>source $MYVIMRC<CR>" }
+vim.keymap.set('n', "<Leader>sv", "<Cmd>source $MYVIMRC<CR>")
 
 -- switch to last file
-nnoremap { "<Leader>ss", "<C-^>" }
+vim.keymap.set('n', "<Leader>ss", "<C-^>")
 
 -- open netrw in a vertical split
-nnoremap { "<Leader>ee", "<Cmd>Vexplore<CR>" }
+vim.keymap.set('n', "<Leader>ee", "<Cmd>Vexplore<CR>")
 
 -- resize windows
 -- TODO map to <leader>w + hjkl maybe
-nnoremap { "<Leader>w-", "<Cmd>resize -10<CR>" }
-nnoremap { "<Leader>w+", "<Cmd>resize +10<CR>" }
-nnoremap { "<Leader>w<", "<Cmd>vertical resize -10<CR>" }
-nnoremap { "<Leader>w>", "<Cmd>vertical resize +10<CR>" }
+vim.keymap.set('n', "<Leader>w-", "<Cmd>resize -10<CR>")
+vim.keymap.set('n', "<Leader>w+", "<Cmd>resize +10<CR>")
+vim.keymap.set('n', "<Leader>w<", "<Cmd>vertical resize -10<CR>")
+vim.keymap.set('n', "<Leader>w>", "<Cmd>vertical resize +10<CR>")
 
 -- toggle paste mode, useful when copy pasting from an outside source
-nnoremap { "<Leader>pt", "<Cmd>set invpaste<CR>" }
+vim.keymap.set('n', "<Leader>pt", "<Cmd>set invpaste<CR>")
 
 -- for when you REALLY want to save that buffer
-cnoremap { "w!!", "w !sudo tee % > /dev/null" }
+vim.keymap.set('c', "w!!", "w !sudo tee % > /dev/null")
 
 -- expands into the current file's working directory when typing '%%' in command line
-cnoremap { "%%", "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'" , expr = true }
+vim.keymap.set('c', "%%", "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'" , { expr = true })
 
 -- show color
-nnoremap { "<Leader>sc", "<Cmd>call functions#DisplayColorUnderCursorAsBackground()<CR>" }
+vim.keymap.set('n', "<Leader>sc", "<Cmd>call functions#DisplayColorUnderCursorAsBackground()<CR>")
 
+-- navigate tags
+vim.keymap.set('n', "<Leader>st", '<C-]>')
 
 -- vim: set tw=0 fo-=r

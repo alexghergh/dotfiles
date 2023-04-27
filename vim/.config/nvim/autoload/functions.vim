@@ -1,11 +1,3 @@
-" clean extra spaces on save
-function functions#CleanExtraSpaces()
-    let l:save = winsaveview()
-    keeppatterns silent! %s/\s\+$//e
-    call winrestview(l:save)
-endfunction
-
-
 " display the color under cursor using the background of the current window
 " the color has to be in the form '#RRGGBB'
 " TODO move this to lua
