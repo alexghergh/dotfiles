@@ -26,6 +26,9 @@ require('globals')
 -- source plugins
 require('plugins')
 
+-- set colorscheme
+vim.cmd.colorscheme("melange")
+
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
 

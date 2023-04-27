@@ -45,10 +45,6 @@ vim.opt.report = 0
 vim.opt.termguicolors = true
 vim.opt.background = "dark"
 
--- set colorscheme
--- TODO move this somewhere else
-vim.cmd([[silent! colorscheme melange]])
-
 -- ignore certain files when opening buffers from inside neovim
 vim.opt.wildignore:append { "*.o", "*.obj", "**/.git/*", "*.swp", "*.pyc", "*.class", "**/node_modules/*", "*.bak" }
 vim.opt.wildmode = "longest:full,full"
