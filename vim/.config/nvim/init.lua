@@ -12,19 +12,19 @@ vim.g.mapleader = '<Space>'
 vim.g.maplocalleader = '<Space>'
 
 -- source settings
-require('alexghergh.settings')
+require('settings')
 
 -- source keymappings
-require('alexghergh.keymappings')
+require('keymappings')
 
 -- source autocommands
-require('alexghergh.autocommands')
+require('autocommands')
 
 -- source globals
-require('alexghergh.globals')
+require('globals')
 
 -- source plugins
-require('alexghergh.plugins')
+require('plugins')
 
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
