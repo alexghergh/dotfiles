@@ -21,9 +21,28 @@ vim.api.nvim_create_autocmd('VimResized', {
 
 -- open files to last known position (:h last-position-jump)
 vim.api.nvim_create_autocmd('BufReadPost', {
-    command = [[ if &ft !~# 'commit\|rebase' && line("'\"") > 1 && ]] ..
-                [[ line("'\"") <= line("$") | ]] ..
-                [[ exe 'normal! g`"' | endif ]],
+    callback = function()
+        -- we have to create a second autocmd, which registers on filetype detection
+        vim.api.nvim_create_autocmd('FileType', {
+            callback = function()
+                -- create a regex with the filetype patterns to match against
+                local regex = vim.regex("commit\\|rebase\\|help\\|quickfix\\|nofile")
+
+                -- position of the "last-position" mark in the file (:h '")
+                local mark_pos = vim.fn.line([['"]])
+
+                -- check filetype
+                if regex:match_str(vim.bo.filetype) == nil then
+
+                    -- check valid position (file could've been modified outside vim)
+                    if mark_pos > 1 and mark_pos <= vim.fn.line("$") then
+                        vim.cmd([[ exe 'normal! g`"' ]])
+                    end
+                end
+            end,
+            group = user_group
+        })
+    end,
     group = user_group
 })
 
