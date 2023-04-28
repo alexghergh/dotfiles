@@ -14,11 +14,11 @@ vim.g.maplocalleader = '<Space>'
 -- source settings
 require('settings')
 
--- source keymappings
-require('keymappings')
-
 -- source autocommands
 require('autocommands')
+
+-- source keymappings
+require('keymappings')
 
 -- source globals
 require('globals')
@@ -31,6 +31,5 @@ vim.cmd.colorscheme("melange")
 
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
-
 
 -- vim: set tw=0 fo-=r

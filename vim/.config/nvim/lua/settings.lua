@@ -36,7 +36,7 @@ vim.opt.diffopt:append { "vertical" }
 vim.opt.updatetime = 1000
 
 -- preview menu options for autocompletion
-vim.opt.completeopt = { "menuone", "noselect" }
+vim.opt.completeopt = { "menuone", "noinsert", "preview" }
 
 -- show the total number of substitutions
 vim.opt.report = 0
@@ -47,7 +47,7 @@ vim.opt.background = "dark"
 
 -- ignore certain files when opening buffers from inside neovim
 vim.opt.wildignore:append { "*.o", "*.obj", "**/.git/*", "*.swp", "*.pyc", "*.class", "**/node_modules/*", "*.bak" }
-vim.opt.wildmode = "longest:full,full"
+vim.opt.wildmode = "lastused:longest:full,full"
 
 -- incremental live completion
 vim.opt.inccommand = "nosplit"
