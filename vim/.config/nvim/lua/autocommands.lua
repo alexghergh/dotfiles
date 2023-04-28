@@ -33,7 +33,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
                 -- check filetype
                 if regex:match_str(vim.bo.filetype) == nil then
-
                     -- check valid position (file could've been modified outside vim)
                     if mark_pos > 1 and mark_pos <= vim.fn.line("$") then
                         vim.cmd([[ exe 'normal! g`"' ]])
