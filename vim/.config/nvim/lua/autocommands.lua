@@ -58,6 +58,23 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     group = user_group
 })
 
+-- add 2 blank lines at the beginning of a commit file when opening
+vim.api.nvim_create_autocmd('BufReadPost', {
+    callback = function()
+        -- we have to create a second autocmd, which registers on filetype detection
+        vim.api.nvim_create_autocmd('FileType', {
+            callback = function()
+                -- check filetype
+                if vim.bo.filetype:match('commit') ~= nil then
+                    vim.cmd([[ exe 'normal OO' ]])
+                end
+            end,
+            group = user_group
+        })
+    end,
+    group = user_group
+})
+
 -- vim.api.nvim_create_autocmd('CursorMoved', {
 --     command = "set nohlsearch"
 -- })
