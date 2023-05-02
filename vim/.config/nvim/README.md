@@ -24,11 +24,10 @@ The file structure of the Neovim setup:
 │   └── ...
 ├── init.lua
 ├── lua
-│   └── alexghergh
-│       ├── globals.lua
-│       ├── keymappings.lua
-│       ├── plugins.lua
-│       └── settings.lua
+│   ├── autocommands.lua
+│   ├── keymappings.lua
+│   ├── plugins.lua
+│   └── settings.lua
 └── README.md
 ```
 
@@ -44,8 +43,8 @@ Explanation for each of the above directories and files (as needed):
   on-demand.
 - `init.lua`: The starting point of the configuration. Contains links to load
   all the files in the `lua/` directory.
-- `lua/alexghergh/`: Lua config files. The files represent:
-    - `globals.lua`: Quality-of-life global functions, available anywhere.
+- `lua/`: Lua config files. The files represent:
+    - `autocommands.lua`: Contains auto-commands.
     - `keymappings.lua`: Contains keymappings and other key settings.
     - `plugins.lua`: Contains all the plugin installations. Doesn't however
       contain the plugin settings as well (see `after/plugin/` for that).
