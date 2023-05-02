@@ -7,9 +7,9 @@
 -- see https://neovim.io/doc/user/lua.html
 --
 
--- set <Space> as leader key early
-vim.g.mapleader = '<Space>'
-vim.g.maplocalleader = '<Space>'
+-- set Space as leader key early
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
 -- source settings
 require('settings')
