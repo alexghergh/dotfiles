@@ -1,4 +1,6 @@
+--
 -- neovim settings
+--
 
 --
 -- global
