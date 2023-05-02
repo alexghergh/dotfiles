@@ -20,9 +20,6 @@ require('autocommands')
 -- source keymappings
 require('keymappings')
 
--- source globals
-require('globals')
-
 -- source plugins
 require('plugins')
 
