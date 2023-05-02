@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         vim.api.nvim_create_autocmd('FileType', {
             callback = function()
                 -- create a regex with the filetype patterns to match against
-                local regex = vim.regex("commit\\|rebase\\|help\\|quickfix\\|nofile")
+                local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
 
                 -- position of the "last-position" mark in the file (:h '")
                 local mark_pos = vim.fn.line([['"]])
@@ -74,29 +74,13 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     group = user_group
 })
 
--- vim.api.nvim_create_autocmd('CursorMoved', {
---     command = "set nohlsearch"
--- })
+-- remove search highlighting on cursor move
+vim.api.nvim_create_autocmd('CursorMoved', {
+    command = 'call search#HlSearch()',
+    group = user_group
+})
 
-
--- TODO
--- vim.cmd([[
--- autocmd CursorMoved * set nohlsearch
--- "nnoremap n n:set hlsearch<cr>
--- ]])
--- vim.cmd([[ nnoremap n n:set hlsearch<cr>]])
-
--- stop highlighting on cursor movement
--- local search_highlight_group = vim.api.nvim_create_augroup('_search_highlight', { clear = true })
-
--- vim.api.nvim_create_autocmd('CursorMoved', {
---     -- TODO make this a lua function
---     command = 'call search#HlSearch()',
---     group = search_highlight_group
--- })
-
--- vim.api.nvim_create_autocmd('InsertEnter', {
---     -- TODO make this a lua function
---     command = 'call search#StopHL()',
---     group = search_highlight_group
--- })
+vim.api.nvim_create_autocmd('InsertEnter', {
+    command = 'call search#StopHL()',
+    group = user_group
+})
