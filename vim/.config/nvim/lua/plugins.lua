@@ -1,27 +1,36 @@
--- Plugins
-
-local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+--
+-- plugins
+--
 
 -- if packer is not installed, install it
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    packer_bootstrap = vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-    vim.api.nvim_command("packadd packer.nvim")
+local is_packer_installed = function()
+    local fn = vim.fn
+    local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+        fn.system({ 'git', 'clone', '--depth', '1',
+            'https://github.com/wbthomason/packer.nvim',
+            install_path })
+        vim.cmd [[ packadd packer.nvim ]]
+        return false
+    end
+    return true
 end
 
-local use = require("packer").use
-require("packer").startup({function()
+local packer_installed = is_packer_installed()
 
-    -- Plugin manager can manage itself
-    use { "wbthomason/packer.nvim" }
+require('packer').startup({function(use)
 
-    -- Nvim-treesitter goodies
-    use { "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate"
-    }
-    use { "nvim-treesitter/playground",
-        -- opt = true,
-        -- cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
-    }
+     -- plugin manager can manage itself
+     use { 'wbthomason/packer.nvim' }
+
+     -- nvim-treesitter goodies
+     use { 'nvim-treesitter/nvim-treesitter',
+         run = ":TSUpdate"
+     }
+     use { 'nvim-treesitter/playground',
+         -- opt = true,
+         -- cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
+     }
 
     -- LSP
     -- use { "neovim/nvim-lspconfig" }
@@ -80,10 +89,23 @@ require("packer").startup({function()
     -- Formatting
     use { "editorconfig/editorconfig-vim" }
 
-end})
-
-vim.cmd [[autocmd ColorScheme * highlight NormalFloat guibg=#1f2335]]
-vim.cmd [[autocmd ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]]
-
+    -- automatically set up the config after cloning
+    if packer_installed == false then
+        require('packer').sync()
+    end
+end,
+config = {
+    display = {
+        open_fn = function()
+            return require('packer.util').float({ border = 'single' })
+        end
+    },
+    profile = {
+        enable = false, -- to profile set this to 'true' and run :PackerProfile
+        -- the amount in ms that a plugin's load time must be over for
+        -- it to be included in the profile
+        threshold = 0,
+    }
+}})
 
 -- vim: set tw=0 fo-=r
