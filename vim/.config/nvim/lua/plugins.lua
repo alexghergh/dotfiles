@@ -108,4 +108,4 @@ config = {
     }
 }})
 
--- vim: set tw=0 fo-=r
+-- vim: set tw=0 fo-=r ft=lua

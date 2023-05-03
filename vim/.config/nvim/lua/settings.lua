@@ -114,4 +114,4 @@ vim.opt.swapfile = false
 -- format options, describe how autoformatting is done
 vim.opt.formatoptions = "tcrqnlj"
 
--- vim: set tw=0 fo-=r
+-- vim: set tw=0 fo-=r ft=lua

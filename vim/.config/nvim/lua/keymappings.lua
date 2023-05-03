@@ -60,4 +60,4 @@ vim.keymap.set('n', "<Leader>pt", "<Cmd>set invpaste<CR>")
 -- navigate tags
 vim.keymap.set('n', "<Leader>st", '<C-]>')
 
--- vim: set tw=0 fo-=r
+-- vim: set tw=0 fo-=r ft=lua

@@ -84,3 +84,5 @@ vim.api.nvim_create_autocmd('InsertEnter', {
     command = 'call search#StopHL()',
     group = user_group
 })
+
+-- vim: set tw=0 fo-=r ft=lua

@@ -29,4 +29,4 @@ pcall(vim.cmd.colorscheme, 'melange')
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
 
--- vim: set tw=0 fo-=r
+-- vim: set tw=0 fo-=r ft=lua
