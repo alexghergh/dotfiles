@@ -25,8 +25,9 @@ require('packer').startup({function(use)
 
      -- nvim-treesitter goodies
      use { 'nvim-treesitter/nvim-treesitter',
-         run = ":TSUpdate"
+         run = ':TSUpdate' -- post-install/update
      }
+
      use { 'nvim-treesitter/playground',
          -- opt = true,
          -- cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
