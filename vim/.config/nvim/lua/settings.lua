@@ -89,6 +89,18 @@ vim.opt.linebreak = true
 -- show the cursor line
 vim.opt.cursorline = true
 
+-- all folds are open by default
+vim.opt.foldlevel = 9999
+
+-- show folding column
+vim.opt.foldcolumn = "auto"
+
+-- minimum lines to create fold
+vim.opt.foldminlines = 4
+
+-- set max fold level
+vim.opt.foldnestmax = 4
+
 
 --
 -- buffer specific
