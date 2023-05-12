@@ -98,7 +98,19 @@ end,
 config = {
     display = {
         open_fn = function()
-            return require('packer.util').float({ border = 'single' })
+            win_height = vim.fn.winheight(0)
+            win_width = vim.fn.winwidth(0)
+
+            print(win_height)
+            print(win_width)
+
+            return require('packer.util').float({
+                    border = 'single',
+                    width = math.floor(0.8 * win_width),
+                    height = math.floor(0.6 * win_height),
+                    col = math.floor(0.1 * win_width),
+                    row = math.floor(0.1 * win_height),
+                })
         end
     },
     profile = {
