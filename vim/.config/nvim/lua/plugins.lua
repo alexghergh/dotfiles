@@ -64,35 +64,34 @@ require('packer').startup({function(use)
     -- }
 
     -- Neovim-Tmux Navigation
-    use { "alexghergh/nvim-tmux-navigation" }
-    -- use { "~/projects/nvim-tmux-navigation/" }
+    use { 'alexghergh/nvim-tmux-navigation' }
 
     -- Visual selection search
-    use { "bronson/vim-visual-star-search" }
+    use { 'bronson/vim-visual-star-search' }
 
     -- Commentary
-    use { "tpope/vim-commentary" }
+    use { 'tpope/vim-commentary' }
 
     -- Surroundings
-    use { "tpope/vim-surround" }
+    use { 'tpope/vim-surround' }
 
     -- Git integration
-    use { "mhinz/vim-signify" }
+    use { 'mhinz/vim-signify' }
 
     -- Modelines
-    use { "alexghergh/securemodelines" }
+    use { 'alexghergh/securemodelines' }
 
     -- Fade inactive window
-    use { "tadaa/vimade", disable = true }
+    use { 'tadaa/vimade', disable = true }
 
     -- Undotree
-    use { "mbbill/undotree" }
+    use { 'mbbill/undotree' }
 
     -- Colorschemes
-    use { "savq/melange" }
+    use { 'savq/melange' }
 
     -- Formatting
-    use { "editorconfig/editorconfig-vim" }
+    use { 'editorconfig/editorconfig-vim' }
 
     -- automatically set up the config after cloning
     if packer_installed == false then
