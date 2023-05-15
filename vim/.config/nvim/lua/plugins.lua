@@ -98,11 +98,9 @@ end,
 config = {
     display = {
         open_fn = function()
+            -- open packer window with enough space for the commit diff at the bottom
             win_height = vim.fn.winheight(0)
             win_width = vim.fn.winwidth(0)
-
-            print(win_height)
-            print(win_width)
 
             return require('packer.util').float({
                     border = 'single',
