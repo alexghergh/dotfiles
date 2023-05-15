@@ -96,7 +96,7 @@ vim.opt.foldlevel = 9999
 vim.opt.foldcolumn = "auto"
 
 -- minimum lines to create fold
-vim.opt.foldminlines = 4
+vim.opt.foldminlines = 3
 
 -- set max fold level
 vim.opt.foldnestmax = 4
