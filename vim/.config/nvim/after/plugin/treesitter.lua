@@ -74,3 +74,9 @@ require('nvim-treesitter.configs').setup({
 -- set folding function
 vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+
+-- show tree-sitter syntax group under cursor; mnemonic "SYntax"
+vim.keymap.set('n', '<Leader>sy', '<Cmd>TSHighlightCapturesUnderCursor<CR>')
+
+-- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
+vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
