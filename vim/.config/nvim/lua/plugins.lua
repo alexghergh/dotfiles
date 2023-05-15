@@ -29,8 +29,12 @@ require('packer').startup({function(use)
      }
 
      use { 'nvim-treesitter/playground',
-         -- opt = true,
-         -- cmd = { "TSPlaygroundToggle", "TSHighlightCapturesUnderCursor" }
+         opt = true,
+         cmd = {
+            'TSPlaygroundToggle',
+            'TSHighlightCapturesUnderCursor',
+            'TSNodeUnderCursor',
+        }
      }
 
     -- LSP
