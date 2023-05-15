@@ -80,3 +80,6 @@ vim.keymap.set('n', '<Leader>sy', '<Cmd>TSHighlightCapturesUnderCursor<CR>')
 
 -- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
 vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
+
+-- map the other key combination to nothing (fat-finger-free)
+vim.keymap.set('n', '<Leader>nt', '')
