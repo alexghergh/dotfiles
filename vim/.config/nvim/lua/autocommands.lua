@@ -65,7 +65,10 @@ vim.api.nvim_create_autocmd('BufReadPost', {
             callback = function()
                 -- check filetype
                 if vim.bo.filetype:match('commit') ~= nil then
-                    vim.cmd([[ exe 'normal OO' ]])
+                    -- check if file is a commit ammend (doesn't start with #)
+                    if vim.fn.strpart(vim.fn.getline(1), 0, 1) == '#' then
+                        vim.cmd([[ exe 'normal OO' ]])
+                    end
                 end
             end,
             group = user_group
