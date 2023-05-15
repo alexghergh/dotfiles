@@ -62,9 +62,15 @@ require('nvim-treesitter.configs').setup({
             goto_node = '<CR>',
             show_help = '?',
         },
-    }
+    },
+
+    query_linter = {
+        enable = true,
+        use_virtual_text = true,
+        lint_events = { 'BufWrite', 'CursorHold' },
+    },
 })
 
 -- set folding function
-vim.o.foldmethod = "expr"
+vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
