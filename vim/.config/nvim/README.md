@@ -19,7 +19,6 @@ The file structure of the Neovim setup:
 │       ├── vimade.lua
 │       └── ...
 ├── autoload
-│   ├── functions.vim
 │   ├── search.vim
 │   └── ...
 ├── init.lua
