@@ -63,31 +63,31 @@ require('packer').startup({function(use)
     --     end
     -- }
 
-    -- Neovim-Tmux Navigation
+    -- neovim-tmux navigation
     use { 'alexghergh/nvim-tmux-navigation' }
 
-    -- Commentary
+    -- commentary
     use { 'tpope/vim-commentary' }
 
-    -- Surroundings
+    -- surroundings
     use { 'tpope/vim-surround' }
 
-    -- Git integration
+    -- git integration
     use { 'mhinz/vim-signify' }
 
-    -- Modelines
+    -- modelines
     use { 'alexghergh/securemodelines' }
 
-    -- Fade inactive window
+    -- fade inactive window
     use { 'tadaa/vimade', disable = true }
 
-    -- Undotree
+    -- undotree
     use { 'mbbill/undotree' }
 
-    -- Colorschemes
+    -- colorschemes
     use { 'savq/melange' }
 
-    -- Formatting
+    -- formatting
     use { 'editorconfig/editorconfig-vim' }
 
     -- automatically set up the config after cloning
