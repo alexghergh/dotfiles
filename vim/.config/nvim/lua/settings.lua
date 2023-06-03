@@ -34,8 +34,8 @@ vim.opt.hidden = true
 -- show diffs in vertical splits by default
 vim.opt.diffopt:append { "vertical" }
 
--- update every 1 second after not typing anything
-vim.opt.updatetime = 1000
+-- update every 50 milliseconds after not typing anything
+vim.opt.updatetime = 50
 
 -- preview menu options for autocompletion
 vim.opt.completeopt = { "menuone", "noinsert", "preview" }
