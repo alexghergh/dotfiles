@@ -66,9 +66,6 @@ require('packer').startup({function(use)
     -- Neovim-Tmux Navigation
     use { 'alexghergh/nvim-tmux-navigation' }
 
-    -- Visual selection search
-    use { 'bronson/vim-visual-star-search' }
-
     -- Commentary
     use { 'tpope/vim-commentary' }
 
