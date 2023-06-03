@@ -37,8 +37,8 @@ require('packer').startup({function(use)
         }
      }
 
-    -- LSP
-    -- use { "neovim/nvim-lspconfig" }
+    -- LSP configs
+    use { 'neovim/nvim-lspconfig' }
 
     -- -- TODO replace by nvim-cmp
     -- use { "hrsh7th/nvim-compe", config = function()

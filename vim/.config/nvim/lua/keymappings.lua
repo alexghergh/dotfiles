@@ -60,4 +60,11 @@ vim.keymap.set('n', '<Leader>pt', '<Cmd>set invpaste<CR>')
 -- navigate tags
 vim.keymap.set('n', '<Leader>st', '<C-]>')
 
+-- diagnostics (see :h vim.diagnostic)
+-- show diagnostics in a floating window (mnemonic Diagnostics Show/Next/Prev/Quickfix)
+vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float)
+vim.keymap.set('n', '<Leader>dn', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<Leader>dp', vim.diagnostic.goto_prev)
+vim.keymap.set('n', '<Leader>dq', vim.diagnostic.setloclist) -- TODO keep this?
+
 -- vim: set tw=0 fo-=r ft=lua
