@@ -80,8 +80,10 @@ vim.g.netrw_winsize = 15        -- percent of window size
 vim.opt.number = true
 vim.opt.relativenumber = true
 
--- display the sign column
-vim.opt.signcolumn = "yes"
+-- display the sign column, automatically resizing to accomodate between 1 and 4
+-- signs (by default, a 'sign' takes 2 characters/columns, so 4 signs will take
+-- a total of 8 columns)
+vim.opt.signcolumn = "auto:1-4"
 
 -- visually break lines at max width
 vim.opt.linebreak = true
