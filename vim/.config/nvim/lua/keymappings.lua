@@ -57,7 +57,7 @@ vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
 -- toggle paste mode, useful when copy pasting from an outside source
 vim.keymap.set('n', '<Leader>pt', '<Cmd>set invpaste<CR>')
 
--- navigate tags
+-- navigate tags (mnemonic Switch Tag)
 vim.keymap.set('n', '<Leader>st', '<C-]>')
 
 -- diagnostics (see :h vim.diagnostic)
