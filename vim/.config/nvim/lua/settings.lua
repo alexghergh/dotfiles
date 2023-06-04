@@ -95,7 +95,7 @@ vim.opt.cursorline = true
 vim.opt.foldlevel = 9999
 
 -- show folding column
-vim.opt.foldcolumn = "auto"
+vim.opt.foldcolumn = "1"
 
 -- minimum lines to create fold
 vim.opt.foldminlines = 3
