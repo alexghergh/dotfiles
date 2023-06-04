@@ -17,6 +17,7 @@ The file structure of the Neovim setup:
 │       ├── treesitter.lua
 │       ├── undotree.lua
 │       ├── vimade.lua
+│       ├── statusline.lua
 │       └── ...
 ├── autoload
 │   ├── search.vim
