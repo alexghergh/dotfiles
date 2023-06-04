@@ -71,9 +71,6 @@ vim.g.netrw_banner = 0          -- don't show the banner at the top (toggle with
 vim.g.netrw_browse_split = 4    -- open files in the previous window
 vim.g.netrw_winsize = 15        -- percent of window size
 
--- global status line
-vim.g.laststatus = 3
-
 
 --
 -- window specific
