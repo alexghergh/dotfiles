@@ -10,7 +10,7 @@
 --
 
 --
--- non-<Leader> mappings
+-- quality-of-life keymaps
 --
 
 -- let j and k move inside a line visually even if it gets wrapped
@@ -23,6 +23,18 @@ vim.keymap.set({ 'n', 'x' }, 'k', "v:count ? 'k' : 'gk'", { expr = true })
 vim.keymap.set('i', '<C-w>', '<C-g>u<C-w>')
 vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 
+-- since we remapped <Leader> to Space, just unmap Space, to avoid the annoying
+-- cursor moving right feature
+vim.keymap.set('n', ' ', '')
+
+-- source vimrc
+vim.keymap.set('n', '<Leader>sv', '<Cmd>source $MYVIMRC<CR>')
+
+
+--
+-- command-line keymaps
+--
+
 -- for when you REALLY want to save that buffer
 vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 
@@ -33,14 +45,8 @@ vim.keymap.set('c', '%%',
 
 
 --
--- <Leader> mappings
+-- navigation/code-flow keymaps
 --
-
--- since we remapped <Leader> to Space, just unmap Space
-vim.keymap.set('n', ' ', '')
-
--- source vimrc
-vim.keymap.set('n', '<Leader>sv', '<Cmd>source $MYVIMRC<CR>')
 
 -- switch to last file
 vim.keymap.set('n', '<Leader>o', '<C-^>')
@@ -48,17 +54,23 @@ vim.keymap.set('n', '<Leader>o', '<C-^>')
 -- open netrw in a vertical split
 vim.keymap.set('n', '<Leader>ee', '<Cmd>Vexplore<CR>')
 
--- resize windows
+-- navigate tags (mnemonic Switch Tag)
+vim.keymap.set('n', '<Leader>st', '<C-]>')
+
+
+--
+-- window-resize keymaps
+--
+
 vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>')
 vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>')
 vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>')
 vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
 
--- toggle paste mode, useful when copy pasting from an outside source
-vim.keymap.set('n', '<Leader>pt', '<Cmd>set invpaste<CR>')
 
--- navigate tags (mnemonic Switch Tag)
-vim.keymap.set('n', '<Leader>st', '<C-]>')
+--
+-- diagnostics keymaps
+--
 
 -- diagnostics (see :h vim.diagnostic)
 -- show diagnostics in a floating window (mnemonic Diagnostics Show/Next/Prev/Quickfix)
