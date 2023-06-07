@@ -23,9 +23,6 @@ require('keymappings')
 -- source plugins
 require('plugins')
 
--- set colorscheme
-pcall(vim.cmd.colorscheme, 'melange')
-
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
 
