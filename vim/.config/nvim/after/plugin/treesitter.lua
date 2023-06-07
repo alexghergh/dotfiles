@@ -83,3 +83,9 @@ vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
 
 -- map the other key combination to nothing (fat-finger-free)
 vim.keymap.set('n', '<Leader>nt', '')
+
+-- display the current scope in the statusline
+-- see API in lua/statusline.lua
+function cursor_scope()
+    return vim.fn['nvim_treesitter#statusline']()
+end

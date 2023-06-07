@@ -23,6 +23,12 @@ require('keymappings')
 -- source plugins
 require('plugins')
 
+-- colorscheme setup (see also after/plugin/colorscheme.lua)
+pcall(vim.cmd.colorscheme, 'melange')
+
+-- statusline setup
+require('statusline')
+
 -- other stuff is processed later
 -- see after/{ftplugin,plugin}/
 

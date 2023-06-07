@@ -5,6 +5,10 @@
 
 -- see :h signify
 
+if vim.g.loaded_signify == nil then
+    return
+end
+
 -- toggle line highlighting (mnemonic Hunk/Highlight Toggle)
 vim.keymap.set('n', '<Leader>ht', '<Cmd>SignifyToggleHighlight<Cr>')
 
@@ -47,4 +51,8 @@ vim.api.nvim_create_autocmd('User', {
 })
 
 -- display added/removed/modified lines in the statusline
--- see after/plugin/statusline.lua
+-- see API in lua/statusline.lua
+function diff_stats()
+    -- table as [added, modified, removed]
+    return vim.fn['sy#repo#get_stats']()
+end

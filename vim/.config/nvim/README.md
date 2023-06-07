@@ -17,7 +17,7 @@ The file structure of the Neovim setup:
 │       ├── treesitter.lua
 │       ├── undotree.lua
 │       ├── vimade.lua
-│       ├── statusline.lua
+│       ├── colorscheme.lua
 │       └── ...
 ├── autoload
 │   ├── search.vim
@@ -27,7 +27,8 @@ The file structure of the Neovim setup:
 │   ├── autocommands.lua
 │   ├── keymappings.lua
 │   ├── plugins.lua
-│   └── settings.lua
+│   ├── settings.lua
+│   └── statusline.lua
 └── README.md
 ```
 
@@ -51,6 +52,10 @@ Explanation for each of the above directories and files (as needed):
     - `settings.lua`: Contains the general editor settings which are applied for
       all filetypes (nothing plugin-related; only basic vim settings and
       options).
+    - `statusline.lua`: Contains scripts to define a custom status line. The
+      style of the status line is designed to be the same as that of the Tmux
+      environment. See also `after/plugin/colorscheme.lua`, which defines the
+      actual colors to be used.
 
 For more information on what each of these files should contain, see [this
 gist](https://gist.github.com/nelstrom/1056049/784e252c3de653e204e9e128653010e19fbd493f).
