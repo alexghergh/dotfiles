@@ -17,9 +17,12 @@
 -- The API is as follows:
 --   - functions:
 --      - diff_stats(): provided as a Lua function by whatever diff plugin is
---        installed (should be defined in after/plugin)
+--        installed (should be defined in after/plugin); should always return a
+--        table with 3 number values in the form "[ added, removed, modified ]";
 --      - cursor_scope(): provided as a Lua function by whatever scope plugin is
---        installed (should be defined in after/plugin)
+--        installed (should be defined in after/plugin); should always return
+--        a string (for cases where there is no treesitter parser for the
+--        buffer, return an empty string)
 --   - highlight groups:
 --      - for diff_stats(), the statusline understands 3 highlight groups:
 --          - StatusLineDiffAdd
@@ -79,21 +82,12 @@ local function fileattributes()
 end
 
 local function treesitter_scope()
-    -- test if there are any captures under the cursor;
-    -- chances are, if there are none, then we either don't have a valid
-    -- treesitter parser for the current buffer, or there really are none under
-    -- the cursor; in either case, return an empty scope
-    --
-    -- also, since the scope can get quite big, don't print it when the window
-    -- width is less than 100 chars
-    if next(vim.treesitter.get_captures_at_cursor()) ~= nil then
-        if vim.fn.winwidth(0) > 99 then
-            -- see API above for cursor_scope()
-            if cursor_scope ~= nil then
-                return cursor_scope()
-            else
-                return ''
-            end
+    -- since the scope can get quite big, don't print it when the window width
+    -- is less than 120 chars
+    if vim.fn.winwidth(0) > 99 then
+        -- see API above for cursor_scope()
+        if cursor_scope ~= nil then
+            return cursor_scope()
         end
     end
     return ''
