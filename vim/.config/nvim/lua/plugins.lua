@@ -78,9 +78,6 @@ require('packer').startup({function(use)
     -- modelines
     use { 'alexghergh/securemodelines' }
 
-    -- fade inactive window
-    use { 'tadaa/vimade', disable = true }
-
     -- undotree
     use { 'mbbill/undotree' }
 
