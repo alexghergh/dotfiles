@@ -66,6 +66,7 @@ vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>')
 vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>')
 vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>')
 vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
+vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>')
 
 
 --

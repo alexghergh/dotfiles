@@ -13,12 +13,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     group = user_group
 })
 
--- resize vim windows to equal lenghts when tmux zooms/unzooms
-vim.api.nvim_create_autocmd('VimResized', {
-    command = 'wincmd =',
-    group = user_group
-})
-
 -- open files to last known position (:h last-position-jump)
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function()
