@@ -1,12 +1,17 @@
--- disable vimade when using undo tree, and reenable it afterwards
--- for this to work, i added some commands directly to undotree
--- lines 474 and 484 in autoload/undotree.vim
+-- see :h undotree.txt
 
--- show undo
-vim.api.nvim_set_keymap('n', "<Leader>su", "<Cmd>UndotreeToggle<CR>", {})
+if vim.g.loaded_undotree == nil then
+    return
+end
+
+-- show undo-tree (mnemonic Undo Show)
+vim.keymap.set('n', '<Leader>us', '<Cmd>UndotreeToggle<Cr>')
 
 -- window layout
 vim.g.undotree_WindowLayout = 2
 
 -- automatically focus the undo history when opening it
 vim.g.undotree_SetFocusWhenToggle = 1
+
+-- short timestamp indicators
+vim.g.undotree_ShortIndicators = 1
