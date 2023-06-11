@@ -40,29 +40,6 @@ require('packer').startup({function(use)
     -- LSP configs
     use { 'neovim/nvim-lspconfig' }
 
-    -- -- TODO replace by nvim-cmp
-    -- use { "hrsh7th/nvim-compe", config = function()
-    --         -- config is done when an lsp server attached to a buffer
-    --         -- see above 'custom_attach' function defined in 'nvim-lspconfig'
-    --     end
-    -- }
-
-    -- -- LSP snippet support
-    -- use { "L3MON4D3/LuaSnip", disable = true, config = function()
-    --         vim.cmd [[
-    --         imap <expr> <C-j> luasnip#expand_or_jumpable() ? '<Plug>luasnip-jump-next' : '<C-j>'
-    --         imap <expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>'
-
-    --         snoremap <silent> <C-j> <Cmd>lua require('luasnip').jump(1)<Cr>
-    --         snoremap <silent> <C-k> <Cmd>lua require('luasnip').jump(-1)<Cr>
-
-    --         imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
-    --         smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
-    --         ]]
-
-    --     end
-    -- }
-
     -- neovim-tmux navigation
     use { 'alexghergh/nvim-tmux-navigation' }
 
