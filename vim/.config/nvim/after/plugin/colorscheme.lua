@@ -25,9 +25,8 @@ if vim.g.colors_name == 'melange' then
     vim.cmd('highlight StatusLineColor2 guifg=#8ab977 guibg=#282c34')
 
     -- set up statusline diff stats (added, removed, modified)
-    -- currently the background is hard-coded to color 2 above, since I couldn't
-    -- find a way for the diffs to inherit the parent background
-    vim.cmd('highlight StatusLineDiffAdd guifg=#78997a guibg=#3e4452')
-    vim.cmd('highlight StatusLineDiffDelete guifg=#bd8183 guibg=#3e4452')
-    vim.cmd('highlight StatusLineDiffChange guifg=#b380b0 guibg=#3e4452')
+    -- the background is hard-coded to color 2 above
+    vim.cmd('highlight StatusLineDiffAdd guifg=#78997a guibg=#282c34')
+    vim.cmd('highlight StatusLineDiffDelete guifg=#bd8183 guibg=#282c34')
+    vim.cmd('highlight StatusLineDiffChange guifg=#b380b0 guibg=#282c34')
 end

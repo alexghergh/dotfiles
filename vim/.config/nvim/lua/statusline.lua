@@ -145,14 +145,16 @@ function status_line()
         -- filename (truncate if too long)
         gen_section('StatusLineColor1', '%<%f', ' '),
 
-        -- file attributes and diff stats
-        gen_section('StatusLineColor1', '%k #%n %a'),
+        -- file attributes
+        gen_section('StatusLineColor1', '%k #%n%a'),
         gen_section('StatusLineColor1',
-            ' [', fileencoding(), ',', filetype(), ']',
+            ' ', fileencoding(), ',', filetype(), ' ',
             fileattributes(),
-            '%q '
+            '%q', ' '
         ),
-        gen_section_diff_stats(),
+
+        -- diff stats
+        ' ', gen_section_diff_stats(), '|',
 
         -- scope as reported by treesitter
         gen_section('StatusLineColor2', ' ', treesitter_scope()),
@@ -162,7 +164,8 @@ function status_line()
 
         -- right side stuff (line, column, percentage, total LOC)
         gen_section('StatusLineColor1',
-            ' %-12.(%l,%c%V%)',
+            ' ',
+            '%-12.(%l,%c%V%)',
             '%p%% (out of %L)'
         ),
     })
