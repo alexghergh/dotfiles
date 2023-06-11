@@ -10,19 +10,19 @@ if vim.g.loaded_signify == nil then
 end
 
 -- toggle line highlighting (mnemonic Hunk/Highlight Toggle)
-vim.keymap.set('n', '<Leader>ht', '<Cmd>SignifyToggleHighlight<Cr>')
+vim.keymap.set('n', '<Leader>ht', '<Cmd>SignifyToggleHighlight<CR>')
 
 -- open new tab in diff-mode (mnemonic Hunk Diff)
-vim.keymap.set('n', '<Leader>hd', '<Cmd>SignifyDiff<Cr>')
+vim.keymap.set('n', '<Leader>hd', '<Cmd>SignifyDiff<CR>')
 
 -- open new tab only with changes unfolded (mnemonic Hunk Fold)
-vim.keymap.set('n', '<Leader>hf', '<Cmd>SignifyFold<Cr>')
+vim.keymap.set('n', '<Leader>hf', '<Cmd>SignifyFold<CR>')
 
 -- show diff in floating window (mnemonic Hunk Show)
-vim.keymap.set('n', '<Leader>hs', '<Cmd>SignifyHunkDiff<Cr>')
+vim.keymap.set('n', '<Leader>hs', '<Cmd>SignifyHunkDiff<CR>')
 
 -- undo the diff change on the line (mnemonic Hunk Undo)
-vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<Cr>')
+vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<CR>')
 
 -- go to next/previous Hunks
 vim.keymap.set('n', ']h', '<Plug>(signify-next-hunk)')
