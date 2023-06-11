@@ -82,10 +82,7 @@ require('packer').startup({function(use)
     use { 'mbbill/undotree' }
 
     -- colorschemes
-    use { 'savq/melange' }
-
-    -- formatting
-    use { 'editorconfig/editorconfig-vim' }
+    use { 'savq/melange-nvim' }
 
     -- automatically set up the config after cloning
     if packer_installed == false then
@@ -109,7 +106,9 @@ config = {
         end
     },
     profile = {
-        enable = false, -- to profile set this to 'true' and run :PackerProfile
+        -- to profile set this to 'true' and run :PackerProfile
+        enable = false,
+
         -- the amount in ms that a plugin's load time must be over for
         -- it to be included in the profile
         threshold = 0,
