@@ -61,9 +61,21 @@ vim.opt.splitright = true
 -- add directories upwards as search path
 vim.opt.path:append { '**' }
 
--- show tab characters, line-endings
+-- show tab characters, line-endings, leading space, wrap chars
 vim.opt.list = true
-vim.opt.listchars = { ['tab'] = '>.', ['trail'] = '.' , ['nbsp'] = '‸' }
+vim.opt.listchars = {
+    ['tab'] = '>·',
+    ['trail'] = '·',
+    ['nbsp'] = '‸',
+    ['leadmultispace'] = '·  |',
+    ['extends'] = '→',
+    ['precedes'] = '←',
+}
+
+-- display unprintable characters as hex numbers
+-- show characters for line too long at the bottom of the screen
+vim.opt.display = { 'lastline', 'uhex' }
+vim.opt.fillchars = { ['lastline'] = '>' }
 
 -- options for netrw
 vim.g.netrw_liststyle = 3       -- treestyle listing
