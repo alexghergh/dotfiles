@@ -60,11 +60,11 @@ local function fileattributes()
     local attr = ''
 
     if vim.bo.modified == true then
-        if vim.bo.modifiable == true then
-            attr = attr .. '+'
-        else
-            attr = attr .. '-'
-        end
+        attr = attr .. '+'
+    end
+
+    if vim.bo.modifiable == false then
+        attr = attr .. '-'
     end
 
     if vim.bo.readonly == true then
