@@ -28,13 +28,17 @@
 --          - StatusLineDiffAdd
 --          - StatusLineDiffDelete
 --          - StatusLineDiffChange
---      - for other parts of the statusline:
+--      - for other parts of the statusline, the following should be defined:
 --          - StatusLine: the default color which comes bundled in neovim, can
 --            be overriden for a nicer default (acts as a reset in the
 --            statusline)
---          - StatusLineColor1: for the left and right sides that contain text
---          - StatusLineColor2: for the middle part that acts as a separator and
---            only contains the current cursor scope
+--          - StatusLineColor1: for the outermost layer of text
+--          - StatusLineColor2: for the next layer of text
+--          - StatusLineColor3: for the innermost layer of text (the middle part
+--            of the screen in vim, which acts as separator between the left and
+--            right sides)
+--          - StatusLineSeparator12: separator color for the first 2 layers
+--          - StatusLineSeparator23: separator color for the last 2 layers
 --
 
 --
@@ -139,35 +143,60 @@ end
 -- TODO
 -- integrate vim.diagnostic.get() for diagnostics count
 -- nvim_treesitter with more options
+-- branch name information
 -- see github.com/nihilistkitten/dotfiles/blob/main/nvim/lua/statusline.lua
 function status_line()
     return table.concat({
-        -- filename (truncate if too long)
-        gen_section('StatusLineColor1', '%<%f', ' '),
-
-        -- file attributes
-        gen_section('StatusLineColor1', '%k #%n%a'),
-        gen_section('StatusLineColor1',
-            ' ', fileencoding(), ',', filetype(), ' ',
-            fileattributes(),
-            '%q', ' '
-        ),
+        --
+        -- left side
+        --
+        gen_section('StatusLineSeparator12', ' '),
+        gen_section('StatusLineColor2', ' '),
+        gen_section('StatusLineSeparator23', ' '),
 
         -- diff stats
-        ' ', gen_section_diff_stats(), '|',
+        gen_section_diff_stats(),
+        gen_section('StatusLineColor3', ' '),
 
-        -- scope as reported by treesitter
-        gen_section('StatusLineColor2', ' ', treesitter_scope()),
-
-        -- separator between left and right sides
+        -- separator
         '%=',
 
-        -- right side stuff (line, column, percentage, total LOC)
-        gen_section('StatusLineColor1',
-            ' ',
-            '%-12.(%l,%c%V%)',
-            '%p%% (out of %L)'
-        ),
+        --
+        -- middle side
+        --
+
+        -- filename + path
+        gen_section('StatusLineColor3', '%<%f'),
+
+        -- buffer number + arg list
+        gen_section('StatusLineColor3', ' ', '#%n%a'),
+
+        -- file attributes (modified, readonly etc.)
+        gen_section('StatusLineColor3', ' ', fileattributes()),
+
+        -- scope as reported by treesitter
+        -- gen_section('StatusLineColor3', ' ', treesitter_scope()),
+
+        -- separator
+        '%=',
+
+        --
+        -- right side
+        --
+
+        -- file encoding + type
+        gen_section('StatusLineColor3', '  '),
+        gen_section('StatusLineColor3', filetype()),
+        gen_section('StatusLineColor3', '  '),
+        gen_section('StatusLineColor3', fileencoding()),
+        ' ',
+
+        -- line, column, percentage, total LOC
+        gen_section('StatusLineSeparator23', ''),
+        gen_section('StatusLineColor2', ' ', '%(%l:%c%V%)'),
+        gen_section('StatusLineColor2', '   '),
+        gen_section('StatusLineColor2', '%p%% (out of %L)'),
+        gen_section('StatusLineSeparator12', ' '),
     })
 end
 

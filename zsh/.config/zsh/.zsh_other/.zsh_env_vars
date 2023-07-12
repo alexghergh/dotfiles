@@ -50,3 +50,7 @@ if [ -e /home/alex/.pyenv/versions/"${PYENV_PYTHON_VERSION:-not_exist}"/bin/pyth
 else
     export VIM_PYTHON3_HOST_PROG="$(command -v python3)"
 fi
+
+# set biber path
+# TODO just a hack to work on arch
+export PATH="$PATH:/usr/bin/vendor_perl"
