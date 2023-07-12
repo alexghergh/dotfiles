@@ -67,6 +67,7 @@ vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>')
 vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
 vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>')
 vim.keymap.set('n', '<Leader>wz', '<Cmd>call functions#Zoom()<CR>')
+vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternate file
 
 
 --
