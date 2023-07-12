@@ -24,19 +24,19 @@ vim.keymap.set('n', '<Leader>hs', '<Cmd>SignifyHunkDiff<CR>')
 -- undo the diff change on the line (mnemonic Hunk Undo)
 vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<CR>')
 
--- go to next/previous Hunks
-vim.keymap.set('n', ']h', '<Plug>(signify-next-hunk)')
-vim.keymap.set('n', '[h', '<Plug>(signify-prev-hunk)')
+-- go to next/previous Hunks (mapped by default)
+-- vim.keymap.set('n', ']c', '<Plug>(signify-next-hunk)')
+-- vim.keymap.set('n', '[c', '<Plug>(signify-prev-hunk)')
 
--- go to first/last Hunks
-vim.keymap.set('n', ']H', '9999]h', { remap = true })
-vim.keymap.set('n', '[H', '9999[h', { remap = true })
+-- go to first/last Hunks (mapped by default)
+-- vim.keymap.set('n', ']C', '9999]c', { remap = true })
+-- vim.keymap.set('n', '[C', '9999[c', { remap = true })
 
--- hunk text objects
-vim.keymap.set('o', 'ih', '<Plug>(signify-motion-inner-pending)')
-vim.keymap.set('x', 'ih', '<Plug>(signify-motion-inner-visual)')
-vim.keymap.set('o', 'ah', '<Plug>(signify-motion-outer-pending)')
-vim.keymap.set('x', 'ah', '<Plug>(signify-motion-outer-visual)')
+-- hunk text objects (mapped by default)
+-- vim.keymap.set('o', 'ic', '<Plug>(signify-motion-inner-pending)')
+-- vim.keymap.set('x', 'ic', '<Plug>(signify-motion-inner-visual)')
+-- vim.keymap.set('o', 'ac', '<Plug>(signify-motion-outer-pending)')
+-- vim.keymap.set('x', 'ac', '<Plug>(signify-motion-outer-visual)')
 
 -- show the current hunk number out of the total when jumping
 vim.api.nvim_create_autocmd('User', {
