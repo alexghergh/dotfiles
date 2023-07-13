@@ -125,6 +125,10 @@ local function current_mode_text()
     return modes_map[vim.fn.mode()] or 'None'
 end
 
+local function branch_info()
+    return vim.fn.system('git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d "\\n"')
+end
+
 local function fileattributes()
     local attr = ''
 
@@ -240,7 +244,7 @@ function status_line()
         gen_section(current_mode_color_sep(), sep(style).LSIDE_FULL, ' '),
 
         -- VCS branch info
-        gen_section('StatusLineColor2', ' '),
+        gen_section('StatusLineColor2', ' ', '', branch_info(), ' '),
         gen_section('StatusLineSeparator23', sep(style).LSIDE_FULL, ' '),
 
         -- diff stats
