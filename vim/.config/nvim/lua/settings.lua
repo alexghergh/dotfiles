@@ -49,7 +49,7 @@ vim.opt.background = 'dark'
 
 -- ignore certain files when opening buffers from inside neovim
 vim.opt.wildignore:append { '*.o', '*.obj', '**/.git/*', '*.swp', '*.pyc', '*.class', '**/node_modules/*', '*.bak' }
-vim.opt.wildmode = 'lastused:longest:full,full'
+vim.opt.wildmode = 'longest:full,full'
 
 -- incremental live completion
 vim.opt.inccommand = 'nosplit'
