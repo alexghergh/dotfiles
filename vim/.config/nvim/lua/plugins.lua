@@ -61,6 +61,9 @@ require('packer').startup({function(use)
     -- colorschemes
     use { 'savq/melange-nvim' }
 
+    -- indentlines
+    use { 'lukas-reineke/indent-blankline.nvim' }
+
     -- automatically set up the config after cloning
     if packer_installed == false then
         require('packer').sync()
