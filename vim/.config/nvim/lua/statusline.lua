@@ -7,7 +7,7 @@
 --
 -- API:
 --   - there is a very thin API (in the form of Lua functions), between some
---     status line functionality and some plugins who provide that
+--     status line functionality and some plugins which provide that
 --     functionality, as the status line itself cannot possibly know (and
 --     _should not know_), what plugins are installed
 --   - careful!, so as to not define the functions below multiple times, or they
@@ -42,22 +42,87 @@
 --
 
 --
+-- mode information
+-- see https://github.com/nvim-lualine/lualine.nvim/blob/master/lua/lualine/utils/mode.lua
+--
+local modes_map = {
+    ['n']     = 'NORMAL',
+    ['no']    = 'O-PENDING',
+    ['nov']   = 'O-PENDING',
+    ['noV']   = 'O-PENDING',
+    ['no\22'] = 'O-PENDING',
+    ['niI']   = 'NORMAL',
+    ['niR']   = 'NORMAL',
+    ['niV']   = 'NORMAL',
+    ['nt']    = 'NORMAL',
+    ['ntT']   = 'NORMAL',
+    ['v']     = 'VISUAL',
+    ['vs']    = 'VISUAL',
+    ['V']     = 'V-LINE',
+    ['Vs']    = 'V-LINE',
+    ['\22']   = 'V-BLOCK',
+    ['\22s']  = 'V-BLOCK',
+    ['s']     = 'SELECT',
+    ['S']     = 'S-LINE',
+    ['\19']   = 'S-BLOCK',
+    ['i']     = 'INSERT',
+    ['ic']    = 'INSERT',
+    ['ix']    = 'INSERT',
+    ['R']     = 'REPLACE',
+    ['Rc']    = 'REPLACE',
+    ['Rx']    = 'REPLACE',
+    ['Rv']    = 'V-REPLACE',
+    ['Rvc']   = 'V-REPLACE',
+    ['Rvx']   = 'V-REPLACE',
+    ['c']     = 'COMMAND',
+    ['cv']    = 'EX',
+    ['ce']    = 'EX',
+    ['r']     = 'REPLACE',
+    ['rm']    = 'MORE',
+    ['r?']    = 'CONFIRM',
+    ['!']     = 'SHELL',
+    ['t']     = 'TERMINAL',
+}
+
+--
 -- helper functions
 --
-local function fileencoding()
-    if vim.bo.fileencoding == '' then
-        return 'enc?'
+local function sep(style)
+    -- 'style' can be either 'arrow' or 'gaps'
+    if style == 'arrow' then
+        return {
+            LSIDE_FULL  = '',
+            LSIDE_EMPTY = '',
+            RSIDE_FULL  = '',
+            RSIDE_EMPTY = '',
+        }
+    elseif style == 'gaps' then
+        return {
+            LSIDE_FULL  = '', -- this might not render properly in certain fonts
+            LSIDE_EMPTY = '\\',
+            RSIDE_FULL  = '', -- this might not render properly in certain fonts
+            RSIDE_EMPTY = '/',
+        }
     else
-        return vim.bo.fileencoding
+        return {
+            LSIDE_FULL  = '',
+            LSIDE_EMPTY = '|',
+            RSIDE_FULL  = '',
+            RSIDE_EMPTY = '|',
+        }
     end
 end
 
-local function filetype()
-    if vim.bo.filetype == '' then
-        return 'ft?'
-    else
-        return vim.bo.filetype
-    end
+local function current_mode_color()
+    return 'StatusLineColor1'
+end
+
+local function current_mode_color_sep()
+    return 'StatusLineSeparator12'
+end
+
+local function current_mode_text()
+    return modes_map[vim.fn.mode()] or 'None'
 end
 
 local function fileattributes()
@@ -85,9 +150,25 @@ local function fileattributes()
     return ''
 end
 
+local function filetype()
+    if vim.bo.filetype == '' then
+        return 'ft?'
+    else
+        return vim.bo.filetype
+    end
+end
+
+local function fileencoding()
+    if vim.bo.fileencoding == '' then
+        return 'enc?'
+    else
+        return vim.bo.fileencoding
+    end
+end
+
 local function treesitter_scope()
     -- since the scope can get quite big, don't print it when the window width
-    -- is less than 120 chars
+    -- is less than 100 chars
     if vim.fn.winwidth(0) > 99 then
         -- see API above for cursor_scope()
         if cursor_scope ~= nil then
@@ -146,17 +227,29 @@ end
 -- branch name information
 -- see github.com/nihilistkitten/dotfiles/blob/main/nvim/lua/statusline.lua
 function status_line()
+    -- see sep() above
+    local style = 'gaps'
+
     return table.concat({
         --
         -- left side
         --
-        gen_section('StatusLineSeparator12', ' '),
+
+        -- current mode
+        gen_section(current_mode_color(), ' ', current_mode_text(), ' '),
+        gen_section(current_mode_color_sep(), sep(style).LSIDE_FULL, ' '),
+
+        -- VCS branch info
         gen_section('StatusLineColor2', ' '),
-        gen_section('StatusLineSeparator23', ' '),
+        gen_section('StatusLineSeparator23', sep(style).LSIDE_FULL, ' '),
 
         -- diff stats
         gen_section_diff_stats(),
-        gen_section('StatusLineColor3', ' '),
+        gen_section('StatusLineColor3', sep(style).LSIDE_EMPTY, ' '),
+
+        -- scope as reported by treesitter
+        -- gen_section('StatusLineColor3', treesitter_scope()),
+        -- gen_section('StatusLineColor3', ' ', sep(style).LSIDE_EMPTY, ' '),
 
         -- separator
         '%=',
@@ -174,9 +267,6 @@ function status_line()
         -- file attributes (modified, readonly etc.)
         gen_section('StatusLineColor3', ' ', fileattributes()),
 
-        -- scope as reported by treesitter
-        -- gen_section('StatusLineColor3', ' ', treesitter_scope()),
-
         -- separator
         '%=',
 
@@ -185,18 +275,18 @@ function status_line()
         --
 
         -- file encoding + type
-        gen_section('StatusLineColor3', '  '),
+        gen_section('StatusLineColor3', ' ', sep(style).RSIDE_EMPTY, ' '),
         gen_section('StatusLineColor3', filetype()),
-        gen_section('StatusLineColor3', '  '),
+        gen_section('StatusLineColor3', ' ', sep(style).RSIDE_EMPTY, ' '),
         gen_section('StatusLineColor3', fileencoding()),
         ' ',
 
         -- line, column, percentage, total LOC
-        gen_section('StatusLineSeparator23', ''),
+        gen_section('StatusLineSeparator23', sep(style).RSIDE_FULL),
         gen_section('StatusLineColor2', ' ', '%(%l:%c%V%)'),
-        gen_section('StatusLineColor2', '   '),
+        gen_section('StatusLineColor2', ' ', sep(style).RSIDE_EMPTY, '  '),
         gen_section('StatusLineColor2', '%p%% (out of %L)'),
-        gen_section('StatusLineSeparator12', ' '),
+        gen_section('StatusLineSeparator12', ' ', sep(style).RSIDE_FULL),
     })
 end
 
