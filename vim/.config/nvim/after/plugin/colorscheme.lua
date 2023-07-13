@@ -21,7 +21,7 @@ if vim.g.colors_name == 'melange' then
     vim.cmd('highlight StatusLine guibg=#282c34')
 
     -- set up statusline colors (matching tmux colorscheme)
-    vim.cmd('highlight StatusLineColor1 guifg=#3d4451 guibg=#8ab977')
+    vim.cmd('highlight StatusLineColor1 guifg=#3d4451 guibg=#8ab977 gui=bold')
     vim.cmd('highlight StatusLineColor2 guifg=#a9a9af guibg=#3e4452')
     vim.cmd('highlight StatusLineColor3 guifg=#c2c2c2 guibg=#282c34')
 
