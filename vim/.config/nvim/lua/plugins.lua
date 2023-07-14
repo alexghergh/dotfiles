@@ -64,6 +64,9 @@ require('packer').startup({function(use)
     -- indentlines
     use { 'lukas-reineke/indent-blankline.nvim' }
 
+    -- visual search
+    use { 'bronson/vim-visual-star-search' }
+
     -- automatically set up the config after cloning
     if packer_installed == false then
         require('packer').sync()
