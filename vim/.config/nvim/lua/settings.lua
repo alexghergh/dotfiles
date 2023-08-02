@@ -100,9 +100,6 @@ vim.opt.signcolumn = 'auto:1-4'
 -- visually break lines at max width
 vim.opt.linebreak = true
 
--- show the cursor line
-vim.opt.cursorline = true
-
 -- show a colored column at position textwidth + 1
 vim.opt.colorcolumn = '+1'
 
