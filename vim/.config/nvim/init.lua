@@ -17,6 +17,9 @@ require('settings')
 -- source autocommands
 require('autocommands')
 
+-- source commands
+require('commands')
+
 -- source keymaps
 require('keymaps')
 

@@ -25,6 +25,7 @@ The file structure of the Neovim setup:
 ├── init.lua
 ├── lua
 │   ├── autocommands.lua
+│   ├── commands.lua
 │   ├── keymappings.lua
 │   ├── plugins.lua
 │   ├── settings.lua
@@ -46,6 +47,7 @@ Explanation for each of the above directories and files (as needed):
   all the files in the `lua/` directory.
 - `lua/`: Lua config files. The files represent:
     - `autocommands.lua`: Contains auto-commands.
+    - `commands.lua`: Contains user-defined commands.
     - `keymappings.lua`: Contains keymappings and other key settings.
     - `plugins.lua`: Contains all the plugin installations. Doesn't however
       contain the plugin settings as well (see `after/plugin/` for that).
