@@ -182,6 +182,55 @@ local function treesitter_scope()
     return ''
 end
 
+local function longlines()
+    -- don't display if buffer too big
+    if vim.api.nvim_buf_line_count(0) > 10000 then
+        return ''
+    end
+    -- TODO some caching mechanism here would be good if it turns out to be too
+    -- slow (either with a timer, using a closure value, or running async via
+    -- the event loop somehow)
+
+    local str = ''
+    local threshold
+    local long_lines = {}
+    local spaces = vim.fn['repeat'](' ', vim.bo.tabstop)
+
+    if vim.bo.textwidth ~= 0 then
+        threshold = vim.bo.textwidth
+    else
+        threshold = 80      -- sane default
+        str = str .. '~'    -- mark that &tw is not set
+    end
+
+    -- iterate lines in the buffer, and save long lines in list
+    for _,line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
+        local len = #vim.fn.substitute(line, '\t', spaces, 'g') -- expand tabs
+        if len > threshold then
+            table.insert(long_lines, #line)
+        end
+    end
+
+    -- sort list of long lines
+    table.sort(long_lines)
+
+    -- calculate median
+    local median = 0
+    local mid = math.floor(#long_lines / 2) + 1
+    if #long_lines ~= 0 then
+        if #long_lines % 2 == 1 then
+            median = long_lines[mid]
+        else
+            median = (long_lines[mid - 1] + long_lines[mid]) / 2
+        end
+    end
+
+    local max = vim.fn.max(long_lines)
+
+    str = str .. '[#' .. #long_lines .. ' ^' .. max .. ' m' .. median .. ']'
+    return str
+end
+
 --
 -- highlights
 --
@@ -285,10 +334,15 @@ function status_line()
         gen_section('StatusLineColor3', fileencoding()),
         ' ',
 
-        -- line, column, percentage, total LOC
         gen_section('StatusLineSeparator23', sep(style).RSIDE_FULL),
-        gen_section('StatusLineColor2', ' ', '%(%l:%c%V%)'),
-        gen_section('StatusLineColor2', ' ', sep(style).RSIDE_EMPTY, '  '),
+
+        -- long lines (total number, median, longest)
+        gen_section('StatusLineColor2', ' ', longlines()),
+        gen_section('StatusLineColor2', ' ', sep(style).RSIDE_EMPTY, ' '),
+
+        -- line, column, percentage, total LOC
+        gen_section('StatusLineColor2', '%(%l:%c%V%)'),
+        gen_section('StatusLineColor2', ' ', sep(style).RSIDE_EMPTY, ' '),
         gen_section('StatusLineColor2', '%p%% (out of %L)'),
         gen_section('StatusLineSeparator12', ' ', sep(style).RSIDE_FULL),
     })
