@@ -38,7 +38,7 @@ vim.opt.diffopt:append { 'vertical' }
 vim.opt.updatetime = 50
 
 -- preview menu options for autocompletion
-vim.opt.completeopt = { 'menuone', 'noinsert', 'preview' }
+vim.opt.completeopt = { 'menuone', 'preview' }
 
 -- show the total number of substitutions
 vim.opt.report = 0
