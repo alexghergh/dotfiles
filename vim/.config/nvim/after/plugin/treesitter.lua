@@ -17,6 +17,7 @@ require('nvim-treesitter.configs').setup({
         'make',
         'markdown',
         'bibtex',
+        'fish',
     },
 
     highlight = {
