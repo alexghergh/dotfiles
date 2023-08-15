@@ -9,7 +9,6 @@ SETUVAR __fish_git_prompt_showstashstate:1
 SETUVAR __fish_git_prompt_showuntrackedfiles:1
 SETUVAR __fish_git_prompt_showupstream:informative
 SETUVAR __fish_initialized:3400
-SETUVAR dirprev:/home/alex\x1e/home/alex/\x2econfig/fish\x1e/home/alex/\x2econfig/fish/colors\x1e/home/alex/\x2econfig/fish\x1e/home/alex/\x2econfig/fish/colors\x1e/home/alex/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig\x1e/home/alex/\x2edotfiles/fish\x1e/home/alex/\x2edotfiles/zsh\x1e/home/alex/\x2edotfiles/fish/\x2econfig\x1e/home/alex/\x2edotfiles/fish/\x2econfig/fish\x1e/home/alex/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig/fish\x1e/home/alex/\x2edotfiles/fish/\x2econfig\x1e/home/alex/\x2edotfiles/fish
 SETUVAR fish_color_autosuggestion:4D5566
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_cmd_duration:yellow
