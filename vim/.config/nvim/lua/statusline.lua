@@ -189,7 +189,8 @@ local function longlines()
     end
     -- TODO some caching mechanism here would be good if it turns out to be too
     -- slow (either with a timer, using a closure value, or running async via
-    -- the event loop somehow)
+    -- the event loop somehow); see vim.loop
+    -- TODO to profile with plenary.nvim
 
     local str = ''
     local threshold
