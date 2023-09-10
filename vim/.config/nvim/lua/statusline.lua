@@ -126,7 +126,10 @@ local function current_mode_text()
 end
 
 local function branch_info()
-    return vim.fn.system('git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d "\\n"')
+    return ""
+    -- TODO this seems to be very expensive, or something else seems to happen,
+    -- as the mouse flickers continuously; commenting this solves it entirely
+    -- return vim.fn.system('git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d "\\n"')
 end
 
 local function fileattributes()
