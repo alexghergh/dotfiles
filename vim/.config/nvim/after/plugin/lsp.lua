@@ -28,8 +28,6 @@ end
 -- the language server attaches to the current buffer
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(event)
-        print(vim.inspect(event))
-
         -- enable completion triggered by <C-x><C-o> in omnifunc
         vim.bo[event.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
