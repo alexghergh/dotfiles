@@ -17,22 +17,32 @@ require('settings')
 -- source autocommands
 require('autocommands')
 
--- source commands
+-- source user commands
 require('commands')
 
 -- source keymaps
 require('keymaps')
 
--- source plugins
+-- source plugin installs
 require('plugins')
 
--- colorscheme setup (see also after/plugin/colorscheme.lua)
+-- colorscheme setup
 pcall(vim.cmd.colorscheme, 'melange')
+require('colorscheme')
+
+-- diagnostics setup
+require('diagnostics')
 
 -- statusline setup
 require('statusline')
 
--- other stuff is processed later
--- see after/{ftplugin,plugin}/
+-- lsp setup
+require('lsp')
+
+-- setup other plugins
+require('init_plugins')
+
+-- file-type specific stuff is processed later
+-- see after/ftplugin/
 
 -- vim: set tw=0 fo-=r ft=lua

@@ -20,25 +20,29 @@ local packer_installed = is_packer_installed()
 
 require('packer').startup({function(use)
 
-     -- plugin manager can manage itself
-     use { 'wbthomason/packer.nvim' }
+    -- plugin manager can manage itself
+    use { 'wbthomason/packer.nvim' }
 
-     -- nvim-treesitter goodies
-     use { 'nvim-treesitter/nvim-treesitter',
-         run = ':TSUpdate' -- post-install/update
-     }
+    -- nvim-treesitter goodies
+    use { 'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate' -- post-install/update
+    }
 
-     use { 'nvim-treesitter/playground',
-         opt = true,
-         cmd = {
+    use { 'nvim-treesitter/playground',
+        opt = true,
+        cmd = {
             'TSPlaygroundToggle',
             'TSHighlightCapturesUnderCursor',
             'TSNodeUnderCursor',
         }
-     }
+    }
 
     -- LSP configs
+    use { 'folke/neodev.nvim' }
     use { 'neovim/nvim-lspconfig' }
+    use { 'hrsh7th/cmp-nvim-lsp' }
+    use { 'hrsh7th/cmp-buffer' }
+    use { 'hrsh7th/nvim-cmp' }
 
     -- neovim-tmux navigation
     use { 'alexghergh/nvim-tmux-navigation' }
@@ -76,8 +80,8 @@ config = {
     display = {
         open_fn = function()
             -- open packer window with enough space for the commit diff at the bottom
-            win_height = vim.fn.winheight(0)
-            win_width = vim.fn.winwidth(0)
+            local win_height = vim.fn.winheight(0)
+            local win_width = vim.fn.winwidth(0)
 
             return require('packer.util').float({
                     border = 'single',

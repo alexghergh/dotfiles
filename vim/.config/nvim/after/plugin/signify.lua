@@ -1,9 +1,10 @@
 -- due to the fact that signify 'hackily' calculates the signcolumn width
 -- (because there is no native neovim way to do that), and it happens to be
 -- calculated wrongly anyway, a line needs to be commented in the file below
--- file: vim-signify/autoload/sy/util.vim - L222
-
+-- ~ vim-signify/autoload/sy/util.vim - L222
+--
 -- see :h signify
+--
 
 if vim.g.loaded_signify == nil then
     return
@@ -41,8 +42,8 @@ vim.keymap.set('x', 'ac', '<Plug>(signify-motion-outer-visual)')
 -- show the current hunk number out of the total when jumping
 vim.api.nvim_create_autocmd('User', {
     pattern = 'SignifyHunk',
-    callback = function(event)
-        h = vim.fn['sy#util#get_hunk_stats']()
+    callback = function(_)
+        local h = vim.fn['sy#util#get_hunk_stats']()
         if h ~= nil then
             print(vim.fn.printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks))
         end
@@ -52,7 +53,7 @@ vim.api.nvim_create_autocmd('User', {
 
 -- display added/removed/modified lines in the statusline
 -- see API in lua/statusline.lua
-function diff_stats()
+function DiffStats()
     -- table as [added, modified, removed]
     return vim.fn['sy#repo#get_stats']()
 end

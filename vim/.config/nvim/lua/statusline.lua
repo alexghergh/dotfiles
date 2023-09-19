@@ -3,28 +3,24 @@
 --
 -- see :h status-line and :h statusline
 -- see https://nihilistkitten.me/nvim-lua-statusline/
--- for colors and highlights, see after/plugin/colorscheme.lua
+-- for colors and highlights, see lua/colorscheme.lua
+-- for the API functions, see lua/init_plugins.lua
 --
 -- API:
---   - there is a very thin API (in the form of Lua functions), between some
---     status line functionality and some plugins which provide that
+--   - there is a very thin API (in the form of global Lua functions), between
+--     some status line functionality and some plugins which provide that
 --     functionality, as the status line itself cannot possibly know (and
 --     _should not know_), what plugins are installed
---   - careful!, so as to not define the functions below multiple times, or they
---     will get overriden by the last plugin (lua file, alphabetically) in which
---     that function is defined
 --
 -- The API is as follows:
 --   - functions:
---      - diff_stats(): provided as a Lua function by whatever diff plugin is
---        installed (should be defined in after/plugin); should always return a
---        table with 3 number values in the form "[ added, removed, modified ]";
---      - cursor_scope(): provided as a Lua function by whatever scope plugin is
---        installed (should be defined in after/plugin); should always return
---        a string (for cases where there is no treesitter parser for the
---        buffer, return an empty string)
+--      - DiffStats(): should return a table with 3 number values in the form
+--        "[ added, removed, modified ]";
+--      - CursorScope(): should return a string, or empty if no treesitter
+--        parser for the buffer
+--      - BranchInfo(): should return a string, or empty if no information
 --   - highlight groups:
---      - for diff_stats(), the statusline understands 3 highlight groups:
+--      - for DiffStats(), the statusline understands 3 highlight groups:
 --          - StatusLineDiffAdd
 --          - StatusLineDiffDelete
 --          - StatusLineDiffChange
@@ -126,10 +122,12 @@ local function current_mode_text()
 end
 
 local function branch_info()
-    return ""
-    -- TODO this seems to be very expensive, or something else seems to happen,
-    -- as the mouse flickers continuously; commenting this solves it entirely
-    -- return vim.fn.system('git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d "\\n"')
+    -- see API above for BranchInfo()
+    if BranchInfo ~= nil then
+        return BranchInfo()
+    else
+        return ''
+    end
 end
 
 local function fileattributes()
@@ -177,9 +175,9 @@ local function treesitter_scope()
     -- since the scope can get quite big, don't print it when the window width
     -- is less than 100 chars
     if vim.fn.winwidth(0) > 99 then
-        -- see API above for cursor_scope()
-        if cursor_scope ~= nil then
-            return cursor_scope()
+        -- see API above for CursorScope()
+        if CursorScope ~= nil then
+            return CursorScope()
         end
     end
     return ''
@@ -203,12 +201,12 @@ local function longlines()
     if vim.bo.textwidth ~= 0 then
         threshold = vim.bo.textwidth
     else
-        threshold = 80      -- sane default
-        str = str .. '~'    -- mark that &tw is not set
+        threshold = 80   -- sane default
+        str = str .. '~' -- mark that &tw is not set
     end
 
     -- iterate lines in the buffer, and save long lines in list
-    for _,line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
+   for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
         local len = #vim.fn.substitute(line, '\t', spaces, 'g') -- expand tabs
         if len > threshold then
             table.insert(long_lines, #line)
@@ -243,7 +241,7 @@ end
 -- variadic strings passed as parameters
 local function gen_section(highlight_group, ...)
     local fmt = '%#' .. highlight_group .. '#'
-    for i, arg in ipairs({...}) do
+    for _, arg in ipairs({ ... }) do
         fmt = fmt .. arg
     end
     fmt = fmt .. '%#StatusLine#' -- acts as a clear / reset to default
@@ -255,9 +253,9 @@ local function gen_section_diff_stats()
     local fmt = ''
     local stats = ''
 
-    -- see API above for diff_stats()
-    if diff_stats ~= nil then
-        stats = diff_stats()
+    -- see API above for DiffStats()
+    if DiffStats ~= nil then
+        stats = DiffStats()
     else
         return ''
     end
@@ -283,7 +281,7 @@ end
 -- nvim_treesitter with more options
 -- branch name information
 -- see github.com/nihilistkitten/dotfiles/blob/main/nvim/lua/statusline.lua
-function status_line()
+function StatusLine()
     -- see sep() above
     local style = 'gaps'
 
@@ -353,5 +351,5 @@ function status_line()
 end
 
 -- set up the statusline function; also make the statusline global
-vim.o.statusline = "%!luaeval('status_line()')"
+vim.o.statusline = "%!luaeval('StatusLine()')"
 vim.o.laststatus = 3

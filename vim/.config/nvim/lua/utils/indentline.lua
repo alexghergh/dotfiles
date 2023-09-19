@@ -1,5 +1,10 @@
+--
+-- see :h indent_blankline.txt
+--
+local M = {}
+
 if not pcall(require, 'indent_blankline') then
-    return
+    return nil
 end
 
 require('indent_blankline').setup({
@@ -8,3 +13,5 @@ require('indent_blankline').setup({
     show_current_context = true,
     viewport_buffer = 50,
 })
+
+return M

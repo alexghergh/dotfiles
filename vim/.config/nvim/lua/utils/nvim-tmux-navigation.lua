@@ -1,5 +1,7 @@
+local M = {}
+
 if not pcall(require, 'nvim-tmux-navigation') then
-    return
+    return nil
 end
 
 require('nvim-tmux-navigation').setup({
@@ -12,3 +14,5 @@ require('nvim-tmux-navigation').setup({
         last_active = '<Leader>lp',
     }
 })
+
+return M

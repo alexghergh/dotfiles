@@ -1,5 +1,13 @@
+--
+-- neovim treesitter setup
+--
+-- see :h treesitter
+-- see :h nvim-treesitter
+--
+local M = {}
+
 if not pcall(require, 'nvim-treesitter.configs') then
-    return
+    return nil
 end
 
 require('nvim-treesitter.configs').setup({
@@ -72,25 +80,25 @@ require('nvim-treesitter.configs').setup({
     },
 })
 
--- set folding function
-vim.o.foldmethod = 'expr'
-vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-
+-- TODO move to lua/keymaps if in core
 -- show tree-sitter syntax group under cursor; mnemonic "SYntax"
 vim.keymap.set('n', '<Leader>sy', '<Cmd>TSHighlightCapturesUnderCursor<CR>')
 
 -- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
 vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
 
--- map the other key combination to nothing (fat-finger-free)
-vim.keymap.set('n', '<Leader>nt', '')
+-- set folding function
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
 -- display the current scope in the statusline
 -- see API in lua/statusline.lua
-function cursor_scope()
+function CursorScope()
     local result = vim.fn['nvim_treesitter#statusline']()
     if result ~= vim.NIL then
         return result
     end
     return ''
 end
+
+return M

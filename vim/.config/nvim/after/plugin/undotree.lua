@@ -1,11 +1,9 @@
+--
 -- see :h undotree.txt
-
+--
 if vim.g.loaded_undotree == nil then
-    return
+    return nil
 end
-
--- show undo-tree (mnemonic Undo Show)
-vim.keymap.set('n', '<Leader>us', '<Cmd>UndotreeToggle<CR>')
 
 -- window layout
 vim.g.undotree_WindowLayout = 2
@@ -15,3 +13,6 @@ vim.g.undotree_SetFocusWhenToggle = 1
 
 -- short timestamp indicators
 vim.g.undotree_ShortIndicators = 1
+
+-- show undo-tree (mnemonic Undo Show)
+vim.keymap.set('n', '<Leader>us', '<Cmd>UndotreeToggle<CR>')
