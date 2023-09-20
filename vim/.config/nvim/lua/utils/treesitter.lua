@@ -32,7 +32,7 @@ require('nvim-treesitter.configs').setup({
         enable = true,
 
         -- disable for HUGE files
-        disable = function(lang, buf)
+        disable = function(_, buf)
             local max_filesize = 500 * 1024 -- 500 KB
             local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
             if ok and stats and stats.size > max_filesize then
@@ -80,7 +80,13 @@ require('nvim-treesitter.configs').setup({
     },
 })
 
--- TODO move to lua/keymaps if in core
+-- TODO move to lua/keymaps once the stuff in Playground is in core (nvim 0.10)
+-- see github.com/nvim-treesitter/playground
+-- it seems that highlight groups under cursor becomes :Inspect, while
+-- TSPlaygroundToggle becomes :InspectTree; there doesn't seem to be any
+-- built-in default for tsnodeundercursor, so unless one is included in core,
+-- check the playground source code and move that here
+
 -- show tree-sitter syntax group under cursor; mnemonic "SYntax"
 vim.keymap.set('n', '<Leader>sy', '<Cmd>TSHighlightCapturesUnderCursor<CR>')
 
