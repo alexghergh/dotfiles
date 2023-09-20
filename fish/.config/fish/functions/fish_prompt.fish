@@ -18,9 +18,15 @@ function fish_prompt
     echo -ns (fish_vcs_prompt) $normal
 
     # execution time of last command
-    if test $CMD_DURATION -gt 500
-        echo -ns (set_color $fish_color_cmd_duration)
-        echo -ns (printf " (%.1fs)" (math $CMD_DURATION / 1000)) $normal
+    if test $CMD_DURATION -gt 1000
+        set -l seconds (math --scale=0 "$CMD_DURATION / 1000 % 60")
+        set -l minutes (math --scale=0 "$CMD_DURATION / (1000 * 60) % 60")
+        set -l hours   (math --scale=0 "$CMD_DURATION / (1000 * 60 * 60)")
+        echo -ns (set_color $fish_color_cmd_duration) (printf ' (')
+        test $hours   -gt 0; and echo -ns (printf "%dh " $hours)
+        test $minutes -gt 0; and echo -ns (printf "%dm " $minutes)
+        test $seconds -gt 0; and echo -ns (printf "%ds" $seconds)
+        echo -ns (printf ')') $normal
     end
 
     # prompt suffix
