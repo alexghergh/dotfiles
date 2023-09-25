@@ -49,7 +49,12 @@ require('packer').startup({function(use)
     use { 'neovim/nvim-lspconfig' }
     use { 'hrsh7th/cmp-nvim-lsp' }
     use { 'hrsh7th/cmp-buffer' }
+    use { 'saadparwaiz1/cmp_luasnip' }
     use { 'hrsh7th/nvim-cmp' }
+
+    -- snippets
+    use { 'L3MON4D3/LuaSnip', tag = 'v2.*', run = 'make install_jsregexp' }
+    use { 'honza/vim-snippets' }
 
     -- neovim-tmux navigation
     use { 'alexghergh/nvim-tmux-navigation' }

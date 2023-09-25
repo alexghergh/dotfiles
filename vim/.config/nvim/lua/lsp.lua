@@ -8,10 +8,11 @@
 -- see lua/utils/*
 --
 
--- ! require returns true if module returns nil
+-- ! require returns 'true' if module returns nil
 if require('utils.lsp') == true then return end
 if require('utils.lspconfig') == true then return end
 if require('utils.neodev') == true then return end
+if require('utils.luasnip') == true then return end
 if require('utils.cmp') == true then return end
 
 local servers = {
@@ -30,17 +31,5 @@ local servers = {
 
 local capabilities = require('utils.cmp').default_capabilities()
 local handlers = require('utils.lsp').handlers
-
--- -- enable function arguments completion through snippets
--- -- only for lsp servers that support it
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities.textDocument.completion.completionItem.snippetSupport = true
--- capabilities.textDocument.completion.completionItem.resolveSupport = {
---     properties = {
---         "documentation",
---         "detail",
---         "additionalTextEdits",
---     }
--- }
 
 require('utils.lspconfig').setup_servers(servers, capabilities, handlers)
