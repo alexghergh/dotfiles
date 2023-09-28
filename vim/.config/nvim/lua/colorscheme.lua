@@ -68,4 +68,8 @@ if vim.g.colors_name == 'melange' then
     set_hl('LspReferenceRead', { bg='#363331' })
     set_hl('LspReferenceText', { bg='#363331' })
     set_hl('LspReferenceWrite', { bg='#363331' })
+
+    -- indentation guides
+    set_hl('IblIndent', { fg='#403c3b' })
+    set_hl('IblScope', { fg='#d2691e' })
 end
