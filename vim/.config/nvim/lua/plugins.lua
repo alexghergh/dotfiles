@@ -23,6 +23,9 @@ require('packer').startup({function(use)
     -- plugin manager can manage itself
     use { 'wbthomason/packer.nvim' }
 
+    -- utils
+    use { 'nvim-lua/plenary.nvim' }
+
     -- nvim-treesitter goodies
     use { 'nvim-treesitter/nvim-treesitter',
         -- same as :TSUpdate(), but doesn't break on first time use

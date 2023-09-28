@@ -12,10 +12,22 @@ require('utils.nvim-tmux-navigation')
 require('utils.treesitter')
 require('utils.indentline')
 
+-- TODO refactor this and all statusline into a proper plugin
+local branch_info = ''
+
 -- see API in lua/statusline.lua
 BranchInfo = function()
-    return ""
-    -- TODO this seems to be very expensive, or something else seems to happen,
-    -- as the mouse flickers continuously; commenting this solves it entirely
-    -- return vim.fn.system('git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d "\\n"')
+    return branch_info
 end
+
+local Job = require('plenary.job')
+
+Job:new({
+    command = 'git',
+    args = { 'rev-parse', '--abbrev-ref', 'HEAD' },
+    cwd = '.',
+    on_stdout = function(err, data)
+        assert(not err, err)
+        branch_info = data
+    end,
+}):start()

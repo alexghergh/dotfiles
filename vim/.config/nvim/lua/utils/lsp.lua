@@ -11,6 +11,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         -- options for the nvim lsp keymaps
         local opts = { buffer = args.buf }
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
 
         -- buffer mappings for LSP servers
 
@@ -33,25 +34,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
 
         -- formatting
-        vim.keymap.set('n', '<space>f', function() -- <L>=
+        vim.keymap.set('n', '<space>f', function()
             vim.lsp.buf.format { async = true }
         end, opts)
 
         -- code actions
         vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vim.lsp.buf.code_action, opts)
 
-        -- workspace folders
-        -- vim.keymap.set('n', '<Leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-        -- vim.keymap.set('n', '<Leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-        -- vim.keymap.set('n', '<Leader>ww', function()
-        --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        -- end, opts)
-        -- vim.keymap.set('n', '<Leader>ws', vim.lsp.buf.workspace_symbol, opts)
-
-        -- set up symbol highlighting if the server supports it
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        -- symbol highlighting on hover
         if client.server_capabilities.documentHighlightProvider then
-            vim.api.nvim_create_augroup('lsp_doc_highlight', { clear = false, })
+            vim.api.nvim_create_augroup('lsp_doc_highlight', { clear = false })
             vim.api.nvim_clear_autocmds({
                 buffer = args.buf,
                 group = 'lsp_doc_highlight'
@@ -67,6 +59,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 callback = vim.lsp.buf.clear_references,
             })
         end
+
+        -- workspace folders
+        -- vim.keymap.set('n', '<Leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+        -- vim.keymap.set('n', '<Leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+        -- vim.keymap.set('n', '<Leader>ww', function()
+        --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        -- end, opts)
+        -- vim.keymap.set('n', '<Leader>ws', vim.lsp.buf.workspace_symbol, opts)
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false })
 })
