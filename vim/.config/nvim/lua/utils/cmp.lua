@@ -60,14 +60,21 @@ local luasnip = require('utils.luasnip').ls
 -- setup general auto-completion
 cmp.setup({
     enabled = function()
+        local enabled = true
+
         -- disable in comments
         local context = require('cmp.config.context')
-        if vim.api.nvim_get_mode().mode == 'c' then
-            return true
-        else
-            return not context.in_treesitter_capture('comment')
-                and not context.in_syntax_group('Comment')
-        end
+        enabled = enabled and not context.in_treesitter_capture('comment')
+            and not context.in_syntax_group('Comment')
+
+        -- disable in prompts
+        enabled = enabled and not (vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt')
+
+        -- disable in macros
+        enabled = enabled and not (vim.fn.reg_recording() ~= '')
+        enabled = enabled and not (vim.fn.reg_executing() ~= '')
+
+        return enabled
     end,
     snippet = {
         expand = function(args)

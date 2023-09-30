@@ -86,6 +86,9 @@ require('packer').startup({function(use)
     -- visual search
     use { 'bronson/vim-visual-star-search' }
 
+    -- telescope stuff
+    use { 'nvim-telescope/telescope.nvim', tag='0.1.3' }
+
     -- automatically set up the config after cloning
     if packer_installed == false then
         require('packer').sync()
