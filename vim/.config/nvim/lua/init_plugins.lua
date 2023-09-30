@@ -15,19 +15,23 @@ require('utils.indentline')
 -- TODO refactor this and all statusline into a proper plugin
 local branch_info = ''
 
--- see API in lua/statusline.lua
-BranchInfo = function()
-    return branch_info
-end
-
 local Job = require('plenary.job')
 
-Job:new({
-    command = 'git',
-    args = { 'rev-parse', '--abbrev-ref', 'HEAD' },
-    cwd = '.',
-    on_stdout = function(err, data)
-        assert(not err, err)
-        branch_info = data
-    end,
-}):start()
+-- see API in lua/statusline.lua
+BranchInfo = function()
+    Job:new({
+        command = 'git',
+        args = { 'rev-parse', '--abbrev-ref', 'HEAD' },
+        cwd = '.',
+        on_exit = function(data, _)
+            local res = data:result()
+            if not vim.tbl_isempty(res) then
+                branch_info = res[1]
+            else
+                branch_info = ''
+            end
+        end,
+    }):start()
+
+    return branch_info
+end
