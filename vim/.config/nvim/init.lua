@@ -27,8 +27,8 @@ require('keymaps')
 require('plugins')
 
 -- colorscheme setup
-pcall(vim.cmd.colorscheme, 'melange')
 require('colorscheme')
+pcall(vim.cmd.colorscheme, 'melange')
 
 -- diagnostics setup
 require('diagnostics')
