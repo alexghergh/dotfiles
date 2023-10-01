@@ -172,13 +172,28 @@ cmp.setup.cmdline({ '/', '?' }, {
                 end
             end
         },
-        ['<C-e>'] = {
-            c = cmp.mapping.abort()
-        },
+        ['<C-e>'] = { c = cmp.mapping.abort() },
     },
     sources = {
         { name = 'buffer' }
     }
+})
+
+cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline({
+        ['<C-f>'] = {
+            c = function(fallback)
+                cmp.close()
+                fallback()
+            end
+        },
+        ['<CR>'] = { c = cmp.mapping.confirm() },
+    }),
+    sources = cmp.config.sources({
+        { name = 'path' }
+    }, {
+        { name = 'cmdline' }
+    })
 })
 
 function M.default_capabilities(...)
