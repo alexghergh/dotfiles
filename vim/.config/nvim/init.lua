@@ -26,12 +26,12 @@ require('keymaps')
 -- source plugin installs
 require('plugins')
 
+-- diagnostics setup
+require('diagnostics')
+
 -- colorscheme setup
 require('colorscheme')
 pcall(vim.cmd.colorscheme, 'melange')
-
--- diagnostics setup
-require('diagnostics')
 
 -- statusline setup
 require('statusline')

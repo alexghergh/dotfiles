@@ -2,7 +2,7 @@
 -- diagnostics settings
 --
 -- see :h vim.diagnostic
--- see lua/colorscheme.lua for colors for the diagnostics signs
+-- see lua/colorscheme/*.lua for colors for the diagnostics signs
 -- see lua/keymaps.lua for diagnostic keymaps
 --
 
@@ -65,6 +65,6 @@ vim.diagnostic.handlers.signs = {
 local signs = { Error = ' ', Warn = ' ', Hint = ' ', Info = ' ' }
 for type, icon in pairs(signs) do
     local hl = 'DiagnosticSign' .. type
-    local hl_line = 'DiagnosticLineNr' .. type   -- see lua/colorscheme.lua
+    local hl_line = 'DiagnosticLineNr' .. type   -- see lua/colorscheme/*.lua
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl_line })
 end

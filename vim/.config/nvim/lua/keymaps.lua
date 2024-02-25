@@ -66,6 +66,7 @@ vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternat
 
 --
 -- diagnostics keymaps
+-- see lua/diagnostics.lua for other diagnostics settings
 --
 
 -- diagnostics (see :h vim.diagnostic)
