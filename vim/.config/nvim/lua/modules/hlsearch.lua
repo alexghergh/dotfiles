@@ -7,3 +7,5 @@ end
 require('hlsearch').setup()
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

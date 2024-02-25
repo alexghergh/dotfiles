@@ -1,6 +1,4 @@
 --
--- neovim treesitter setup
---
 -- see :h treesitter
 -- see :h nvim-treesitter
 --
@@ -11,7 +9,6 @@ if not pcall(require, 'nvim-treesitter.configs') then
 end
 
 require('nvim-treesitter.configs').setup({
-
     ensure_installed = {
         'c',
         'cpp',
@@ -98,14 +95,6 @@ vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
 vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 
--- display the current scope in the statusline
--- see API in lua/statusline.lua
-function CursorScope()
-    local result = vim.fn['nvim_treesitter#statusline']()
-    if result ~= vim.NIL then
-        return result
-    end
-    return ''
-end
-
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

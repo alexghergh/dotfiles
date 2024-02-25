@@ -1,8 +1,6 @@
 --
 -- auto-completion using nvim-cmp
--- this plugin only sets up the skeleton for accepting multiple sources
--- it also sets up the UI
---
+-- this plugin sets up the skeleton for accepting multiple sources, and the UI;
 -- sources need to be separately installed and set up
 --
 -- see :h nvim-cmp
@@ -59,7 +57,7 @@ local function has_words_before()
 end
 
 local cmp = require('cmp')
-local luasnip = require('utils.luasnip').ls
+local luasnip = require('modules.luasnip').ls
 
 -- setup general auto-completion
 cmp.setup({
@@ -208,3 +206,5 @@ function M.default_capabilities(...)
 end
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

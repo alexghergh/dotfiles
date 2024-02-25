@@ -89,6 +89,9 @@ vim.opt.listchars = {
 vim.opt.display = { 'lastline', 'uhex' }
 vim.opt.fillchars = { ['lastline'] = '>' }
 
+-- make statusline global
+vim.opt.laststatus = 3
+
 --
 -- window specific
 --
@@ -119,6 +122,9 @@ vim.opt.foldminlines = 3
 
 -- set max fold level
 vim.opt.foldnestmax = 4
+
+-- display cursorline
+vim.opt.cursorline = true
 
 --
 -- buffer specific

@@ -7,7 +7,7 @@
 -- notes:
 --   - remap is false by default in vim.keymap.set
 --   - other plugin-specific mappings are found in after/plugin/ or in
---      lua/utils/
+--      lua/modules/
 --
 
 --
@@ -26,7 +26,7 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 
 -- since we remapped <Leader> to Space, just unmap Space, to avoid the annoying
 -- cursor moving right feature
-vim.keymap.set('n', ' ', '')
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
 --
 -- command-line keymaps
@@ -66,14 +66,13 @@ vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternat
 
 --
 -- diagnostics keymaps
--- see lua/diagnostics.lua for other diagnostics settings
+-- see lua/core/diagnostics.lua for other diagnostics settings
+-- see :h vim.diagnostic
 --
 
--- diagnostics (see :h vim.diagnostic)
--- show diagnostics in a floating window (mnemonic Diagnostics Show/Next/Prev/Quickfix)
+-- show diagnostics in a floating window (mnemonic Diagnostics Show/Next/Prev)
 vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float)
 vim.keymap.set('n', '<Leader>dn', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<Leader>dp', vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<Leader>dq', vim.diagnostic.setloclist) -- TODO keep this?
 
 -- vim: set tw=0 fo-=r ft=lua

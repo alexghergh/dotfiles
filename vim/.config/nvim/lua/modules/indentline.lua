@@ -1,6 +1,6 @@
 --
 -- see :h indent-blankline.txt
--- see lua/coroscheme.lua
+-- see lua/colorscheme.lua
 --
 local M = {}
 
@@ -11,3 +11,5 @@ end
 require('ibl').setup()
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

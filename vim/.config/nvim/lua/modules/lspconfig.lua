@@ -1,5 +1,5 @@
 --
--- neovim lsp configurations for servers
+-- neovim lsp server configs
 --
 -- see :h vim.lsp
 -- see :h lspconfig
@@ -24,3 +24,5 @@ function M.setup_servers(servers, capabilities, handlers)
 end
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

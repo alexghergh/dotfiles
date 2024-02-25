@@ -64,14 +64,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 callback = vim.lsp.buf.clear_references,
             })
         end
-
-        -- workspace folders
-        -- vim.keymap.set('n', '<Leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-        -- vim.keymap.set('n', '<Leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-        -- vim.keymap.set('n', '<Leader>ww', function()
-        --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        -- end, opts)
-        -- vim.keymap.set('n', '<Leader>ws', vim.lsp.buf.workspace_symbol, opts)
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
@@ -116,3 +108,5 @@ M.handlers = {
 }
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

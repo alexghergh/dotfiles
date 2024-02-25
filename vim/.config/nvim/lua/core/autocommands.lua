@@ -1,7 +1,7 @@
 --
 -- autocommands
 --
--- see https://neovim.io/doc/user/lua-guide.html#lua-guide-autocommands
+-- see :h lua-guide-autocommands
 --
 
 -- user group
@@ -18,10 +18,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- open files to last known position (:h last-position-jump)
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function()
-        -- we have to create a second autocmd, which registers on filetype detection
+        -- register only on filetype detection
         vim.api.nvim_create_autocmd('FileType', {
             callback = function()
-                -- create a regex with the filetype patterns to match against
+                -- filetype regex patterns to match against
                 local regex =
                     vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
 
@@ -67,10 +67,10 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     group = user_group,
 })
 
--- add 2 blank lines at the beginning of a commit file when opening
+-- add 2 blank lines at the beginning of a commit file when opened
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function()
-        -- we have to create a second autocmd, which registers on filetype detection
+        -- register only on filetype detection
         vim.api.nvim_create_autocmd('FileType', {
             callback = function()
                 -- check filetype

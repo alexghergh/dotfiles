@@ -11,36 +11,28 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- source settings
-require('settings')
+-- source core built-in stuff (settings, autocommands, commands, keymaps,
+-- diagnostics, lsp_client)
+require('core')
 
--- source autocommands
-require('autocommands')
+-- setup custom colors
+require('colorscheme')
 
--- source user commands
-require('commands')
-
--- source keymaps
-require('keymaps')
-
--- source plugin installs
+-- install necessary plugins
 require('plugins')
 
--- diagnostics setup
-require('diagnostics')
-
--- colorscheme setup
-require('colorscheme')
+-- set up colorscheme (needs to run after plugin installs, so we have the
+-- colorscheme already downloaded on fresh install)
 pcall(vim.cmd.colorscheme, 'melange')
+
+-- setup installed plugins
+require('modules')
 
 -- statusline setup
 require('statusline')
 
--- lsp setup
-require('lsp')
-
--- setup other plugins
-require('init_plugins')
+-- lsp servers setup
+require('lsp_servers')
 
 -- file-type specific stuff is processed later
 -- see after/ftplugin/
