@@ -6,7 +6,8 @@
 --
 -- notes:
 --   - remap is false by default in vim.keymap.set
---   - other plugin-specific mappings are found in after/plugin/
+--   - other plugin-specific mappings are found in after/plugin/ or in
+--      lua/utils/
 --
 
 --
@@ -27,9 +28,6 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 -- cursor moving right feature
 vim.keymap.set('n', ' ', '')
 
--- source vimrc
-vim.keymap.set('n', '<Leader>sv', '<Cmd>source $MYVIMRC<CR>')
-
 
 --
 -- command-line keymaps
@@ -38,8 +36,7 @@ vim.keymap.set('n', '<Leader>sv', '<Cmd>source $MYVIMRC<CR>')
 -- for when you REALLY want to save that buffer
 vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 
--- expands into the current file's working directory when typing
--- '%%' in command line
+-- expand into the current file's working directory
 vim.keymap.set('c', '%%',
     "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'" , { expr = true })
 
@@ -50,9 +47,6 @@ vim.keymap.set('c', '%%',
 
 -- switch to last file
 vim.keymap.set('n', '<Leader>o', '<C-^>')
-
--- open netrw in a vertical split
-vim.keymap.set('n', '<Leader>ee', '<Cmd>Vexplore<CR>')
 
 -- navigate tags (mnemonic Switch Tag)
 vim.keymap.set('n', '<Leader>st', '<C-]>')
