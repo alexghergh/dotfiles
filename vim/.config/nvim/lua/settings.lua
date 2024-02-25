@@ -15,6 +15,9 @@ end
 -- wrap line prefix
 vim.opt.showbreak = '↪ '
 
+-- break indentation
+vim.opt.breakindent = true
+
 -- amount of lines to keep above and below the cursor at all times
 vim.opt.scrolloff = 7
 
