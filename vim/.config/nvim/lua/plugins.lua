@@ -91,6 +91,9 @@ require('packer').startup({function(use)
     -- telescope stuff
     use { 'nvim-telescope/telescope.nvim', tag='0.1.3' }
 
+    -- search highlighting
+    use { 'nvimdev/hlsearch.nvim' }
+
     -- automatically set up the config after cloning
     if packer_installed == false then
         require('packer').sync()

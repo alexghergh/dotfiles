@@ -11,6 +11,7 @@
 require('utils.nvim-tmux-navigation')
 require('utils.treesitter')
 require('utils.indentline')
+require('utils.hlsearch')
 
 -- TODO refactor this and all statusline into a proper plugin
 local branch_info = ''

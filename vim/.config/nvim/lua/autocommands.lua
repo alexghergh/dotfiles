@@ -71,15 +71,4 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     group = user_group
 })
 
--- remove search highlighting on cursor move
-vim.api.nvim_create_autocmd('CursorMoved', {
-    command = 'call search#HlSearch()',
-    group = user_group
-})
-
-vim.api.nvim_create_autocmd('InsertEnter', {
-    command = 'call search#StopHL()',
-    group = user_group
-})
-
 -- vim: set tw=0 fo-=r ft=lua
