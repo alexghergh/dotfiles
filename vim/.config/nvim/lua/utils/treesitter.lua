@@ -34,11 +34,12 @@ require('nvim-treesitter.configs').setup({
         -- disable for HUGE files
         disable = function(_, buf)
             local max_filesize = 500 * 1024 -- 500 KB
-            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            local ok, stats =
+                pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
             if ok and stats and stats.size > max_filesize then
                 return true
             end
-        end
+        end,
     },
 
     incremental_selection = {
@@ -48,11 +49,11 @@ require('nvim-treesitter.configs').setup({
             node_incremental = 'grn',
             scope_incremental = 'grc',
             node_decremental = 'grm',
-        }
+        },
     },
 
     indent = {
-        enable = true
+        enable = true,
     },
 
     playground = {

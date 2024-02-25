@@ -12,7 +12,7 @@ require('nvim-tmux-navigation').setup({
         up = '<M-k>',
         right = '<M-l>',
         last_active = '<Leader>lp',
-    }
+    },
 })
 
 return M

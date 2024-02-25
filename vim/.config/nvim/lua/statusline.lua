@@ -41,6 +41,7 @@
 -- mode information
 -- see https://github.com/nvim-lualine/lualine.nvim/blob/master/lua/lualine/utils/mode.lua
 --
+-- stylua: ignore
 local modes_map = {
     ['n']     = 'NORMAL',
     ['no']    = 'O-PENDING',
@@ -86,6 +87,7 @@ local modes_map = {
 local function sep(style)
     -- 'style' can be either 'arrow' or 'gaps'
     if style == 'arrow' then
+        -- stylua: ignore
         return {
             LSIDE_FULL  = '',
             LSIDE_EMPTY = '',
@@ -93,6 +95,7 @@ local function sep(style)
             RSIDE_EMPTY = '',
         }
     elseif style == 'gaps' then
+        -- stylua: ignore
         return {
             LSIDE_FULL  = '', -- this might not render properly in certain fonts
             LSIDE_EMPTY = '\\',
@@ -100,6 +103,7 @@ local function sep(style)
             RSIDE_EMPTY = '/',
         }
     else
+        -- stylua: ignore
         return {
             LSIDE_FULL  = '',
             LSIDE_EMPTY = '|',
@@ -201,12 +205,12 @@ local function longlines()
     if vim.bo.textwidth ~= 0 then
         threshold = vim.bo.textwidth
     else
-        threshold = 80   -- sane default
+        threshold = 80 -- sane default
         str = str .. '~' -- mark that &tw is not set
     end
 
     -- iterate lines in the buffer, and save long lines in list
-   for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
+    for _, line in ipairs(vim.api.nvim_buf_get_lines(0, 0, -1, false)) do
         local len = #vim.fn.substitute(line, '\t', spaces, 'g') -- expand tabs
         if len > threshold then
             table.insert(long_lines, #line)

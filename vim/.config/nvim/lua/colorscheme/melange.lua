@@ -32,7 +32,10 @@ function M.setup()
 
     -- autocompletion menu items (nvim-cmp)
     -- gray
-    set_hl('CmpItemAbbrDeprecated', { fg = '#808080', bg = 'None', strikethrough = true })
+    set_hl(
+        'CmpItemAbbrDeprecated',
+        { fg = '#808080', bg = 'None', strikethrough = true }
+    )
     -- blue
     set_hl('CmpItemAbbrMatch', { fg = '#569CD6', bg = 'None' })
     set_hl('CmpItemAbbrMatchFuzzy', { link = 'CmpIntemAbbrMatch' })

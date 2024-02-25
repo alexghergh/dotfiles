@@ -9,11 +9,13 @@
 --
 
 -- ! require returns 'true' if module returns nil
+-- stylua: ignore start
 if require('utils.lsp') == true then return end
 if require('utils.lspconfig') == true then return end
 if require('utils.neodev') == true then return end
 if require('utils.luasnip') == true then return end
 if require('utils.cmp') == true then return end
+-- stylua: ignore end
 
 local servers = {
     -- pacman ccls

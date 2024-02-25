@@ -22,5 +22,5 @@ vim.api.nvim_create_autocmd('ColorScheme', {
             require('colorscheme.melange').setup()
         end
     end,
-    group = vim.api.nvim_create_augroup('_user_group', { clear = false })
+    group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })

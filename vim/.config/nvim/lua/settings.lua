@@ -29,13 +29,13 @@ vim.opt.smartcase = true
 vim.opt.incsearch = true
 
 -- allow neovim to copy and paste directly from the system clipboard
-vim.opt.clipboard:append { 'unnamedplus' }
+vim.opt.clipboard:append({ 'unnamedplus' })
 
 -- don't unload buffers when switching, just hide them
 vim.opt.hidden = true
 
 -- show diffs in vertical splits by default
-vim.opt.diffopt:append { 'vertical' }
+vim.opt.diffopt:append({ 'vertical' })
 
 -- update every 50 milliseconds after not typing anything
 vim.opt.updatetime = 50
@@ -51,7 +51,16 @@ vim.opt.termguicolors = true
 vim.opt.background = 'dark'
 
 -- ignore certain files when opening buffers from inside neovim
-vim.opt.wildignore:append { '*.o', '*.obj', '**/.git/*', '*.swp', '*.pyc', '*.class', '**/node_modules/*', '*.bak' }
+vim.opt.wildignore:append({
+    '*.o',
+    '*.obj',
+    '**/.git/*',
+    '*.swp',
+    '*.pyc',
+    '*.class',
+    '**/node_modules/*',
+    '*.bak',
+})
 vim.opt.wildmode = 'longest:full,full'
 
 -- incremental live completion
@@ -62,7 +71,7 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 
 -- add directories upwards as search path
-vim.opt.path:append { '**' }
+vim.opt.path:append({ '**' })
 
 -- show tab characters, line-endings, leading space, wrap chars
 vim.opt.list = true
@@ -79,13 +88,6 @@ vim.opt.listchars = {
 -- show characters for line too long at the bottom of the screen
 vim.opt.display = { 'lastline', 'uhex' }
 vim.opt.fillchars = { ['lastline'] = '>' }
-
--- options for netrw
-vim.g.netrw_liststyle = 3       -- treestyle listing
-vim.g.netrw_banner = 0          -- don't show the banner at the top (toggle with <S-i>)
-vim.g.netrw_browse_split = 4    -- open files in the previous window
-vim.g.netrw_winsize = 15        -- percent of window size
-
 
 --
 -- window specific
@@ -117,7 +119,6 @@ vim.opt.foldminlines = 3
 
 -- set max fold level
 vim.opt.foldnestmax = 4
-
 
 --
 -- buffer specific

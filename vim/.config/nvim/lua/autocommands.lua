@@ -9,8 +9,10 @@ local user_group = vim.api.nvim_create_augroup('_user_group', { clear = true })
 
 -- highlight text on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
-    callback = function() vim.highlight.on_yank({ timeout = 200 }) end,
-    group = user_group
+    callback = function()
+        vim.highlight.on_yank({ timeout = 200 })
+    end,
+    group = user_group,
 })
 
 -- open files to last known position (:h last-position-jump)
@@ -20,7 +22,8 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         vim.api.nvim_create_autocmd('FileType', {
             callback = function()
                 -- create a regex with the filetype patterns to match against
-                local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
+                local regex =
+                    vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
 
                 -- position of the "last-position" mark in the file (:h '")
                 local mark_pos = vim.fn.line([['"]])
@@ -28,27 +31,40 @@ vim.api.nvim_create_autocmd('BufReadPost', {
                 -- check filetype
                 if regex:match_str(vim.bo.filetype) == nil then
                     -- check valid position (file could've been modified outside vim)
+                    -- stylua: ignore
                     if mark_pos > 1 and mark_pos <= vim.fn.line("$") then
                         vim.cmd([[ exe 'normal! g`"' ]])
                     end
                 end
             end,
-            group = user_group
+            group = user_group,
         })
     end,
-    group = user_group
+    group = user_group,
 })
 
 -- clean extra spaces at the end of a line
 vim.api.nvim_create_autocmd('BufWritePre', {
-    pattern = { '*.zsh', '*.vim', '*.c', '*.cpp', '*.txt', '*.js', '*.py', '*.wiki',
-        '*.sh', '*.coffee', '*.java', '*.lua', },
+    pattern = {
+        '*.zsh',
+        '*.vim',
+        '*.c',
+        '*.cpp',
+        '*.txt',
+        '*.js',
+        '*.py',
+        '*.wiki',
+        '*.sh',
+        '*.coffee',
+        '*.java',
+        '*.lua',
+    },
     callback = function()
         local l = vim.fn.winsaveview()
         vim.cmd([[ keeppatterns silent! %s/\s\+$//e ]])
         vim.fn.winrestview(l)
     end,
-    group = user_group
+    group = user_group,
 })
 
 -- add 2 blank lines at the beginning of a commit file when opening
@@ -65,10 +81,10 @@ vim.api.nvim_create_autocmd('BufReadPost', {
                     end
                 end
             end,
-            group = user_group
+            group = user_group,
         })
     end,
-    group = user_group
+    group = user_group,
 })
 
 -- vim: set tw=0 fo-=r ft=lua

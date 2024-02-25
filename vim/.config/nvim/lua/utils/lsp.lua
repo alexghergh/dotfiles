@@ -35,18 +35,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         -- formatting
         vim.keymap.set('n', '<space>f', function()
-            vim.lsp.buf.format { async = true }
+            vim.lsp.buf.format({ async = true })
         end, opts)
 
         -- code actions
-        vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vim.lsp.buf.code_action, opts)
+        vim.keymap.set(
+            { 'n', 'v' },
+            '<Leader>ca',
+            vim.lsp.buf.code_action,
+            opts
+        )
 
         -- symbol highlighting on hover
         if client.server_capabilities.documentHighlightProvider then
             vim.api.nvim_create_augroup('lsp_doc_highlight', { clear = false })
             vim.api.nvim_clear_autocmds({
                 buffer = args.buf,
-                group = 'lsp_doc_highlight'
+                group = 'lsp_doc_highlight',
             })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                 buffer = args.buf,
@@ -68,7 +73,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- end, opts)
         -- vim.keymap.set('n', '<Leader>ws', vim.lsp.buf.workspace_symbol, opts)
     end,
-    group = vim.api.nvim_create_augroup('_user_group', { clear = false })
+    group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
 
 -- go to definition in a split window
@@ -83,7 +88,9 @@ local function goto_definition()
             vim.lsp.util.jump_to_location(result[1], 'utf-8')
 
             if #result > 1 then
-                vim.fn.setqflist(vim.lsp.util.locations_to_items(result, 'utf-8'))
+                vim.fn.setqflist(
+                    vim.lsp.util.locations_to_items(result, 'utf-8')
+                )
                 vim.api.nvim_command('copen')
                 vim.api.nvim_command('wincmd p')
             end

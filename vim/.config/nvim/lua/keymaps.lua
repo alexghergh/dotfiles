@@ -28,7 +28,6 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 -- cursor moving right feature
 vim.keymap.set('n', ' ', '')
 
-
 --
 -- command-line keymaps
 --
@@ -37,9 +36,12 @@ vim.keymap.set('n', ' ', '')
 vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 
 -- expand into the current file's working directory
-vim.keymap.set('c', '%%',
-    "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'" , { expr = true })
-
+vim.keymap.set(
+    'c',
+    '%%',
+    "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'",
+    { expr = true }
+)
 
 --
 -- navigation/code-flow keymaps
@@ -51,7 +53,6 @@ vim.keymap.set('n', '<Leader>o', '<C-^>')
 -- navigate tags (mnemonic Switch Tag)
 vim.keymap.set('n', '<Leader>st', '<C-]>')
 
-
 --
 -- window keymaps
 --
@@ -62,7 +63,6 @@ vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
 vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>')
 vim.keymap.set('n', '<Leader>wz', '<Cmd>call functions#Zoom()<CR>')
 vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternate file
-
 
 --
 -- diagnostics keymaps

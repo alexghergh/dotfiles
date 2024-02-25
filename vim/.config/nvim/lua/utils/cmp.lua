@@ -50,8 +50,12 @@ local icons = {
 local function has_words_before()
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and
-        vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
+    return col ~= 0
+        and vim.api
+                .nvim_buf_get_lines(0, line - 1, line, true)[1]
+                :sub(col, col)
+                :match('%s')
+            == nil
 end
 
 local cmp = require('cmp')
@@ -64,11 +68,13 @@ cmp.setup({
 
         -- disable in comments
         local context = require('cmp.config.context')
-        enabled = enabled and not context.in_treesitter_capture('comment')
+        enabled = enabled
+            and not context.in_treesitter_capture('comment')
             and not context.in_syntax_group('Comment')
 
         -- disable in prompts
-        enabled = enabled and not (vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt')
+        enabled = enabled
+            and not (vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt')
 
         -- disable in macros
         enabled = enabled and not (vim.fn.reg_recording() ~= '')
@@ -79,7 +85,7 @@ cmp.setup({
     snippet = {
         expand = function(args)
             require('luasnip').lsp_expand(args.body)
-        end
+        end,
     },
     window = {
         completion = cmp.config.window.bordered(),
@@ -129,13 +135,14 @@ cmp.setup({
                 get_bufnrs = function()
                     -- complete from all buffers
                     return vim.api.nvim_list_bufs()
-                end
-            }
+                end,
+            },
         },
     }),
     formatting = {
         format = function(entry, vim_item)
-            vim_item.kind = string.format('%s %s', icons[vim_item.kind], vim_item.kind)
+            vim_item.kind =
+                string.format('%s %s', icons[vim_item.kind], vim_item.kind)
             vim_item.menu = ({
                 buffer = '[Buffer]',
                 nvim_lsp = '[LSP]',
@@ -144,7 +151,7 @@ cmp.setup({
                 latex_symbols = '[LaTeX]',
             })[entry.source.name]
             return vim_item
-        end
+        end,
     },
     experimental = {
         ghost_text = true,
@@ -161,7 +168,7 @@ cmp.setup.cmdline({ '/', '?' }, {
                 else
                     fallback()
                 end
-            end
+            end,
         },
         ['<C-p>'] = {
             c = function(fallback)
@@ -170,13 +177,13 @@ cmp.setup.cmdline({ '/', '?' }, {
                 else
                     fallback()
                 end
-            end
+            end,
         },
         ['<C-e>'] = { c = cmp.mapping.abort() },
     },
     sources = {
-        { name = 'buffer' }
-    }
+        { name = 'buffer' },
+    },
 })
 
 cmp.setup.cmdline(':', {
@@ -185,15 +192,15 @@ cmp.setup.cmdline(':', {
             c = function(fallback)
                 cmp.close()
                 fallback()
-            end
+            end,
         },
         ['<CR>'] = { c = cmp.mapping.confirm() },
     }),
     sources = cmp.config.sources({
-        { name = 'path' }
+        { name = 'path' },
     }, {
-        { name = 'cmdline' }
-    })
+        { name = 'cmdline' },
+    }),
 })
 
 function M.default_capabilities(...)

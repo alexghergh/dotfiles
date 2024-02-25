@@ -48,7 +48,7 @@ vim.api.nvim_create_autocmd('User', {
             print(vim.fn.printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks))
         end
     end,
-    group = vim.api.nvim_create_augroup('_user_group', { clear = false })
+    group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
 
 -- display added/removed/modified lines in the statusline

@@ -15,7 +15,7 @@ vim.diagnostic.config({
     },
     float = {
         border = 'rounded',
-        source = 'if_many'
+        source = 'if_many',
     },
     severity_sort = true,
 })
@@ -26,11 +26,16 @@ vim.api.nvim_create_autocmd('CursorHold', {
     callback = function()
         local opts = {
             focusable = false,
-            close_events = { 'BufLeave', 'CursorMoved', 'InsertEnter', 'FocusLost' },
+            close_events = {
+                'BufLeave',
+                'CursorMoved',
+                'InsertEnter',
+                'FocusLost',
+            },
             scope = 'cursor',
         }
         vim.diagnostic.open_float(nil, opts)
-    end
+    end,
 })
 
 -- only show the highest severity diagnostic gutter sign on any given line
@@ -45,7 +50,7 @@ vim.diagnostic.handlers.signs = {
 
         -- find the highest severity diagnostic per line
         local max_severity_per_line = {}
-        for _,d in pairs(diagnostics) do
+        for _, d in pairs(diagnostics) do
             local m = max_severity_per_line[d.lnum]
             if not m or d.severity < m.severity then
                 max_severity_per_line[d.lnum] = d
@@ -65,6 +70,6 @@ vim.diagnostic.handlers.signs = {
 local signs = { Error = ' ', Warn = ' ', Hint = ' ', Info = ' ' }
 for type, icon in pairs(signs) do
     local hl = 'DiagnosticSign' .. type
-    local hl_line = 'DiagnosticLineNr' .. type   -- see lua/colorscheme/*.lua
+    local hl_line = 'DiagnosticLineNr' .. type -- see lua/colorscheme/*.lua
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl_line })
 end
