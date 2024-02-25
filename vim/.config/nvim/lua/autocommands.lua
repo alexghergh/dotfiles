@@ -9,7 +9,7 @@ local user_group = vim.api.nvim_create_augroup('_user_group', { clear = true })
 
 -- highlight text on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
-    callback = function() vim.highlight.on_yank({ timeout = 500 }) end,
+    callback = function() vim.highlight.on_yank({ timeout = 200 }) end,
     group = user_group
 })
 
