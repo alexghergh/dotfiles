@@ -82,3 +82,4 @@ if [[ -z "$TMUX" ]]; then
 fi
 
 unset ZSH_CONFIG_PATH
+exec fish
