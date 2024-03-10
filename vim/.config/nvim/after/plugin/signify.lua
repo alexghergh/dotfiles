@@ -26,14 +26,6 @@ vim.keymap.set('n', '<Leader>hs', '<Cmd>SignifyHunkDiff<CR>')
 -- undo the diff change on the line (mnemonic Hunk Undo)
 vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<CR>')
 
--- go to next/previous Hunks (mapped by default)
--- vim.keymap.set('n', ']c', '<Plug>(signify-next-hunk)')
--- vim.keymap.set('n', '[c', '<Plug>(signify-prev-hunk)')
-
--- go to first/last Hunks (mapped by default)
--- vim.keymap.set('n', ']C', '9999]c', { remap = true })
--- vim.keymap.set('n', '[C', '9999[c', { remap = true })
-
 -- hunk text objects
 vim.keymap.set('o', 'ic', '<Plug>(signify-motion-inner-pending)')
 vim.keymap.set('x', 'ic', '<Plug>(signify-motion-inner-visual)')
@@ -52,8 +44,4 @@ vim.api.nvim_create_autocmd('User', {
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
 
-function DiffStats()
-    -- table as [added, modified, removed]
-    return vim.fn['sy#repo#get_stats']()
-end
 -- vim: set tw=0 fo-=r ft=lua
