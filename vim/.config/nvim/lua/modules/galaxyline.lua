@@ -7,7 +7,6 @@ end
 local condition = require('galaxyline.condition')
 local gls = require('galaxyline').section
 
--- TODO lsp/treesitter scope
 -- TODO long lines
 --
 -- local function longlines()
@@ -219,19 +218,8 @@ gls.left[8] = {
 -- middle section
 --
 
--- current cursor scope via treesitter
--- gls.mid[1] = {
---     CursorScope = {
---         provider = function()
---             return vim.fn['nvim_treesitter#statusline']()
---         end,
---         condition = condition.hide_in_width,
---         highlight = 'StatusLineColor3',
---     }
--- }
-
 -- file name
-gls.mid[2] = {
+gls.mid[1] = {
     FilePath = {
         provider = 'FilePath',
         highlight = 'StatusLineColor3',
@@ -239,7 +227,7 @@ gls.mid[2] = {
 }
 
 -- buffer number
-gls.mid[3] = {
+gls.mid[2] = {
     BufferNumber = {
         provider = 'BufferNumber',
         highlight = 'StatusLineColor3',
@@ -247,7 +235,7 @@ gls.mid[3] = {
 }
 
 -- argument list
-gls.mid[4] = {
+gls.mid[3] = {
     ArgsList = {
         provider = function()
             if vim.fn.argc() > 1 then

@@ -104,6 +104,7 @@ require('packer').startup({
 
         -- status line
         use({ 'nvimdev/galaxyline.nvim' })
+        use({ 'SmiteshP/nvim-navic' })
 
         -- automatically set up the config after cloning
         if packer_installed == false then
