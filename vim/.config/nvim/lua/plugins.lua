@@ -102,6 +102,9 @@ require('packer').startup({
         -- search highlighting
         use({ 'nvimdev/hlsearch.nvim' })
 
+        -- status line
+        use({ 'nvimdev/galaxyline.nvim' })
+
         -- automatically set up the config after cloning
         if packer_installed == false then
             require('packer').sync()

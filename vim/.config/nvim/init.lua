@@ -28,9 +28,6 @@ pcall(vim.cmd.colorscheme, 'melange')
 -- setup installed plugins
 require('modules')
 
--- statusline setup
-require('statusline')
-
 -- lsp servers setup
 require('lsp_servers')
 

@@ -12,7 +12,6 @@
 -- see: ~/.config/tmux/colorscheme/tmux-colorscheme-chooser/colorschemes/*
 -- see :h highlight
 -- see :h colorscheme
--- see API in lua/statusline.lua
 --
 
 -- run on :colorscheme (re)load
