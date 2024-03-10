@@ -29,11 +29,14 @@ abbr --add cddie --position anywhere --regex '^cd \.\.' 'haha lol'
 abbr --add ga       git add
 abbr --add gs       git status
 abbr --add gco      git checkout
+abbr --add gcb      git checkout -b
 abbr --add gc       git commit
 abbr --add gca      git commit --amend
 abbr --add gp       git push
 abbr --add gl       git log
 abbr --add gla      git log --oneline --graph --all
+abbr --add gsw      git switch
+abbr --add gpup     git push --set-upstream origin
 # TODO add a function to remind me to use these if they exist
 
 # discourage xdg-specific stuff
