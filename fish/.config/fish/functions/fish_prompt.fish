@@ -12,7 +12,7 @@ function fish_prompt
     echo -ns (prompt_login) $normal
 
     # path
-    echo -ns ":" (set_color $fish_color_pwd) (prompt_pwd) $normal
+    echo -ns ":" (set_color $fish_color_cwd) (prompt_pwd) $normal
 
     # vcs info
     echo -ns (fish_vcs_prompt) $normal
