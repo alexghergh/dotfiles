@@ -18,5 +18,5 @@ function less
         end
         set i (math $i + 1)
     end
-    command less $argv
+    command less -MNi $argv
 end
