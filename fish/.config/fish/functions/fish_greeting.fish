@@ -5,7 +5,8 @@ function fish_greeting
                         "Hello trouble!" \
                         "What's cooking today?" \
                         "'aven't seen you here in a while, eh?" \
-                        "こんにちは, motherfucker!")
+                        "こんにちは!" \
+                        "Fighting!")
 
     set -l is_login (status is-login
                         and echo "login"
