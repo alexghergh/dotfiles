@@ -8,7 +8,6 @@
 -- colorscheme doesn't support all the highlighting groups of some of the
 -- plugins
 --
---
 -- see: ~/.config/tmux/colorscheme/tmux-colorscheme-chooser/colorschemes/*
 -- see :h highlight
 -- see :h colorscheme
@@ -23,3 +22,5 @@ vim.api.nvim_create_autocmd('ColorScheme', {
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
+
+-- vim: set tw=0 fo-=r ft=lua

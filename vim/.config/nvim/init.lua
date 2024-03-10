@@ -3,8 +3,8 @@
 --
 -- Neovim config files (Lua edition)
 --
--- see https://neovim.io/doc/user/lua-guide.html
--- see https://neovim.io/doc/user/lua.html
+-- see :h lua-guide
+-- see :h lua
 --
 
 -- set Space as leader key early

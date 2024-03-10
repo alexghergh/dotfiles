@@ -62,3 +62,5 @@ function M.setup()
 end
 
 return M
+
+-- vim: set tw=0 fo-=r ft=lua

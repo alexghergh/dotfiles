@@ -1,3 +1,4 @@
+--
 -- due to the fact that signify 'hackily' calculates the signcolumn width
 -- (because there is no native neovim way to do that), and it happens to be
 -- calculated wrongly anyway, a line needs to be commented in the file below
@@ -51,9 +52,8 @@ vim.api.nvim_create_autocmd('User', {
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
 
--- display added/removed/modified lines in the statusline
--- see API in lua/statusline.lua
 function DiffStats()
     -- table as [added, modified, removed]
     return vim.fn['sy#repo#get_stats']()
 end
+-- vim: set tw=0 fo-=r ft=lua

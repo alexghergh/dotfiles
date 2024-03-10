@@ -16,3 +16,5 @@ vim.g.undotree_ShortIndicators = 1
 
 -- show undo-tree (mnemonic Undo Show)
 vim.keymap.set('n', '<Leader>us', '<Cmd>UndotreeToggle<CR>')
+
+-- vim: set tw=0 fo-=r ft=lua
