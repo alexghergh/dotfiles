@@ -25,3 +25,55 @@ function __cycle_prompt_display
     commandline -f repaint
 end
 bind \co\cr __cycle_prompt_display
+
+# navigate directory history (same as cdh) with left and right arrow keys, if
+# command line is empty, otherwise just move a character
+function __prevd-or-backward-char
+    # get initial cursor position
+    set -l initial_cursor_position (commandline --cursor)
+
+    # if not 0, we can safely assume command line is not empty
+    if [ $initial_cursor_position -ne 0 ]
+        commandline -f backward-char
+
+    # if 0, we need to check if there's text in the command line
+    else if [ $initial_cursor_position -eq 0 ]
+        # try to move the cursor and re-read the position
+        commandline --cursor 1
+        set -l cursor_position (commandline --cursor)
+
+        if [ $cursor_position -eq 0 ]
+            prevd
+            commandline -f repaint
+        else
+            commandline --cursor $cursor_position
+            commandline -f backward-char
+        end
+    end
+end
+bind \e\[D __prevd-or-backward-char # left arrow
+
+function __nextd-or-forward-char
+    # get initial cursor position
+    set -l initial_cursor_position (commandline --cursor)
+
+    # if not 0, we can safely assume command line is not empty
+    if [ $initial_cursor_position -ne 0 ]
+        commandline -f forward-char
+
+    # if 0, we need to check if there's text in the command line
+    else if [ $initial_cursor_position -eq 0 ]
+        # try to move the cursor and re-read the position
+        commandline --cursor 1
+        set -l cursor_position (commandline --cursor)
+
+        if [ $cursor_position -eq 0 ]
+            nextd
+            commandline -f repaint
+        else
+            commandline --cursor $cursor_position
+            commandline -f forward-char
+        end
+    end
+end
+bind \e\[C __nextd-or-forward-char # right arrow
