@@ -1,5 +1,5 @@
 function fish_prompt
-
+    set -l local_status $status # needs to be first thing
     set -l normal (set_color normal)
 
     # jobs
@@ -29,7 +29,15 @@ function fish_prompt
         echo -ns (printf ')') $normal
     end
 
-    # prompt suffix
+    # prompt suffix (1)
     echo -e ""
-    echo -ns (set_color $fish_color_suffix) \U279C " \$ " $normal
+    echo -ns (set_color $fish_color_suffix) \U279C
+
+    # error code
+    if [ $local_status -ne 0 ]
+        echo -ns (set_color red) " $local_status"
+    end
+
+    # prompt suffix (2)
+    echo -ns (set_color $fish_color_suffix) " \$ " $normal
 end
