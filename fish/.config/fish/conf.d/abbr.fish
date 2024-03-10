@@ -18,12 +18,9 @@ abbr --add cddotdot --regex '^\.\.+$' --function multicd
 # shorthand for cd -
 abbr --add cdminus --regex '^-$' cd -
 
-# TODO fex these
-# discourage use of 'cd -' and 'cd ..' in favor of the above
-abbr --add cdwhy --position anywhere --regex '^cd -$' echo 'Just use -'
-abbr --add cddie --position anywhere --regex '^cd \.\.' 'haha lol'
-
-# TODO make abbreviations only work in interactive shells (that makes sense, right)
+# discourage 'cd' use
+abbr --add cd echo \
+    \""Just don't use this, huh? (prefer simply - or .. or dir name)\""\; cd
 
 # git stuff
 abbr --add ga       git add
@@ -37,14 +34,12 @@ abbr --add gl       git log
 abbr --add gla      git log --oneline --graph --all
 abbr --add gsw      git switch
 abbr --add gpup     git push --set-upstream origin
-# TODO add a function to remind me to use these if they exist
 
 # discourage xdg-specific stuff
 abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open. If you feel like using it anyway, try \"command xdg-open\".'"
 
 # make sudo commands share the same init.vim config file as the regular user
 abbr --add sudovim sudo -E vim
-# TODO make alt+s with vim automatically insert sudo -E instead of just sudo
 
 # get my ip
 abbr --add myp curl http://ipecho.net/plain
