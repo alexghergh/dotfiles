@@ -48,5 +48,7 @@ abbr --add myp curl http://ipecho.net/plain
 abbr --add tlmgr /usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode
 
 # quick directory scan
-abbr --add tla tree -La
-# TODO potentially use a "tl<number>" regex to match this easier?
+function multilevel_tree
+    echo tree -La (string match --regex '\d+' $argv[1])
+end
+abbr --add tla --regex '^tl(\d+)' --function multilevel_tree
