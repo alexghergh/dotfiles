@@ -1,7 +1,7 @@
 [user]
     name = Alexandru Gherghescu
     email = gherghescu_alex1@yahoo.ro
-    signingKey = gherghescu_alex1@yahoo.ro 
+    signingKey = gherghescu_alex1@yahoo.ro
 [commit]
     gpgsign = true
     template = ~/.config/git/git-commit-template
@@ -10,8 +10,6 @@
     pager = less -FR
     askPass = ksshaskpass
     excludesfile = ~/.config/git/git-ignore
-#[credential]
-#   helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 [sendemail]
     smtpserver = smtp.mail.yahoo.com
     smtpuser = gherghescu_alex1@yahoo.ro
@@ -26,3 +24,8 @@
     prompt = false
 [init]
     defaultBranch = main
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
