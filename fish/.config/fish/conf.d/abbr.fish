@@ -5,6 +5,32 @@ if not status is-interactive
     return
 end
 
+# shortcuts
+abbr --add desk     cd ~/Desktop/
+abbr --add down     cd ~/Downloads/
+abbr --add dots     cd ~/.dotfiles/
+abbr --add research cd ~/projects/uni-research/
+abbr --add proj     cd ~/projects/
+abbr --add pack     cd ~/packages/
+abbr --add tconf    cd ~/.config/tmux/
+abbr --add vconf    cd ~/.config/nvim/
+abbr --add zconf    cd ~/.config/zsh/
+abbr --add fconf    cd ~/.config/fish/
+
+# system stuff
+abbr --add h     history
+abbr --add p     pwd
+abbr --add mem   df -h
+abbr --add dush  du -sh
+abbr --add chx   chmod +x
+abbr --add untar tar -xzvf
+abbr --add dotar tar -czvf
+abbr --add susp  systemctl suspend
+
+# editor
+abbr --add vim nvim
+abbr --add v   nvim
+
 # enables multicd:
 #   .. -> cd ../
 #   ... -> cd ../..
