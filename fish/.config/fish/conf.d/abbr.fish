@@ -40,7 +40,7 @@ abbr --add gpup     git push --set-upstream origin
 # TODO add a function to remind me to use these if they exist
 
 # discourage xdg-specific stuff
-abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open.'"
+abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open. If you feel like using it anyway, try \"command xdg-open\".'"
 
 # make sudo commands share the same init.vim config file as the regular user
 abbr --add sudovim sudo -E vim
