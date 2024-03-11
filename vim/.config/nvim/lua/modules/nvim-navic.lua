@@ -7,7 +7,7 @@ end
 require('nvim-navic').setup({
     lsp = {
         auto_attach = true,
-    }
+    },
 })
 
 -- M.is_available = require('nvim-navic').is_available
