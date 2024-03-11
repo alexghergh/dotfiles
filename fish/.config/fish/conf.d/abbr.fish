@@ -50,6 +50,7 @@ abbr --add cd echo \
 
 # git stuff
 abbr --add ga       git add
+abbr --add gap      git add -p
 abbr --add gs       git status
 abbr --add gco      git checkout
 abbr --add gcb      git checkout -b
