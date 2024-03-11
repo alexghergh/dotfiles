@@ -27,9 +27,10 @@ abbr --add untar tar -xzvf
 abbr --add dotar tar -czvf
 abbr --add susp  systemctl suspend
 
-# editor
+# editor / tools
 abbr --add vim nvim
 abbr --add v   nvim
+abbr --add py  python
 
 # enables multicd:
 #   .. -> cd ../
