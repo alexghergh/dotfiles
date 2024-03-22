@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -z "$STOW_FOLDERS" ]; then
-    STOW_FOLDERS="zsh,fish,tmux,git,vim"
+    STOW_FOLDERS="fish,tmux,git,vim"
 fi
 
 if [ -z "$DOTFILES" ]; then
