@@ -14,8 +14,8 @@ abbr --add proj     cd ~/projects/
 abbr --add pack     cd ~/packages/
 abbr --add tconf    cd ~/.config/tmux/
 abbr --add vconf    cd ~/.config/nvim/
-abbr --add zconf    cd ~/.config/zsh/
 abbr --add fconf    cd ~/.config/fish/
+abbr --add wconf    cd ~/.config/wezterm/
 
 # system stuff
 abbr --add h     history
