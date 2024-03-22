@@ -46,8 +46,7 @@ abbr --add cddotdot --regex '^\.\.+$' --function multicd
 abbr --add cdminus --regex '^-$' cd -
 
 # discourage 'cd' use
-abbr --add cd echo \
-    \""Just don't use this, huh? (prefer simply - or .. or dir name)\""\; cd
+abbr --add cd echo \""Just.. don't! (prefer - or .. or dir name)\""\; cd
 
 # git stuff
 abbr --add ga       git add
