@@ -15,13 +15,13 @@
     smtpuser = gherghescu_alex1@yahoo.ro
     smtpserverport = 587
     smtpencryption = tls
-#this only works with vim-fugitive installed as a plugin
-[mergetool "nvim"]
-    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 [merge]
     tool = nvim
 [mergetool]
     prompt = false
+#this only works with vim-fugitive installed as a plugin
+[mergetool "nvim"]
+    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
 [init]
     defaultBranch = main
 [filter "lfs"]
