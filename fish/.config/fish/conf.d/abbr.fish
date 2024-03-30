@@ -18,14 +18,15 @@ abbr --add fconf    cd ~/.config/fish/
 abbr --add wconf    cd ~/.config/wezterm/
 
 # system stuff
-abbr --add h     history
-abbr --add p     pwd
-abbr --add mem   df -h
-abbr --add dush  du -sh
-abbr --add chx   chmod +x
-abbr --add untar tar -xzvf
-abbr --add dotar tar -czvf
-abbr --add susp  systemctl suspend
+abbr --add h            history
+abbr --add p            pwd
+abbr --add mem          df -h
+abbr --add dush         du -sh
+abbr --add chx          chmod +x
+abbr --add untar        tar -xzvf
+abbr --add dotar        tar -czvf
+abbr --add susp         systemctl suspend
+abbr --add httpserver   python -m http.server
 
 # editor / tools
 abbr --add vim nvim
