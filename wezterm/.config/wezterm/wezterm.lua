@@ -193,6 +193,16 @@ config.keys = {
             one_shot = false,
         }),
     },
+
+    -- search
+    {
+        key = 's',
+        mods = 'LEADER',
+        action = act.ActivateKeyTable({
+            name = 'search_key_table',
+            one_shot = false,
+        }),
+    },
 }
 
 config.key_tables = {
@@ -277,6 +287,30 @@ config.key_tables = {
         { key = '_', mods = 'SHIFT', action = act.DecreaseFontSize },
 
         { key = 'r', action = act.ResetFontSize },
+
+        { key = 'Escape', action = act.PopKeyTable },
+    },
+    search_key_table = {
+        -- clear scrollback buffer (what's above screen)
+        {
+            key = 'c',
+            mods = 'CTRL|SHIFT',
+            action = act.ClearScrollback('ScrollbackOnly'),
+        },
+        -- clear scrollback and viewport (what's currently on screen)
+        {
+            key = 'v',
+            mods = 'CTRL|SHIFT',
+            action = act.ClearScrollback('ScrollbackAndViewport'),
+        },
+
+        -- scroll up/down
+        { key = 'u', mods = 'CTRL', action = act.ScrollByPage(-0.5) },
+        { key = 'd', mods = 'CTRL', action = act.ScrollByPage(0.5) },
+        { key = 'b', mods = 'CTRL', action = act.ScrollByPage(-1) },
+        { key = 'f', mods = 'CTRL', action = act.ScrollByPage(1) },
+
+        { key = '/', action = act.Search('CurrentSelectionOrEmptyString') },
 
         { key = 'Escape', action = act.PopKeyTable },
     },
