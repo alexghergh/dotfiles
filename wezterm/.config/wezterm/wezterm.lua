@@ -1,5 +1,5 @@
 local wezterm = require('wezterm')
-local action = wezterm.action
+local act = wezterm.action
 
 local config = wezterm.config_builder()
 
@@ -70,27 +70,27 @@ config.keys = {
     {
         key = 'a',
         mods = 'LEADER|CTRL',
-        action = action.SendKey({ key = 'a', mods = 'CTRL' })
+        action = act.SendKey({ key = 'a', mods = 'CTRL' }),
     },
 
     -- split vertically
     {
         key = '|',
         mods = 'LEADER|SHIFT',
-        action = action.SplitHorizontal({ domain = 'CurrentPaneDomain' })
+        action = act.SplitHorizontal({ domain = 'CurrentPaneDomain' }),
     },
     -- split horizontally
     {
         key = '-',
         mods = 'LEADER',
-        action = action.SplitVertical({ domain = 'CurrentPaneDomain' })
+        action = act.SplitVertical({ domain = 'CurrentPaneDomain' }),
     },
 
     -- switch tab
     {
         key = 't',
         mods = 'LEADER',
-        action = action.ActivateKeyTable({
+        action = act.ActivateKeyTable({
             name = 'activate_tab',
             one_shot = false,
         })
@@ -99,29 +99,29 @@ config.keys = {
     {
         key = 'h',
         mods = 'META',
-        action = action.ActivatePaneDirection('Left'),
+        action = act.ActivatePaneDirection('Left'),
     },
     {
         key = 'l',
         mods = 'META',
-        action = action.ActivatePaneDirection('Right'),
+        action = act.ActivatePaneDirection('Right'),
     },
     {
         key = 'j',
         mods = 'META',
-        action = action.ActivatePaneDirection('Down'),
+        action = act.ActivatePaneDirection('Down'),
     },
     {
         key = 'k',
         mods = 'META',
-        action = action.ActivatePaneDirection('Up'),
+        action = act.ActivatePaneDirection('Up'),
     },
 
     -- resize pane
     {
         key = 'r',
         mods = 'LEADER',
-        action = action.ActivateKeyTable({
+        action = act.ActivateKeyTable({
             name = 'resize_pane',
             one_shot = false,
         }),
@@ -131,14 +131,14 @@ config.keys = {
     {
         key = 's',
         mods = 'LEADER',
-        action = action.ShowLauncher,
+        action = act.ShowLauncher,
     },
 
     -- resize font
     {
         key = 'f',
         mods = 'LEADER',
-        action = action.ActivateKeyTable({
+        action = act.ActivateKeyTable({
             name = 'resize_font',
             one_shot = false,
         }),
@@ -147,39 +147,39 @@ config.keys = {
 
 config.key_tables = {
     activate_tab = {
-        { key = 'h', action = action.ActivateTabRelative(-1) },
-        { key = 'l', action = action.ActivateTabRelative( 1) },
+        { key = 'h', action = act.ActivateTabRelative(-1) },
+        { key = 'l', action = act.ActivateTabRelative( 1) },
 
         { key = 'Escape', action = 'PopKeyTable' },
     },
     resize_pane = {
-        { key = 'LeftArrow', action = action.AdjustPaneSize({ 'Left', 1 }) },
-        { key = 'h', action = action.AdjustPaneSize({ 'Left', 1 }) },
+        { key = 'LeftArrow', action = act.AdjustPaneSize({ 'Left', 1 }) },
+        { key = 'h', action = act.AdjustPaneSize({ 'Left', 1 }) },
 
-        { key = 'RightArrow', action = action.AdjustPaneSize({ 'Right', 1 }) },
-        { key = 'l', action = action.AdjustPaneSize({ 'Right', 1 }) },
+        { key = 'RightArrow', action = act.AdjustPaneSize({ 'Right', 1 }) },
+        { key = 'l', action = act.AdjustPaneSize({ 'Right', 1 }) },
 
-        { key = 'DownArrow', action = action.AdjustPaneSize({ 'Down', 1 }) },
-        { key = 'j', action = action.AdjustPaneSize({ 'Down', 1 }) },
+        { key = 'DownArrow', action = act.AdjustPaneSize({ 'Down', 1 }) },
+        { key = 'j', action = act.AdjustPaneSize({ 'Down', 1 }) },
 
-        { key = 'UpArrow', action = action.AdjustPaneSize({ 'Up', 1 }) },
-        { key = 'k', action = action.AdjustPaneSize({ 'Up', 1 }) },
+        { key = 'UpArrow', action = act.AdjustPaneSize({ 'Up', 1 }) },
+        { key = 'k', action = act.AdjustPaneSize({ 'Up', 1 }) },
 
-        { key = 'Escape', action = 'PopKeyTable' },
+        { key = 'Escape', action = act.PopKeyTable },
     },
     resize_font = {
-        { key = 'j', action = action.IncreaseFontSize },
-        { key = '=', action = action.IncreaseFontSize },
-        { key = '+', mods='SHIFT', action = action.IncreaseFontSize },
+        { key = 'j', action = act.IncreaseFontSize },
+        { key = '=', action = act.IncreaseFontSize },
+        { key = '+', mods = 'SHIFT', action = act.IncreaseFontSize },
 
-        { key = 'k', action = action.DecreaseFontSize },
-        { key = '-', action = action.DecreaseFontSize },
-        { key = '_', mods='SHIFT', action = action.DecreaseFontSize },
+        { key = 'k', action = act.DecreaseFontSize },
+        { key = '-', action = act.DecreaseFontSize },
+        { key = '_', mods = 'SHIFT', action = act.DecreaseFontSize },
 
-        { key = 'r', action = action.ResetFontSize },
+        { key = 'r', action = act.ResetFontSize },
 
-        { key = 'Escape', action = 'PopKeyTable' },
-    }
+        { key = 'Escape', action = act.PopKeyTable },
+    },
 }
 
 -- display activation key table
