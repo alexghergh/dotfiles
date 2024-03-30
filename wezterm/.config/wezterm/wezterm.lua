@@ -126,11 +126,7 @@ config.keys = {
     { key = 'k', mods = 'META', action = act.ActivatePaneDirection('Up') },
 
     -- show launcher
-    {
-        key = 's',
-        mods = 'LEADER',
-        action = act.ShowLauncher,
-    },
+    { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
 
     --
     -- key tables
