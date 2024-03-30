@@ -15,12 +15,22 @@ config.font_size = 12
 config.adjust_window_size_when_changing_font_size = false
 config.warn_about_missing_glyphs = false
 
+config.window_padding = {
+    left = 5,
+    right = 5,
+    bottom = 5,
+    top = 5,
+}
+
 config.inactive_pane_hsb = {
     saturation = 0.9,
     brightness = 0.6,
 }
 
-config.window_background_opacity = 0.95
+config.foreground_text_hsb = {
+    brightness = 1,
+    saturation = 1,
+}
 
 -- choose random background based on day of the month
 local now = os.date('*t', os.time())
