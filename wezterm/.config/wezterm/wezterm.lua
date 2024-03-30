@@ -144,6 +144,16 @@ config.keys = {
     -- key tables
     --
 
+    -- pane
+    {
+        key = 'p',
+        mods = 'LEADER',
+        action = act.ActivateKeyTable({
+            name = 'pane_key_table',
+            timeout_milliseconds = 1000,
+        }),
+    },
+
     -- switch tab
     {
         key = 't',
@@ -179,6 +189,10 @@ config.key_tables = {
     activate_tab = {
         { key = 'h', action = act.ActivateTabRelative(-1) },
         { key = 'l', action = act.ActivateTabRelative( 1) },
+    },
+    pane_key_table = {
+        -- zoom pane
+        { key = 'z', action = act.TogglePaneZoomState },
 
         { key = 'Escape', action = 'PopKeyTable' },
     },
