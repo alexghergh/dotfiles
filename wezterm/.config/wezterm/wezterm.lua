@@ -137,6 +137,9 @@ config.keys = {
     -- fullscreen
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
 
+    -- show debug overlay
+    { key = 'd', mods = 'LEADER', action = act.ShowDebugOverlay },
+
     --
     -- key tables
     --
