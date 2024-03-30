@@ -1,5 +1,6 @@
 local wezterm = require('wezterm')
 local act = wezterm.action
+local background = require('background')
 
 local config = wezterm.config_builder()
 
@@ -18,6 +19,13 @@ config.inactive_pane_hsb = {
 }
 
 config.window_background_opacity = 0.95
+
+-- choose random background based on day of the month
+local now = os.date('*t', os.time())
+math.randomseed(tonumber(now.day))
+config.background = {
+    table.unpack(background[math.random(1, #background)]),
+}
 
 config.default_prog = { '/usr/bin/fish', }
 config.set_environment_variables = {
