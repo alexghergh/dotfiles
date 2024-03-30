@@ -39,6 +39,10 @@ config.background = {
     table.unpack(background[math.random(1, #background)]),
 }
 
+-- IME
+config.use_ime = true
+config.xim_im_name = 'fcitx'
+
 config.default_prog = { '/usr/bin/fish', }
 config.set_environment_variables = {
     SHELL = '/usr/bin/fish',
@@ -79,10 +83,6 @@ config.launch_menu = {
         cwd = '/home/alex/.config/fish/',
     },
 }
-
--- IME
-config.use_ime = true
-config.xim_im_name = 'fcitx'
 
 config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.keys = {
