@@ -92,8 +92,13 @@ config.launch_menu = {
     },
 }
 
+config.disable_default_key_bindings = true
 config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.keys = {
+    --
+    -- regular keybinds
+    --
+
     -- send ctrl-a normally when pressing 2x ctrl-a
     {
         key = 'a',
@@ -114,6 +119,23 @@ config.keys = {
         action = act.SplitVertical({ domain = 'CurrentPaneDomain' }),
     },
 
+    -- switch pane
+    { key = 'h', mods = 'META', action = act.ActivatePaneDirection('Left') },
+    { key = 'l', mods = 'META', action = act.ActivatePaneDirection('Right') },
+    { key = 'j', mods = 'META', action = act.ActivatePaneDirection('Down') },
+    { key = 'k', mods = 'META', action = act.ActivatePaneDirection('Up') },
+
+    -- show launcher
+    {
+        key = 's',
+        mods = 'LEADER',
+        action = act.ShowLauncher,
+    },
+
+    --
+    -- key tables
+    --
+
     -- switch tab
     {
         key = 't',
@@ -122,27 +144,6 @@ config.keys = {
             name = 'activate_tab',
             one_shot = false,
         })
-    },
-    -- switch pane
-    {
-        key = 'h',
-        mods = 'META',
-        action = act.ActivatePaneDirection('Left'),
-    },
-    {
-        key = 'l',
-        mods = 'META',
-        action = act.ActivatePaneDirection('Right'),
-    },
-    {
-        key = 'j',
-        mods = 'META',
-        action = act.ActivatePaneDirection('Down'),
-    },
-    {
-        key = 'k',
-        mods = 'META',
-        action = act.ActivatePaneDirection('Up'),
     },
 
     -- resize pane
@@ -153,13 +154,6 @@ config.keys = {
             name = 'resize_pane',
             one_shot = false,
         }),
-    },
-
-    -- show launcher
-    {
-        key = 's',
-        mods = 'LEADER',
-        action = act.ShowLauncher,
     },
 
     -- resize font
