@@ -32,6 +32,12 @@ config.foreground_text_hsb = {
     saturation = 1,
 }
 
+config.enable_scroll_bar = true
+config.min_scroll_bar_height = '2cell'
+config.colors = {
+    scrollbar_thumb = 'white',
+}
+
 -- choose random background based on day of the month
 local now = os.date('*t', os.time())
 math.randomseed(tonumber(now.day))
