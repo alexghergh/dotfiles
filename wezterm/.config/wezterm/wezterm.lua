@@ -11,6 +11,8 @@ config.font = wezterm.font_with_fallback({
     'Fira Code',
     'Hack',
 })
+config.font_size = 12
+config.adjust_window_size_when_changing_font_size = false
 config.warn_about_missing_glyphs = false
 
 config.inactive_pane_hsb = {
@@ -176,11 +178,11 @@ config.key_tables = {
         { key = 'Escape', action = act.PopKeyTable },
     },
     resize_font = {
-        { key = 'j', action = act.IncreaseFontSize },
+        { key = 'k', action = act.IncreaseFontSize },
         { key = '=', action = act.IncreaseFontSize },
         { key = '+', mods = 'SHIFT', action = act.IncreaseFontSize },
 
-        { key = 'k', action = act.DecreaseFontSize },
+        { key = 'j', action = act.DecreaseFontSize },
         { key = '-', action = act.DecreaseFontSize },
         { key = '_', mods = 'SHIFT', action = act.DecreaseFontSize },
 
