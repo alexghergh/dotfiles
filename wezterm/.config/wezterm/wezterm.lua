@@ -128,6 +128,9 @@ config.keys = {
     -- show launcher
     { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
 
+    -- fullscreen
+    { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
+
     --
     -- key tables
     --
