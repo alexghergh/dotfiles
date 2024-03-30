@@ -161,7 +161,17 @@ config.keys = {
         action = act.ActivateKeyTable({
             name = 'tab_key_table',
             one_shot = false,
-        })
+        }),
+    },
+
+    -- window
+    {
+        key = 'w',
+        mods = 'LEADER',
+        action = act.ActivateKeyTable({
+            name = 'window_key_table',
+            one_shot = false,
+        }),
     },
 
     -- resize pane
@@ -224,6 +234,18 @@ config.key_tables = {
             key = 'w',
             action = act.Multiple({
                 act.CloseCurrentTab({ confirm = true }),
+                act.PopKeyTable,
+            }),
+        },
+
+        { key = 'Escape', action = act.PopKeyTable },
+    },
+    window_key_table = {
+        -- new window
+        {
+            key = 'n',
+            action = act.Multiple({
+                act.SpawnWindow,
                 act.PopKeyTable,
             }),
         },
