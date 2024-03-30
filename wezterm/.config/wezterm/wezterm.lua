@@ -154,12 +154,12 @@ config.keys = {
         }),
     },
 
-    -- switch tab
+    -- tab
     {
         key = 't',
         mods = 'LEADER',
         action = act.ActivateKeyTable({
-            name = 'activate_tab',
+            name = 'tab_key_table',
             one_shot = false,
         })
     },
@@ -186,15 +186,49 @@ config.keys = {
 }
 
 config.key_tables = {
-    activate_tab = {
-        { key = 'h', action = act.ActivateTabRelative(-1) },
-        { key = 'l', action = act.ActivateTabRelative( 1) },
-    },
     pane_key_table = {
         -- zoom pane
         { key = 'z', action = act.TogglePaneZoomState },
 
         { key = 'Escape', action = 'PopKeyTable' },
+    },
+    tab_key_table = {
+        -- activate tab
+        { key = 'h', action = act.ActivateTabRelative(-1) },
+        { key = 'l', action = act.ActivateTabRelative(1) },
+        { key = 'j', action = act.ActivateTabRelativeNoWrap(-1) },
+        { key = 'k', action = act.ActivateTabRelativeNoWrap(1) },
+
+        -- activate by id
+        { key = '1', action = act.ActivateTab(0) },
+        { key = '2', action = act.ActivateTab(1) },
+        { key = '3', action = act.ActivateTab(2) },
+        { key = '4', action = act.ActivateTab(3) },
+        { key = '5', action = act.ActivateTab(4) },
+        { key = '6', action = act.ActivateTab(5) },
+        { key = '7', action = act.ActivateTab(6) },
+        { key = '8', action = act.ActivateTab(7) },
+        { key = '9', action = act.ActivateTab(-1) },
+
+        -- new tab
+        {
+            key = 't',
+            action = act.Multiple({
+                act.SpawnTab('CurrentPaneDomain'),
+                act.PopKeyTable,
+            }),
+        },
+
+        -- kill tab
+        {
+            key = 'w',
+            action = act.Multiple({
+                act.CloseCurrentTab({ confirm = true }),
+                act.PopKeyTable,
+            }),
+        },
+
+        { key = 'Escape', action = act.PopKeyTable },
     },
     resize_pane = {
         { key = 'LeftArrow', action = act.AdjustPaneSize({ 'Left', 1 }) },
