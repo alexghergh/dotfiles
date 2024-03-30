@@ -128,6 +128,12 @@ config.keys = {
     -- show launcher
     { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
 
+    -- copy / paste
+    { key = 'c', mods = 'SUPER', action = act.CopyTo('Clipboard') },
+    { key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
+    { key = 'v', mods = 'SUPER', action = act.PasteFrom('Clipboard') },
+    { key = 'v', mods = 'CTRL|SHIFT', action = act.PasteFrom('Clipboard') },
+
     -- fullscreen
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
 
