@@ -54,6 +54,8 @@ config.set_environment_variables = {
     SHELL = '/usr/bin/fish',
 }
 
+config.scrollback_lines = 10000
+
 config.launch_menu = {
     {
         args = { 'htop' },
