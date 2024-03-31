@@ -307,13 +307,13 @@ config.key_tables = {
         { key = 'Escape', action = act.PopKeyTable },
     },
     resize_font = {
-        { key = 'k', action = act.IncreaseFontSize },
-        { key = '=', action = act.IncreaseFontSize },
-        { key = '+', mods = 'SHIFT', action = act.IncreaseFontSize },
-
         { key = 'j', action = act.DecreaseFontSize },
         { key = '-', action = act.DecreaseFontSize },
         { key = '_', mods = 'SHIFT', action = act.DecreaseFontSize },
+
+        { key = 'k', action = act.IncreaseFontSize },
+        { key = '=', action = act.IncreaseFontSize },
+        { key = '+', mods = 'SHIFT', action = act.IncreaseFontSize },
 
         { key = 'r', action = act.ResetFontSize },
 
