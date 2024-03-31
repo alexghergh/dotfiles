@@ -223,12 +223,12 @@ config.keys = {
         }),
     },
 
-    -- search
+    -- scroll + search
     {
         key = 's',
         mods = 'LEADER',
         action = act.ActivateKeyTable({
-            name = 'search_key_table',
+            name = 'scroll_key_table',
             one_shot = false,
         }),
     },
@@ -319,7 +319,7 @@ config.key_tables = {
 
         { key = 'Escape', action = act.PopKeyTable },
     },
-    search_key_table = {
+    scroll_key_table = {
         -- clear scrollback buffer (what's above screen)
         {
             key = 'c',
@@ -342,8 +342,40 @@ config.key_tables = {
         { key = 'b', mods = 'CTRL', action = act.ScrollByPage(-1) },
         { key = 'f', mods = 'CTRL', action = act.ScrollByPage(1) },
 
+        -- enter search_mode (see key table below)
         { key = '/', action = act.Search('CurrentSelectionOrEmptyString') },
 
+        -- entering search mode can also be done by searching for some of the
+        -- frequent patterns below
+
+        -- git commit hashes
+        {
+            key = 'g',
+            mods = 'SHIFT|CTRL',
+            action = act.Search({ Regex = '[a-f0-9]{6,}' }),
+        },
+
+        { key = 'Escape', action = act.PopKeyTable },
+    },
+    -- DON'T change the name of this key table, as wezterm looks for it
+    search_mode = {
+        -- change from case sensitive, to case insensitive, to regex
+        { key = 'r', mods = 'CTRL', action = act.CopyMode('CycleMatchType') },
+
+        -- clear search pattern
+        { key = 'w', mods = 'CTRL', action = act.CopyMode('ClearPattern') },
+
+        -- search upwards
+        { key = 'Enter', action = act.CopyMode( 'PriorMatch') },
+        { key = 'p', mods = 'CTRL', action = act.CopyMode('PriorMatch') },
+        { key = 'UpArrow', action = act.CopyMode('PriorMatch') },
+
+        -- search downwards
+        { key = 'n', mods = 'CTRL', action = act.CopyMode('NextMatch') },
+        { key = 'DownArrow', action = act.CopyMode('NextMatch') },
+
+        { key = 'Escape', action = act.CopyMode('Close') },
+    },
         { key = 'Escape', action = act.PopKeyTable },
     },
 }
