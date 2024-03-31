@@ -34,7 +34,15 @@ config.foreground_text_hsb = {
 config.enable_scroll_bar = true
 config.min_scroll_bar_height = '2cell'
 config.colors = {
+    -- scroll bar color
     scrollbar_thumb = 'white',
+
+    -- selected text color
+    selection_fg = 'black',
+    selection_bg = '#fffacd',
+
+    -- change cursor color on leader key, dead key or IME 'compose' state
+    compose_cursor = 'orange',
 }
 
 -- choose random background based on day of the month
