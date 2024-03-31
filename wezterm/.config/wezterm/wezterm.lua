@@ -49,7 +49,7 @@ config.background = {
 config.use_ime = true
 config.xim_im_name = 'fcitx'
 
-config.default_prog = { '/usr/bin/fish', }
+config.default_prog = { '/usr/bin/fish' }
 config.set_environment_variables = {
     SHELL = '/usr/bin/fish',
 }
