@@ -132,8 +132,9 @@ config.keys = {
     -- copy
     { key = 'c', mods = 'SUPER', action = act.CopyTo('Clipboard') },
     { key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
-    { -- ctrl-c in terminal normally if nothing is selected, copy if there is
-      -- see https://github.com/wez/wezterm/issues/606#issuecomment-1238029208
+    {
+        -- ctrl-c in terminal normally if nothing is selected, copy if there is
+        -- see https://github.com/wez/wezterm/issues/606#issuecomment-1238029208
         key = 'c',
         mods = 'CTRL',
         action = wezterm.action_callback(function(window, pane)
@@ -143,7 +144,8 @@ config.keys = {
                 window:perform_action(act.CopyTo('Clipboard'), pane)
             else
                 window:perform_action(
-                    act.SendKey({ key = 'c', mods = 'CTRL' }), pane
+                    act.SendKey({ key = 'c', mods = 'CTRL' }),
+                    pane
                 )
             end
         end),
@@ -323,8 +325,8 @@ config.key_tables = {
             mods = 'CTRL|SHIFT',
             action = act.Multiple({
                 act.ClearScrollback('ScrollbackAndViewport'),
-                act.SendKey({ key = 'l', mods = 'CTRL', }),
-            })
+                act.SendKey({ key = 'l', mods = 'CTRL' }),
+            }),
         },
 
         -- scroll up/down
