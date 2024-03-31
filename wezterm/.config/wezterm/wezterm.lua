@@ -321,7 +321,10 @@ config.key_tables = {
         {
             key = 'v',
             mods = 'CTRL|SHIFT',
-            action = act.ClearScrollback('ScrollbackAndViewport'),
+            action = act.Multiple({
+                act.ClearScrollback('ScrollbackAndViewport'),
+                act.SendKey({ key = 'l', mods = 'CTRL', }),
+            })
         },
 
         -- scroll up/down
