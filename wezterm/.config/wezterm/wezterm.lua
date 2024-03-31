@@ -336,11 +336,23 @@ config.key_tables = {
             }),
         },
 
-        -- scroll up/down
+        -- scroll up
+        { key = 'k', action = act.ScrollByLine(-1) },
         { key = 'u', mods = 'CTRL', action = act.ScrollByPage(-0.5) },
-        { key = 'd', mods = 'CTRL', action = act.ScrollByPage(0.5) },
         { key = 'b', mods = 'CTRL', action = act.ScrollByPage(-1) },
+
+        -- scroll down
+        { key = 'j', action = act.ScrollByLine(1) },
+        { key = 'd', mods = 'CTRL', action = act.ScrollByPage(0.5) },
         { key = 'f', mods = 'CTRL', action = act.ScrollByPage(1) },
+
+        -- osc 133 compatible commands
+        -- see ~/.config/fish/conf.d/osc133.fish
+
+        -- scroll up by command (osc 133)
+        { key = 'k', mods = 'CTRL', action = act.ScrollToPrompt(-1) },
+        -- scroll down by command (osc 133)
+        { key = 'j', mods = 'CTRL', action = act.ScrollToPrompt(1) },
 
         -- enter search_mode (see key table below)
         { key = '/', action = act.Search('CurrentSelectionOrEmptyString') },
@@ -376,7 +388,13 @@ config.key_tables = {
 
         { key = 'Escape', action = act.CopyMode('Close') },
     },
-        { key = 'Escape', action = act.PopKeyTable },
+}
+
+config.mouse_bindings = {
+    {
+        -- select whole output of command based on osc 133 sequences
+        event = { Down = { streak = 4, button = 'Left' } },
+        action = act.SelectTextAtMouseCursor('SemanticZone'),
     },
 }
 
