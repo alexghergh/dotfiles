@@ -128,11 +128,30 @@ config.keys = {
     -- show launcher
     { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
 
-    -- copy / paste
+    -- copy
     { key = 'c', mods = 'SUPER', action = act.CopyTo('Clipboard') },
     { key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
+    { -- ctrl-c in terminal normally if nothing is selected, copy if there is
+      -- see https://github.com/wez/wezterm/issues/606#issuecomment-1238029208
+        key = 'c',
+        mods = 'CTRL',
+        action = wezterm.action_callback(function(window, pane)
+            local selection_text = window:get_selection_text_for_pane(pane)
+            local is_selection_active = string.len(selection_text) ~= 0
+            if is_selection_active then
+                window:perform_action(act.CopyTo('Clipboard'), pane)
+            else
+                window:perform_action(
+                    act.SendKey({ key = 'c', mods = 'CTRL' }), pane
+                )
+            end
+        end),
+    },
+
+    -- paste
     { key = 'v', mods = 'SUPER', action = act.PasteFrom('Clipboard') },
     { key = 'v', mods = 'CTRL|SHIFT', action = act.PasteFrom('Clipboard') },
+    { key = 'v', mods = 'CTRL', action = act.PasteFrom('Clipboard') },
 
     -- fullscreen
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
