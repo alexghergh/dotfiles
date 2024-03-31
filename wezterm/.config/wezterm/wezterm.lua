@@ -13,7 +13,6 @@ config.font = wezterm.font_with_fallback({
 })
 config.font_size = 12
 config.adjust_window_size_when_changing_font_size = false
-config.warn_about_missing_glyphs = false
 
 config.window_padding = {
     left = 5,
