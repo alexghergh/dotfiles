@@ -8,7 +8,7 @@ end
 # shortcuts
 abbr --add desk     cd ~/Desktop/
 abbr --add down     cd ~/Downloads/
-abbr --add dots     cd ~/.dotfiles/
+abbr --add dots     cd ~/projects/dotfiles/
 abbr --add research cd ~/projects/uni-research/
 abbr --add proj     cd ~/projects/
 abbr --add pack     cd ~/packages/
