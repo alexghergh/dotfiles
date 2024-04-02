@@ -313,15 +313,15 @@ config.key_tables = {
         { key = 'Escape', action = act.PopKeyTable },
     },
     scrollback_key_table = {
-        -- clear scrollback buffer (what's above screen)
+        -- kill scrollback buffer (what's above screen)
         {
-            key = 'c',
+            key = 'k',
             mods = 'CTRL|SHIFT',
             action = act.ClearScrollback('ScrollbackOnly'),
         },
         -- clear scrollback and viewport (what's currently on screen)
         {
-            key = 'v',
+            key = 'l',
             mods = 'CTRL|SHIFT',
             action = act.Multiple({
                 act.ClearScrollback('ScrollbackAndViewport'),
