@@ -79,11 +79,6 @@ config.launch_menu = {
         cwd = '/home/alex/.config/nvim/lua/core',
     },
     {
-        label = 'tmux - tmux.conf',
-        args = { 'nvim', 'tmux.conf' },
-        cwd = '/home/alex/.config/tmux/',
-    },
-    {
         label = 'wezterm - wezterm.lua',
         args = { 'nvim', 'wezterm.lua' },
         cwd = '/home/alex/.config/wezterm/',
