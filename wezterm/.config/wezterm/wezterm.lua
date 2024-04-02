@@ -330,12 +330,12 @@ config.key_tables = {
         },
 
         -- scroll up
-        { key = 'k', action = act.ScrollByLine(-1) },
+        { key = 'e', mods = 'CTRL', action = act.ScrollByLine(-1) },
         { key = 'u', mods = 'CTRL', action = act.ScrollByPage(-0.5) },
         { key = 'b', mods = 'CTRL', action = act.ScrollByPage(-1) },
 
         -- scroll down
-        { key = 'j', action = act.ScrollByLine(1) },
+        { key = 'y', mods = 'CTRL', action = act.ScrollByLine(1) },
         { key = 'd', mods = 'CTRL', action = act.ScrollByPage(0.5) },
         { key = 'f', mods = 'CTRL', action = act.ScrollByPage(1) },
 
