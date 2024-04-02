@@ -380,7 +380,7 @@ config.key_tables = {
         { key = 'w', mods = 'CTRL', action = act.CopyMode('ClearPattern') },
 
         -- search upwards
-        { key = 'Enter', action = act.CopyMode( 'PriorMatch') },
+        { key = 'Enter', action = act.CopyMode('PriorMatch') },
         { key = 'p', mods = 'CTRL', action = act.CopyMode('PriorMatch') },
         { key = 'UpArrow', action = act.CopyMode('PriorMatch') },
 
