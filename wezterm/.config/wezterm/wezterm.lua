@@ -384,8 +384,8 @@ config.key_tables = {
 }
 
 config.mouse_bindings = {
+    -- select whole output of command based on osc 133 sequences
     {
-        -- select whole output of command based on osc 133 sequences
         event = { Down = { streak = 4, button = 'Left' } },
         action = act.SelectTextAtMouseCursor('SemanticZone'),
     },
