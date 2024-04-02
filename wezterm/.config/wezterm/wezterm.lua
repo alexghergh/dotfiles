@@ -64,6 +64,15 @@ config.term = 'wezterm'
 
 config.scrollback_lines = 10000
 
+-- configs for hyperlink rules (make things clickable in wezterm)
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- github links of the form "user/project"
+table.insert(config.hyperlink_rules, {
+    regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+    format = 'https://www.github.com/$1/$3',
+})
+
 config.launch_menu = {
     {
         args = { 'htop' },
