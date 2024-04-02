@@ -216,12 +216,12 @@ config.keys = {
         }),
     },
 
-    -- scroll + search
+    -- scrollback + search
     {
         key = 's',
         mods = 'LEADER',
         action = act.ActivateKeyTable({
-            name = 'scroll_key_table',
+            name = 'scrollback_key_table',
             one_shot = false,
         }),
     },
@@ -312,7 +312,7 @@ config.key_tables = {
 
         { key = 'Escape', action = act.PopKeyTable },
     },
-    scroll_key_table = {
+    scrollback_key_table = {
         -- clear scrollback buffer (what's above screen)
         {
             key = 'c',
