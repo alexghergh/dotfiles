@@ -123,10 +123,10 @@ config.keys = {
     },
 
     -- switch pane
-    { key = 'h', mods = 'META', action = act.ActivatePaneDirection('Left') },
-    { key = 'l', mods = 'META', action = act.ActivatePaneDirection('Right') },
-    { key = 'j', mods = 'META', action = act.ActivatePaneDirection('Down') },
-    { key = 'k', mods = 'META', action = act.ActivatePaneDirection('Up') },
+    { key = 'h', mods = 'ALT', action = act.ActivatePaneDirection('Left') },
+    { key = 'l', mods = 'ALT', action = act.ActivatePaneDirection('Right') },
+    { key = 'j', mods = 'ALT', action = act.ActivatePaneDirection('Down') },
+    { key = 'k', mods = 'ALT', action = act.ActivatePaneDirection('Up') },
 
     -- show launcher
     { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
