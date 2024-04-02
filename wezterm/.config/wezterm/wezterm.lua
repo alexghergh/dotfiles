@@ -254,7 +254,7 @@ config.key_tables = {
 
         -- new tab
         {
-            key = 't',
+            key = 'n',
             action = act.Multiple({
                 act.SpawnTab('CurrentPaneDomain'),
                 act.PopKeyTable,
