@@ -406,11 +406,141 @@ config.key_tables = {
     },
 }
 
+-- Use SHIFT to bypass application mouse reporting (note that binding anything
+-- with SHIFT as mod won't work inside apps like nvim, when this option is set)
+config.bypass_mouse_reporting_modifiers = 'SHIFT'
+config.disable_default_mouse_bindings = true
 config.mouse_bindings = {
+    --
+    -- text selection
+    --
+
+    -- cell selection
+    {
+        event = { Down = { streak = 1, button = 'Left' } },
+        action = act.SelectTextAtMouseCursor('Cell'),
+    },
+
+    -- word selection
+    {
+        event = { Down = { streak = 2, button = 'Left' } },
+        action = act.SelectTextAtMouseCursor('Word'),
+    },
+
+    -- line selection
+    {
+        event = { Down = { streak = 3, button = 'Left' } },
+        action = act.SelectTextAtMouseCursor('Line'),
+    },
+
     -- select whole output of command based on osc 133 sequences
     {
         event = { Down = { streak = 4, button = 'Left' } },
         action = act.SelectTextAtMouseCursor('SemanticZone'),
+    },
+
+    -- extend selection by cell
+    {
+        event = { Drag = { streak = 1, button = 'Left' } },
+        action = act.ExtendSelectionToMouseCursor('Cell'),
+    },
+
+    -- extend selection by word
+    {
+        event = { Drag = { streak = 2, button = 'Left' } },
+        action = act.ExtendSelectionToMouseCursor('Word'),
+    },
+
+    -- extend selection by line
+    {
+        event = { Drag = { streak = 3, button = 'Left' } },
+        action = act.ExtendSelectionToMouseCursor('Line'),
+    },
+
+    -- extend selection by block (can be triggered from cell, word or line)
+    {
+        event = { Drag = { streak = 1, button = 'Left' } },
+        mods = 'SHIFT',
+        action = act.ExtendSelectionToMouseCursor('Block'),
+    },
+    {
+        event = { Drag = { streak = 2, button = 'Left' } },
+        mods = 'SHIFT',
+        action = act.ExtendSelectionToMouseCursor('Block'),
+    },
+    {
+        event = { Drag = { streak = 3, button = 'Left' } },
+        mods = 'SHIFT',
+        action = act.ExtendSelectionToMouseCursor('Block'),
+    },
+
+    -- copy to primary selection
+    {
+        event = { Up = { streak = 1, button = 'Left' } },
+        action = act.CompleteSelection('PrimarySelection'),
+    },
+    {
+        event = { Up = { streak = 2, button = 'Left' } },
+        action = act.CompleteSelection('PrimarySelection'),
+    },
+    {
+        event = { Up = { streak = 3, button = 'Left' } },
+        action = act.CompleteSelection('PrimarySelection'),
+    },
+    {
+        event = { Up = { streak = 4, button = 'Left' } },
+        action = act.CompleteSelection('PrimarySelection'),
+    },
+
+    --
+    -- misc
+    --
+
+    -- scroll by mouse wheel
+    {
+        event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+        action = act.ScrollByCurrentEventWheelDelta,
+    },
+    {
+        event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+        action = act.ScrollByCurrentEventWheelDelta,
+    },
+
+    -- open hyperlinks (disable mouse down to avoid unintuitive behaviour)
+    {
+        event = { Up = { streak = 1, button = 'Left' } },
+        mods = 'CTRL',
+        action = act.OpenLinkAtMouseCursor,
+    },
+    {
+        event = { Down = { streak = 1, button = 'Left' } },
+        mods = 'CTRL',
+        action = act.Nop,
+    },
+
+    -- paste from selection
+    {
+        event = { Down = { streak = 1, button = 'Middle' } },
+        action = act.PasteFrom('PrimarySelection'),
+    },
+    {
+        event = { Down = { streak = 1, button = 'Right' } },
+        mods = 'CTRL',
+        action = act.PasteFrom('PrimarySelection'),
+    },
+
+    -- on text selected, copy to clipboard, otherwise paste
+    {
+        event = { Down = { streak = 1, button = 'Right' } },
+        action = wezterm.action_callback(function(window, pane)
+            local has_selection = window:get_selection_text_for_pane(pane) ~= ''
+            if has_selection then
+                window:perform_action(act.CopyTo('Clipboard'), pane)
+                window:perform_action(act.ClearSelection, pane)
+            else
+                window:perform_action(act.PasteFrom('Clipboard'), pane)
+            end
+        end),
     },
 }
 
