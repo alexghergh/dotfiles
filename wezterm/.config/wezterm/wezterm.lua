@@ -39,7 +39,7 @@ config.colors = {
 
     -- selected text color
     selection_fg = 'black',
-    selection_bg = '#fffacd',
+    selection_bg = '#ffe0b2',
 
     -- change cursor color on leader key, dead key or IME 'compose' state
     compose_cursor = 'orange',
