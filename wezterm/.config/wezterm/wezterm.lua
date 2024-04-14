@@ -544,12 +544,14 @@ config.mouse_bindings = {
     },
 }
 
--- display activation key table
+-- right status information
 wezterm.on('update-right-status', function(window, _)
+    -- display active key table
     local name = window:active_key_table()
     if name then
         name = 'KEY TABLE: ' .. name
     end
+
     window:set_right_status(name or '')
 end)
 
