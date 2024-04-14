@@ -43,6 +43,12 @@ config.colors = {
 
     -- change cursor color on leader key, dead key or IME 'compose' state
     compose_cursor = 'orange',
+
+    -- quick selection
+    quick_select_label_bg = { Color = 'orange' },
+    quick_select_label_fg = { Color = 'black' },
+    quick_select_match_bg = { AnsiColor = 'Maroon' },
+    quick_select_match_fg = { Color = '#ffffff' },
 }
 
 -- choose random background based on day of the month
@@ -63,6 +69,9 @@ config.set_environment_variables = {
 config.term = 'wezterm'
 
 config.scrollback_lines = 10000
+
+-- adjust quick selection key press alphabet
+config.quick_select_alphabet = 'dvorak'
 
 -- configs for hyperlink rules (make things clickable in wezterm)
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
@@ -233,6 +242,13 @@ config.keys = {
             name = 'scrollback_key_table',
             one_shot = false,
         }),
+    },
+
+    -- quick select
+    {
+        key = 'q',
+        mods = 'LEADER',
+        action = act.QuickSelect,
     },
 }
 
