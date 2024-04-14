@@ -369,6 +369,20 @@ config.key_tables = {
             action = act.Search({ Regex = '[a-f0-9]{6,}' }),
         },
 
+        -- path-like objects (needs to have / inside, whitespace around)
+        --
+        -- the regex below tries to match a path in 3 parts:
+        -- beginning: match /, ~/, ./, ../, or "directory/"
+        -- middle: match as many "directory/", ".directory/" or "../" as possible
+        -- end: match "directory", ".directory" or "file.extension"
+        {
+            key = 'p',
+            mods = 'SHIFT|CTRL',
+            action = act.Search({
+                Regex = '[ ]((?:(?:\\.){1,2}|~|\\w+)?/(?:(?:\\.?\\w+|(?:\\.){1,2})/)*(?:(?:\\w+)\\.(?:\\w+)|(?:\\.)?\\w+|))[ ]',
+            }),
+        },
+
         { key = 'Escape', action = act.PopKeyTable },
     },
     -- DON'T change the name of this key table, as wezterm looks for it
