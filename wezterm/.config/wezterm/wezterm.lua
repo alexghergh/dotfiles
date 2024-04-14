@@ -69,7 +69,7 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- github links of the form "user/project"
 table.insert(config.hyperlink_rules, {
-    regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+    regex = '[" ]{1}([\\w\\d]{1}[-\\w\\d]+)(/){1}([-\\w\\d\\.]+)[" ]{1}',
     format = 'https://www.github.com/$1/$3',
 })
 
