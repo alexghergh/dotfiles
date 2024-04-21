@@ -63,6 +63,7 @@ abbr --add gla      git log --oneline --graph --all
 abbr --add gsw      git switch
 abbr --add gpup     git push --set-upstream origin
 abbr --add gds      git diff --staged
+abbr --add gri      git rebase -i
 
 # discourage xdg-specific stuff
 abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open. If you feel like using it anyway, try \"command xdg-open\".'"
