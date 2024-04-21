@@ -234,6 +234,13 @@ config.keys = {
         }),
     },
 
+    -- copy mode
+    {
+        key = 'c',
+        mods = 'LEADER',
+        action = act.ActivateCopyMode,
+    },
+
     -- scrollback + search
     {
         key = 's',
