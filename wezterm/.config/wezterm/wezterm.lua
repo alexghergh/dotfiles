@@ -71,7 +71,7 @@ config.term = 'wezterm'
 config.scrollback_lines = 10000
 
 -- adjust quick selection key press alphabet
-config.quick_select_alphabet = 'dvorak'
+config.quick_select_alphabet = 'aoeuqjkxpyhtnsgcrlmwvzfidb'
 
 -- configs for hyperlink rules (make things clickable in wezterm)
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
