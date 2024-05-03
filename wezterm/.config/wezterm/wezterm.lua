@@ -296,6 +296,19 @@ config.keys = {
 
 config.key_tables = {
     pane_key_table = {
+        -- select pane by label
+        { key = 'p', action = act.PaneSelect({ mode = 'Activate' }) },
+
+        -- swap pane with active
+        {
+            key = 's',
+            action = act.PaneSelect({ mode = 'SwapWithActiveKeepFocus' })
+        },
+
+        -- break pane to new tab / window
+        { key = 'b', action = act.PaneSelect({ mode = 'MoveToNewTab' }) },
+        { key = 'w', action = act.PaneSelect({ mode = 'MoveToNewWindow' }) },
+
         -- zoom pane
         { key = 'z', action = act.TogglePaneZoomState },
 
