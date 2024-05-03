@@ -114,7 +114,6 @@ config.launch_menu = {
 }
 
 wezterm.on('update-right-status', function(window, _)
-
     -- "Sun April 22 22:50"
     local date = wezterm.strftime('%a %b %-d %H:%M')
 
@@ -127,9 +126,7 @@ wezterm.on('update-right-status', function(window, _)
             bat_status = 'Disch.'
         end
 
-        bat = string.format('%s %.0f%%',
-            bat_status,
-            b.state_of_charge * 100)
+        bat = string.format('%s %.0f%%', bat_status, b.state_of_charge * 100)
     end
 
     -- display active key table
@@ -145,7 +142,9 @@ wezterm.on('update-right-status', function(window, _)
         { Text = key_tbl },
         'ResetAttributes',
         { Foreground = { AnsiColor = 'Yellow' } },
-        { Text = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' ', }
+        {
+            Text = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' ',
+        },
     }))
 end)
 
