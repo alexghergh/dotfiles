@@ -196,27 +196,10 @@ config.keys = {
     -- copy
     { key = 'c', mods = 'SUPER', action = act.CopyTo('Clipboard') },
     { key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
-    {
-        key = 'c',
-        mods = 'CTRL',
-        action = wezterm.action_callback(function(window, pane)
-            local has_selection = window:get_selection_text_for_pane(pane) ~= ''
-            if has_selection then
-                window:perform_action(act.CopyTo('Clipboard'), pane)
-                window:perform_action(act.ClearSelection, pane)
-            else
-                window:perform_action(
-                    act.SendKey({ key = 'c', mods = 'CTRL' }),
-                    pane
-                )
-            end
-        end),
-    },
 
     -- paste
     { key = 'v', mods = 'SUPER', action = act.PasteFrom('Clipboard') },
     { key = 'v', mods = 'CTRL|SHIFT', action = act.PasteFrom('Clipboard') },
-    -- { key = 'v', mods = 'CTRL', action = act.PasteFrom('Clipboard') },
 
     -- fullscreen
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
