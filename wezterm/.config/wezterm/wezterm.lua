@@ -329,6 +329,20 @@ config.key_tables = {
             }),
         },
 
+        -- move tab
+        { key = '1', mods = 'ALT', action = act.MoveTab(0) },
+        { key = '2', mods = 'ALT', action = act.MoveTab(1) },
+        { key = '3', mods = 'ALT', action = act.MoveTab(2) },
+        { key = '4', mods = 'ALT', action = act.MoveTab(3) },
+        { key = '5', mods = 'ALT', action = act.MoveTab(4) },
+        { key = '6', mods = 'ALT', action = act.MoveTab(5) },
+        { key = '7', mods = 'ALT', action = act.MoveTab(6) },
+        { key = '8', mods = 'ALT', action = act.MoveTab(7) },
+        { key = '9', mods = 'ALT', action = act.MoveTab(8) },
+
+        { key = 'h', mods = 'ALT', action = act.MoveTabRelative(-1) },
+        { key = 'l', mods = 'ALT', action = act.MoveTabRelative(1) },
+
         -- kill tab
         {
             key = 'w',
