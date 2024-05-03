@@ -193,9 +193,6 @@ config.keys = {
     { key = '8', mods = 'LEADER', action = act.ActivateTab(8) },
     { key = '9', mods = 'LEADER', action = act.ActivateTab(-1) },
 
-    -- show launcher
-    { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
-
     -- copy
     { key = 'c', mods = 'SUPER', action = act.CopyTo('Clipboard') },
     { key = 'c', mods = 'CTRL|SHIFT', action = act.CopyTo('Clipboard') },
@@ -224,8 +221,17 @@ config.keys = {
     -- fullscreen
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
 
+    -- show launcher
+    { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
+
+    -- show command palette
+    { key = 'h', mods = 'LEADER', action = act.ActivateCommandPalette },
+
     -- show debug overlay
     { key = 'd', mods = 'LEADER', action = act.ShowDebugOverlay },
+
+    -- show unicode char select
+    { key = 'u', mods = 'LEADER', action = act.CharSelect },
 
     --
     -- key tables
