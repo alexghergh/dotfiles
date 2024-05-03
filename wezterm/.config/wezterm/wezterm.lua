@@ -341,6 +341,22 @@ config.key_tables = {
         { key = 'Escape', action = act.PopKeyTable },
     },
     window_key_table = {
+        -- activate window
+        { key = 'h', action = act.ActivateWindowRelative(-1) },
+        { key = 'l', action = act.ActivateWindowRelative(1) },
+        { key = 'j', action = act.ActivateWindowRelativeNoWrap(-1) },
+        { key = 'k', action = act.ActivateWindowRelativeNoWrap(1) },
+
+        -- activate window by id
+        { key = '1', action = act.ActivateWindow(0) },
+        { key = '2', action = act.ActivateWindow(1) },
+        { key = '3', action = act.ActivateWindow(2) },
+        { key = '4', action = act.ActivateWindow(3) },
+        { key = '5', action = act.ActivateWindow(4) },
+        { key = '6', action = act.ActivateWindow(5) },
+        { key = '7', action = act.ActivateWindow(6) },
+        { key = '8', action = act.ActivateWindow(7) },
+
         -- new window
         {
             key = 'n',
