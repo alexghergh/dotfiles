@@ -182,6 +182,17 @@ config.keys = {
     { key = 'j', mods = 'ALT', action = act.ActivatePaneDirection('Down') },
     { key = 'k', mods = 'ALT', action = act.ActivatePaneDirection('Up') },
 
+    -- switch tab
+    { key = '1', mods = 'LEADER', action = act.ActivateTab(0) },
+    { key = '2', mods = 'LEADER', action = act.ActivateTab(1) },
+    { key = '3', mods = 'LEADER', action = act.ActivateTab(2) },
+    { key = '4', mods = 'LEADER', action = act.ActivateTab(3) },
+    { key = '5', mods = 'LEADER', action = act.ActivateTab(4) },
+    { key = '6', mods = 'LEADER', action = act.ActivateTab(5) },
+    { key = '7', mods = 'LEADER', action = act.ActivateTab(6) },
+    { key = '8', mods = 'LEADER', action = act.ActivateTab(8) },
+    { key = '9', mods = 'LEADER', action = act.ActivateTab(-1) },
+
     -- show launcher
     { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
 
