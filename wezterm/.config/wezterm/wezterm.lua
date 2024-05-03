@@ -311,6 +311,9 @@ config.key_tables = {
         { key = 'b', action = act.PaneSelect({ mode = 'MoveToNewTab' }) },
         { key = 'w', action = act.PaneSelect({ mode = 'MoveToNewWindow' }) },
 
+        -- rotate panes
+        { key = 'r', action = act.RotatePanes('Clockwise') },
+
         -- zoom pane
         { key = 'z', action = act.TogglePaneZoomState },
 
