@@ -113,6 +113,42 @@ config.launch_menu = {
     },
 }
 
+wezterm.on('update-right-status', function(window, _)
+
+    -- "Sun April 22 22:50"
+    local date = wezterm.strftime('%a %b %-d %H:%M')
+
+    local bat = ''
+    for _, b in ipairs(wezterm.battery_info()) do
+        local bat_status = ''
+        if b.state == 'Charging' then
+            bat_status = 'Ch.'
+        elseif b.state == 'Discharging' then
+            bat_status = 'Disch.'
+        end
+
+        bat = string.format('%s %.0f%%',
+            bat_status,
+            b.state_of_charge * 100)
+    end
+
+    -- display active key table
+    local key_tbl = window:active_key_table()
+    if key_tbl then
+        key_tbl = 'KEY TABLE: ' .. key_tbl
+    else
+        key_tbl = ''
+    end
+
+    local sep = wezterm.nerdfonts.ple_left_half_circle_thin
+    window:set_right_status(wezterm.format({
+        { Text = key_tbl },
+        'ResetAttributes',
+        { Foreground = { AnsiColor = 'Yellow' } },
+        { Text = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' ', }
+    }))
+end)
+
 config.disable_default_key_bindings = true
 config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.keys = {
@@ -566,16 +602,5 @@ config.mouse_bindings = {
         end),
     },
 }
-
--- right status information
-wezterm.on('update-right-status', function(window, _)
-    -- display active key table
-    local name = window:active_key_table()
-    if name then
-        name = 'KEY TABLE: ' .. name
-    end
-
-    window:set_right_status(name or '')
-end)
 
 return config
