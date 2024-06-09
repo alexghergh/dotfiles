@@ -6,11 +6,8 @@
 -- global
 --
 
--- python3 program, allows neovim to work in virtual environments;
--- set inside $XDG_CONFIG_HOME/zsh/.zsh_other/.zsh_env_vars
-if vim.env.VIM_PYTHON3_HOST_PROG ~= nil then
-    vim.g.python3_host_prog = vim.env.VIM_PYTHON3_HOST_PROG
-end
+-- python3 program, allows neovim to work in virtual environments
+vim.g.python3_host_prog = '/usr/bin/python3'
 
 -- wrap line prefix
 vim.opt.showbreak = '↪ '
