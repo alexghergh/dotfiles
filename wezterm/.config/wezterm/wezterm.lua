@@ -68,7 +68,7 @@ config.default_prog = { '/usr/bin/fish' }
 config.set_environment_variables = {
     SHELL = '/usr/bin/fish',
 }
-config.term = 'wezterm'
+-- config.term = 'wezterm' -- ncurses fucked this up (again), keep commented for now
 
 config.scrollback_lines = 10000
 
