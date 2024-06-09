@@ -68,31 +68,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
 
--- go to definition in a split window
-local function goto_definition()
-    local handler = function(_, result, _)
-        if result == nil or vim.tbl_isempty(result) then
-            vim.notify('No location found')
-            return nil
-        end
-        vim.cmd('vsplit')
-        if vim.tbl_islist(result) then
-            vim.lsp.util.jump_to_location(result[1], 'utf-8')
-
-            if #result > 1 then
-                vim.fn.setqflist(
-                    vim.lsp.util.locations_to_items(result, 'utf-8')
-                )
-                vim.api.nvim_command('copen')
-                vim.api.nvim_command('wincmd p')
-            end
-        else
-            vim.lsp.util.jump_to_location(result, 'utf-8')
-        end
-    end
-    return handler
-end
-
 M.handlers = {
     -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization, 1st tip
     ['textDocument/hover'] = vim.lsp.with(
@@ -103,8 +78,6 @@ M.handlers = {
         vim.lsp.handlers.signature_help,
         { border = 'rounded' }
     ),
-
-    ['textDocument/definition'] = goto_definition(),
 }
 
 return M
