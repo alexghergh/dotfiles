@@ -53,9 +53,9 @@ config.colors = {
     quick_select_match_fg = { Color = '#ffffff' },
 }
 
--- choose random background based on day of the month
+-- choose random background seeded by day of the year
 local now = os.date('*t', os.time())
-math.randomseed(tonumber(now.day))
+math.randomseed(tonumber(now.yday))
 config.background = {
     table.unpack(background[math.random(1, #background)]),
 }
