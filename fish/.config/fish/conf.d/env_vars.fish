@@ -27,10 +27,5 @@ set --path XDG_CONFIG_DIRS $XDG_CONFIG_DIRS
 # set biber path, just a hack to work on Arch
 fish_add_path --path --append /usr/bin/vendor_perl
 
-# japanese IME
-set -gx GTK_IM_MODULE fcitx
-set -gx QT_IM_MODULE fcitx
+# japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
-set -gx GLFW_IM_MODULE ibus
-set -gx XIM_PROGRAM fcitx
-set -gx XIM fcitx
