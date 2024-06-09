@@ -16,8 +16,10 @@
 -- run on :colorscheme (re)load
 vim.api.nvim_create_autocmd('ColorScheme', {
     callback = function()
-        if vim.g.colors_name == 'melange' then
-            require('colorscheme.melange').setup()
+        local status, result =
+            pcall(require, 'colorscheme.' .. vim.g.colors_name)
+        if status then
+            result.setup()
         end
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
