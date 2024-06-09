@@ -53,9 +53,10 @@ function M.setup()
     set_hl('CmpItemKindUnit', { link = 'CmpItemKindKeyword' })
 
     -- lsp (highlight symbol under cursor)
-    set_hl('LspReferenceRead', { bg = '#363331' })
-    set_hl('LspReferenceText', { bg = '#363331' })
-    set_hl('LspReferenceWrite', { bg = '#363331' })
+    set_hl('HighlightSymbol', { bg = '#4a4745' })
+    set_hl('LspReferenceRead', { link = 'HighlightSymbol' })
+    set_hl('LspReferenceText', { link = 'HighlightSymbol' })
+    set_hl('LspReferenceWrite', { link = 'HighlightSymbol' })
 
     -- indentation guides
     set_hl('IblIndent', { fg = '#403c3b' })
