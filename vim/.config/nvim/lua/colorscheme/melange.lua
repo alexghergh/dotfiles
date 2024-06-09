@@ -5,30 +5,31 @@ local function set_hl(...)
 end
 
 function M.setup()
-    -- background color for floats and statusline
+    -- floating windows
     set_hl('NormalFloat', { fg = 'None', bg = 'None' })
     set_hl('FloatBorder', { fg = '#c5cdd9', bg = 'None' })
-    set_hl('StatusLine', { bg = '#282c34' })
 
-    -- diagnostic colors
+    -- diagnostics
     set_hl('DiagnosticLineNrError', { fg = '#ff0000', bg = '#51202a' })
     set_hl('DiagnosticLineNrWarn', { fg = '#ffa500', bg = '#51412a' })
     set_hl('DiagnosticLineNrInfo', { fg = '#00ffff', bg = '#1e535d' })
     set_hl('DiagnosticLineNrHint', { fg = '#0000ff', bg = '#1e205d' })
 
-    -- statusline elements colors
-    local statuslinecolor3_bg = '#282c34'
+    -- statusline
+    local statusline_bg = '#282c34'
+    set_hl('StatusLine', { bg = statusline_bg })
+
     set_hl('StatusLineColor1', { fg = '#3d4451', bg = '#8ab977', bold = true })
     set_hl('StatusLineColor2', { fg = '#a9a9af', bg = '#3e4452' })
-    set_hl('StatusLineColor3', { fg = '#c2c2c2', bg = statuslinecolor3_bg })
+    set_hl('StatusLineColor3', { fg = '#c2c2c2', bg = statusline_bg })
 
     set_hl('StatusLineSeparator12', { fg = '#8ab977', bg = '#3d4451' })
-    set_hl('StatusLineSeparator23', { fg = '#3e4452', bg = '#282c34' })
+    set_hl('StatusLineSeparator23', { fg = '#3e4452', bg = statusline_bg })
 
     -- statusline diff stats (added, removed, modified)
-    set_hl('StatusLineDiffAdd', { fg = '#78997a', bg = statuslinecolor3_bg })
-    set_hl('StatusLineDiffDelete', { fg = '#bd8183', bg = statuslinecolor3_bg })
-    set_hl('StatusLineDiffChange', { fg = '#b380b0', bg = statuslinecolor3_bg })
+    set_hl('StatusLineDiffAdd', { fg = '#78997a', bg = statusline_bg })
+    set_hl('StatusLineDiffDelete', { fg = '#bd8183', bg = statusline_bg })
+    set_hl('StatusLineDiffChange', { fg = '#b380b0', bg = statusline_bg })
 
     -- autocompletion menu items (nvim-cmp)
     -- gray
