@@ -6,16 +6,16 @@ if not status is-interactive
 end
 
 # shortcuts
-abbr --add desk     cd ~/Desktop/
-abbr --add down     cd ~/Downloads/
-abbr --add dots     cd ~/projects/dotfiles/
-abbr --add research cd ~/projects/uni-research/
-abbr --add proj     cd ~/projects/
-abbr --add pack     cd ~/packages/
-abbr --add tconf    cd ~/.config/tmux/
-abbr --add vconf    cd ~/.config/nvim/
-abbr --add fconf    cd ~/.config/fish/
-abbr --add wconf    cd ~/.config/wezterm/
+abbr --add --position anywhere desk     ~/Desktop/
+abbr --add --position anywhere down     ~/Downloads/
+abbr --add --position anywhere dots     ~/projects/dotfiles/
+abbr --add --position anywhere research ~/projects/uni-research/
+abbr --add --position anywhere proj     ~/projects/
+abbr --add --position anywhere pack     ~/packages/
+abbr --add --position anywhere tconf    ~/.config/tmux/
+abbr --add --position anywhere vconf    ~/.config/nvim/
+abbr --add --position anywhere fconf    ~/.config/fish/
+abbr --add --position anywhere wconf    ~/.config/wezterm/
 
 # system stuff
 abbr --add h            history
@@ -39,15 +39,15 @@ abbr --add py  python
 #   .... -> cd ../../..
 # and so on
 function multicd
-    echo cd (string repeat -n (math (string length -- $argv[1]) - 1) ../)
+    echo (string repeat -n (math (string length -- $argv[1]) - 1) ../)
 end
-abbr --add cddotdot --regex '^\.\.+$' --function multicd
+abbr --add --position anywhere cddotdot --regex '^\.\.+$' --function multicd
 
 # shorthand for cd -
 abbr --add cdminus --regex '^-$' cd -
 
 # discourage 'cd' use
-abbr --add cd echo \""Just.. don't! (prefer - or .. or dir name)\""\; cd
+abbr --add cd echo \""Don't! (prefer - or .. or dir name)\""\; cd
 
 # git stuff
 abbr --add ga       git add
@@ -73,6 +73,7 @@ abbr --add sudovim sudo -E vim
 
 # get my ip
 abbr --add myp curl http://ipecho.net/plain
+abbr --add myip curl http://ipecho.net/plain
 
 # texlive alias for tlmgr; hack for Arch
 abbr --add tlmgr /usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode
