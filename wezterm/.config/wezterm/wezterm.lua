@@ -1,6 +1,7 @@
 local wezterm = require('wezterm')
 local act = wezterm.action
 local background = require('background')
+local smart_splits = require('smart-splits')
 
 local config = wezterm.config_builder()
 
@@ -177,11 +178,11 @@ config.keys = {
         action = act.SplitVertical({ domain = 'CurrentPaneDomain' }),
     },
 
-    -- switch pane
-    { key = 'h', mods = 'ALT', action = act.ActivatePaneDirection('Left') },
-    { key = 'l', mods = 'ALT', action = act.ActivatePaneDirection('Right') },
-    { key = 'j', mods = 'ALT', action = act.ActivatePaneDirection('Down') },
-    { key = 'k', mods = 'ALT', action = act.ActivatePaneDirection('Up') },
+    -- switch pane (wezterm or neovim, see smart-splits.nvim)
+    smart_splits.move_cursor('h', 'Left'),
+    smart_splits.move_cursor('l', 'Right'),
+    smart_splits.move_cursor('j', 'Down'),
+    smart_splits.move_cursor('k', 'Up'),
 
     -- switch tab
     { key = '1', mods = 'LEADER', action = act.ActivateTab(0) },
@@ -251,7 +252,7 @@ config.keys = {
         }),
     },
 
-    -- resize pane
+    -- resize pane (wezterm or neovim, see smart-splits.nvim)
     {
         key = 'r',
         mods = 'LEADER',
@@ -400,17 +401,17 @@ config.key_tables = {
         { key = 'Escape', action = act.PopKeyTable },
     },
     resize_pane = {
-        { key = 'LeftArrow', action = act.AdjustPaneSize({ 'Left', 1 }) },
-        { key = 'h', action = act.AdjustPaneSize({ 'Left', 1 }) },
+        smart_splits.resize_pane('LeftArrow', 'Left'),
+        smart_splits.resize_pane('h', 'Left'),
 
-        { key = 'RightArrow', action = act.AdjustPaneSize({ 'Right', 1 }) },
-        { key = 'l', action = act.AdjustPaneSize({ 'Right', 1 }) },
+        smart_splits.resize_pane('RightArrow', 'Right'),
+        smart_splits.resize_pane('l', 'Right'),
 
-        { key = 'DownArrow', action = act.AdjustPaneSize({ 'Down', 1 }) },
-        { key = 'j', action = act.AdjustPaneSize({ 'Down', 1 }) },
+        smart_splits.resize_pane('DownArrow', 'Down'),
+        smart_splits.resize_pane('j', 'Down'),
 
-        { key = 'UpArrow', action = act.AdjustPaneSize({ 'Up', 1 }) },
-        { key = 'k', action = act.AdjustPaneSize({ 'Up', 1 }) },
+        smart_splits.resize_pane('UpArrow', 'Up'),
+        smart_splits.resize_pane('k', 'Up'),
 
         { key = 'Escape', action = act.PopKeyTable },
     },

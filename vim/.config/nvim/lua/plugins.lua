@@ -20,6 +20,15 @@ plugins = {
     -- plugin manager manages itself
     { 'folke/lazy.nvim' },
 
+    -- nvim-wezterm navigation
+    {
+        'mrjones2014/smart-splits.nvim',
+        opts = {
+            at_edge = 'stop',
+            cursor_follows_swapped_bufs = true,
+        },
+    },
+
     -- code diffs
     { 'mhinz/vim-signify' },
 

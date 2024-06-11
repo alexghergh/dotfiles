@@ -16,6 +16,7 @@ require('modules.luasnip')
 require('modules.neodev')
 require('modules.nvim-navic')
 require('modules.nvim-tmux-navigation')
+require('modules.smart-splits')
 require('modules.telescope')
 require('modules.treesitter')
 
