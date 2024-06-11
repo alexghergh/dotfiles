@@ -20,8 +20,14 @@ plugins = {
     -- plugin manager manages itself
     { 'folke/lazy.nvim' },
 
+    -- code diffs
+    { 'mhinz/vim-signify' },
 
+    -- surroundings
+    { 'tpope/vim-surround', dependencies = { 'tpope/vim-repeat' } },
 
+    -- pairs of mappings
+    { 'tpope/vim-unimpaired', dependencies = { 'tpope/vim-repeat' } },
 }
 
 opts = {}
