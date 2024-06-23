@@ -29,7 +29,8 @@ plugins = {
         },
     },
 
-    -- code diffs
+    -- code diffs (TODO move to something else, highlight toggles don't
+    -- seem to work anymore)
     { 'mhinz/vim-signify' },
 
     -- surroundings
@@ -37,6 +38,41 @@ plugins = {
 
     -- pairs of mappings
     { 'tpope/vim-unimpaired', dependencies = { 'tpope/vim-repeat' } },
+
+    -- better UI
+    { 'stevearc/dressing.nvim', opts = {}, event = 'VeryLazy' },
+
+    -- fonts, glyphs, symbols
+    {
+        '2kabhishek/nerdy.nvim',
+        dependencies = {
+            'stevearc/dressing.nvim',
+            -- 'nvim-telescope/telescope.nvim',
+        },
+        cmd = 'Nerdy',
+    },
+
+    -- secure modelines
+    { 'alexghergh/securemodelines' },
+
+    -- undotrees
+    { 'mbbill/undotree' },
+
+    -- colorschemes
+    { 'savq/melange-nvim', lazy = false, priority = 1000, },
+
+    -- indentlines (TODO adjust)
+    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
+
+    -- telescope stuff
+    -- { 'nvim-telescope/telescope.nvim', tag = '0.1.3' },
+
+    -- -- search highlighting
+    -- use({ 'nvimdev/hlsearch.nvim' })
+    --
+    -- -- status line
+    -- use({ 'nvimdev/galaxyline.nvim' })
+    -- use({ 'SmiteshP/nvim-navic' })
 }
 
 opts = {}
