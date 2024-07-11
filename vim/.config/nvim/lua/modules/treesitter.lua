@@ -42,54 +42,23 @@ require('nvim-treesitter.configs').setup({
     incremental_selection = {
         enable = true,
         keymaps = {
-            init_selection = 'gnn',
-            node_incremental = 'grn',
-            scope_incremental = 'grc',
-            node_decremental = 'grm',
+            init_selection = '<Leader>is',
+            node_incremental = '<Leader>nu',
+            node_decremental = '<Leader>nd',
+            scope_incremental = '<Leader>su',
         },
     },
 
     indent = {
         enable = true,
     },
-
-    playground = {
-        enable = true,
-        updatetime = 25,
-        persist_queries = false,
-        keybindings = {
-            toggle_query_editor = 'o',
-            toggle_hl_groups = 'i',
-            toggle_injected_languages = 't',
-            toggle_anonymous_nodes = 'a',
-            toggle_language_display = 'I',
-            focus_language = 'f',
-            unfocus_language = 'F',
-            update = 'R',
-            goto_node = '<CR>',
-            show_help = '?',
-        },
-    },
-
-    query_linter = {
-        enable = true,
-        use_virtual_text = true,
-        lint_events = { 'BufWrite', 'CursorHold' },
-    },
 })
 
--- TODO move to lua/keymaps once the stuff in Playground is in core (nvim 0.10)
--- see github.com/nvim-treesitter/playground
--- it seems that highlight groups under cursor becomes :Inspect, while
--- TSPlaygroundToggle becomes :InspectTree; there doesn't seem to be any
--- built-in default for tsnodeundercursor, so unless one is included in core,
--- check the playground source code and move that here
-
 -- show tree-sitter syntax group under cursor; mnemonic "SYntax"
-vim.keymap.set('n', '<Leader>sy', '<Cmd>TSHighlightCapturesUnderCursor<CR>')
+vim.keymap.set('n', '<Leader>sy', '<Cmd>Inspect<CR>')
 
 -- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
-vim.keymap.set('n', '<Leader>tn', '<Cmd>TSNodeUnderCursor<CR>')
+vim.keymap.set('n', '<Leader>tn', '<Cmd>InspectTree<CR>')
 
 -- set folding function
 vim.o.foldmethod = 'expr'

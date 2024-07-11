@@ -29,6 +29,14 @@ plugins = {
         },
     },
 
+    -- treesitter goodies
+    {
+        'nvim-treesitter/nvim-treesitter',
+        build = function()
+            require('nvim-treesitter.install').update({ with_sync = true })()
+        end,
+    },
+
     -- code diffs (TODO move to something else, highlight toggles don't
     -- seem to work anymore)
     { 'mhinz/vim-signify' },
