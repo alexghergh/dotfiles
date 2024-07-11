@@ -16,7 +16,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-plugins = {
+local plugins = {
     -- plugin manager manages itself
     { 'folke/lazy.nvim' },
 
@@ -39,6 +39,20 @@ plugins = {
             require('nvim-treesitter.install').update({ with_sync = true })()
         end,
     },
+
+    -- LSP configs
+    { 'folke/neodev.nvim' },
+    { 'neovim/nvim-lspconfig' },
+    { 'hrsh7th/cmp-nvim-lsp' },
+    { 'hrsh7th/cmp-buffer' },
+    { 'hrsh7th/cmp-cmdline' },
+    { 'hrsh7th/cmp-path' },
+    { 'saadparwaiz1/cmp_luasnip' },
+    { 'hrsh7th/nvim-cmp' },
+
+    -- code snippets
+    { 'L3MON4D3/LuaSnip' }, --, tag = 'v2.*', run = 'make install_jsregexp' })
+    { 'honza/vim-snippets' },
 
     -- code diffs (TODO move to something else, highlight toggles don't
     -- seem to work anymore)
@@ -76,14 +90,14 @@ plugins = {
     },
 
     -- telescope stuff
-    -- { 'nvim-telescope/telescope.nvim', tag = '0.1.3' },
+    { 'nvim-telescope/telescope.nvim', tag = '0.1.3' },
 
-    -- -- status line
-    -- use({ 'nvimdev/galaxyline.nvim' })
-    -- use({ 'SmiteshP/nvim-navic' })
+    -- status line
+    { 'nvimdev/galaxyline.nvim' },
+    { 'SmiteshP/nvim-navic', dependencies = 'neovim/nvim-lspconfig' },
 }
 
-opts = {}
+local opts = {}
 
 require('lazy').setup(plugins, opts)
 

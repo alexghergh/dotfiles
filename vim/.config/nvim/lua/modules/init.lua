@@ -10,7 +10,6 @@
 -- plugin isn't installed); keep sorted
 require('modules.cmp')
 require('modules.galaxyline')
-require('modules.hlsearch')
 require('modules.luasnip')
 require('modules.neodev')
 require('modules.nvim-navic')
