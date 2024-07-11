@@ -54,14 +54,7 @@ plugins = {
     { 'stevearc/dressing.nvim', opts = {}, event = 'VeryLazy' },
 
     -- fonts, glyphs, symbols
-    {
-        '2kabhishek/nerdy.nvim',
-        dependencies = {
-            'stevearc/dressing.nvim',
-            -- 'nvim-telescope/telescope.nvim',
-        },
-        cmd = 'Nerdy',
-    },
+    { '2kabhishek/nerdy.nvim', cmd = 'Nerdy' },
 
     -- secure modelines
     { 'alexghergh/securemodelines' },
