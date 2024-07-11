@@ -78,9 +78,6 @@ plugins = {
     -- telescope stuff
     -- { 'nvim-telescope/telescope.nvim', tag = '0.1.3' },
 
-    -- -- search highlighting
-    -- use({ 'nvimdev/hlsearch.nvim' })
-    --
     -- -- status line
     -- use({ 'nvimdev/galaxyline.nvim' })
     -- use({ 'SmiteshP/nvim-navic' })
