@@ -20,6 +20,9 @@ plugins = {
     -- plugin manager manages itself
     { 'folke/lazy.nvim' },
 
+    -- nvim goodies and other utils
+    { 'nvim-lua/plenary.nvim' },
+
     -- nvim-wezterm navigation
     {
         'mrjones2014/smart-splits.nvim',
