@@ -63,7 +63,7 @@ plugins = {
     { 'mbbill/undotree' },
 
     -- colorschemes
-    { 'savq/melange-nvim', lazy = false, priority = 1000, },
+    { 'savq/melange-nvim', lazy = false, priority = 1000 },
 
     -- indentlines
     {
@@ -71,7 +71,7 @@ plugins = {
         main = 'ibl',
         opts = {
             indent = { char = '│' },
-            scope = { show_exact_scope = true }
+            scope = { show_exact_scope = true },
         },
     },
 
