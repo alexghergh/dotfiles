@@ -11,7 +11,6 @@
 require('modules.cmp')
 require('modules.galaxyline')
 require('modules.hlsearch')
-require('modules.indentline')
 require('modules.luasnip')
 require('modules.neodev')
 require('modules.nvim-navic')

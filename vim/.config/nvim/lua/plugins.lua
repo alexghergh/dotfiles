@@ -61,8 +61,15 @@ plugins = {
     -- colorschemes
     { 'savq/melange-nvim', lazy = false, priority = 1000, },
 
-    -- indentlines (TODO adjust)
-    { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
+    -- indentlines
+    {
+        'lukas-reineke/indent-blankline.nvim',
+        main = 'ibl',
+        opts = {
+            indent = { char = '│' },
+            scope = { show_exact_scope = true }
+        },
+    },
 
     -- telescope stuff
     -- { 'nvim-telescope/telescope.nvim', tag = '0.1.3' },
