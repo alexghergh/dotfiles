@@ -1,21 +1,24 @@
---
--- see :h luasnip.txt
--- see lua/modules/cmp.lua
---
-local M = {}
+return {
 
-if not pcall(require, 'luasnip') then
-    return nil
-end
+    -- snippets support
 
--- snippet expand/jumps and change choice are mapped in lua/modules/cmp.lua as
--- Tab/S-Tab/Ctrl-e
+    -- see :h luasnip.txt
+    -- see lua/modules/lspconfig.lua
+    {
+        'L3MON4D3/LuaSnip',
+        dependencies = {
+            'honza/vim-snippets',
+        },
+        config = function(_, opts)
+            -- snippet expand/jumps and change choice are mapped in
+            -- lua/modules/lspconfig.lua as Tab/S-Tab/Ctrl-e
 
--- load vim-snippets
-require('luasnip.loaders.from_snipmate').lazy_load()
+            -- load vim-snippets
+            require('luasnip.loaders.from_snipmate').lazy_load()
+        end,
+    }, --, tag = 'v2.*', run = 'make install_jsregexp' })
 
-M.ls = require('luasnip')
-
-return M
+    { 'honza/vim-snippets' },
+}
 
 -- vim: set tw=0 fo-=r ft=lua

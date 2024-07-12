@@ -91,6 +91,7 @@ return {
             'hrsh7th/cmp-cmdline',
             'hrsh7th/cmp-path',
             'saadparwaiz1/cmp_luasnip',
+            'L3MON4D3/LuaSnip',
         },
         opts = {},
         config = function(_, opts)
@@ -135,7 +136,7 @@ return {
             end
 
             local cmp = require('cmp')
-            -- local luasnip = require('modules.luasnip').ls
+            local luasnip = require('luasnip')
 
             -- setup general auto-completion
             cmp.setup({
@@ -151,7 +152,10 @@ return {
                     -- disable in prompts
                     enabled = enabled
                         and not (
-                            vim.api.nvim_buf_get_option(0, 'buftype')
+                            vim.api.nvim_get_option_value(
+                                'buftype',
+                                { buf = 0 }
+                            )
                             == 'prompt'
                         )
 
@@ -161,11 +165,11 @@ return {
 
                     return enabled
                 end,
-                -- snippet = {
-                --     expand = function(args)
-                --         require('luasnip').lsp_expand(args.body)
-                --     end,
-                -- },
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
                 window = {
                     completion = cmp.config.window.bordered(),
                     documentation = cmp.config.window.bordered(),
@@ -176,8 +180,8 @@ return {
                     ['<C-e>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.abort()
-                        -- elseif luasnip.choice_active() then
-                        --     luasnip.change_choice(1)
+                        elseif luasnip.choice_active() then
+                            luasnip.change_choice(1)
                         else
                             fallback()
                         end
@@ -186,8 +190,8 @@ return {
                     ['<Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item()
-                        -- elseif luasnip.expand_or_jumpable() then
-                        --     luasnip.expand_or_jump()
+                        elseif luasnip.expand_or_jumpable() then
+                            luasnip.expand_or_jump()
                         elseif has_words_before() then
                             cmp.complete()
                         else
@@ -197,8 +201,8 @@ return {
                     ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_prev_item()
-                        -- elseif luasnip.jumpable(-1) then
-                        --     luasnip.jump(-1)
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
                         else
                             fallback()
                         end
@@ -206,7 +210,7 @@ return {
                 }),
                 sources = cmp.config.sources({
                     { name = 'nvim_lsp' },
-                    -- { name = 'luasnip' },
+                    { name = 'luasnip' },
                 }, {
                     {
                         name = 'buffer',
@@ -228,7 +232,7 @@ return {
                         vim_item.menu = ({
                             buffer = '[Buffer]',
                             nvim_lsp = '[LSP]',
-                            -- luasnip = '[LuaSnip]',
+                            luasnip = '[LuaSnip]',
                             nvim_lua = '[Lua]',
                             latex_symbols = '[LaTeX]',
                         })[entry.source.name]
