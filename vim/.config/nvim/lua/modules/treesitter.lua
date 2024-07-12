@@ -21,11 +21,13 @@ return {
         end,
         cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
         keys = {
+            -- stylua: ignore start
             { '<Leader>nu', desc = 'Increment node selection (mnemonic Node Up)' },
-            { '<BS>', desc = 'Decrement node selection', mode = 'x' },
+            { '<BS>',       desc = 'Decrement node selection',                     mode = 'x' },
             { '<Leader>su', desc = 'Increment scope selection (mnemonic Scope Up)' },
-            { '<Leader>sy', '<Cmd>Inspect<CR>', desc = 'Inspect syntax group under cursor (mnemonic SYntax)' },
-            { '<Leader>tn', '<Cmd>InspectTree<CR>', desc = 'Show treesitter node under cursor (mnemonic Treesitter Node)' },
+            { '<Leader>sy', '<Cmd>Inspect<CR>',                                    desc = 'Inspect syntax group under cursor (mnemonic SYntax)' },
+            { '<Leader>tn', '<Cmd>InspectTree<CR>',                                desc = 'Show treesitter node under cursor (mnemonic Treesitter Node)' },
+            -- stylua: ignore end
         },
         opts = {
             ensure_installed = {
@@ -51,7 +53,7 @@ return {
                 disable = function(_, buf)
                     local max_filesize = 500 * 1024 -- 500 KB
                     local ok, stats =
-                    pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                        pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
                     if ok and stats and stats.size > max_filesize then
                         return true
                     end

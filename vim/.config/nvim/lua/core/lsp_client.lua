@@ -3,7 +3,6 @@
 --
 -- see :h vim.lsp
 --
-local M = {}
 
 -- use a custom LspAttach autocommand to map LSP keys only after
 -- the language server attaches to the current buffer
@@ -67,19 +66,5 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
 })
-
-M.handlers = {
-    -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization, 1st tip
-    ['textDocument/hover'] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = 'rounded' }
-    ),
-    ['textDocument/signatureHelp'] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = 'rounded' }
-    ),
-}
-
-return M
 
 -- vim: set tw=0 fo-=r ft=lua

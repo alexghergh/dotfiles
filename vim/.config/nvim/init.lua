@@ -18,9 +18,6 @@ require('core')
 -- install and configure necessary plugins
 require('plugins')
 
--- lsp servers setup (TODO)
--- require('lsp_servers')
-
 -- file-type specific stuff is processed later
 -- see after/ftplugin/
 

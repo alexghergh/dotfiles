@@ -32,10 +32,19 @@ return {
                 callback = function(_)
                     local h = vim.fn['sy#util#get_hunk_stats']()
                     if h ~= nil then
-                        print(vim.fn.printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks))
+                        print(
+                            vim.fn.printf(
+                                '[Hunk %d/%d]',
+                                h.current_hunk,
+                                h.total_hunks
+                            )
+                        )
                     end
                 end,
-                group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
+                group = vim.api.nvim_create_augroup(
+                    '_user_group',
+                    { clear = false }
+                ),
             })
         end,
     },
