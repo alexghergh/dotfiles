@@ -12,24 +12,14 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- source core built-in stuff (settings, autocommands, commands, keymaps,
--- diagnostics, lsp_client)
+-- diagnostics, lsp client)
 require('core')
 
--- setup custom colors
-require('colorscheme')
-
--- install necessary plugins
+-- install and configure necessary plugins
 require('plugins')
 
--- set up colorscheme (needs to run after plugin installs, so we have the
--- colorscheme already downloaded on fresh install)
-pcall(vim.cmd.colorscheme, 'melange')
-
--- setup installed plugins
-require('modules')
-
--- lsp servers setup
-require('lsp_servers')
+-- lsp servers setup (TODO)
+-- require('lsp_servers')
 
 -- file-type specific stuff is processed later
 -- see after/ftplugin/

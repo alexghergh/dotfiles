@@ -1,10 +1,19 @@
-M = {}
+--
+-- colorscheme related setup + custom stuff (adjustments to existing
+-- colorschemes) goes in here; that includes setting up colors / highlights
+
+-- most of the custom stuff here is set up to be consistent with wezterm /
+-- fish, or because the colorscheme doesn't support all the highlighting
+-- groups of some of the plugins
+
+-- see :h highlight
+-- see :h colorscheme
 
 local function set_hl(...)
     vim.api.nvim_set_hl(0, ...)
 end
 
-function M.setup()
+local function melange()
     -- floating windows
     set_hl('NormalFloat', { fg = 'None', bg = 'None' })
     set_hl('FloatBorder', { fg = '#c5cdd9', bg = 'None' })
@@ -63,6 +72,39 @@ function M.setup()
     set_hl('IblScope', { fg = '#d2691e' })
 end
 
-return M
+-- map colorscheme functions to strings
+colorscheme_functions = {
+    ['melange'] = melange,
+}
+
+-- run on :colorscheme (re)load; make sure every function is named the same as
+-- the colorscheme it represents (i.e. the custom colors/highlights associated
+-- with 'melange' should be within a function called `melange()')
+vim.api.nvim_create_autocmd('ColorScheme', {
+    callback = function()
+        local status, result = pcall(colorscheme_functions[vim.g.colors_name])
+        if not status then
+            vim.notify(
+                'Colorscheme '
+                    .. vim.g.colors_name
+                    .. ' might not be correctly configured',
+                vim.log.levels.WARN
+            )
+        end
+    end,
+    group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
+})
+
+return {
+    {
+        'savq/melange-nvim',
+        lazy = false, -- make sure we load this during startup if it is the main colorscheme
+        priority = 1000, -- make sure to load this before all the other start plugins
+        config = function()
+            -- main colorscheme
+            vim.cmd([[colorscheme melange]])
+        end,
+    },
+}
 
 -- vim: set tw=0 fo-=r ft=lua

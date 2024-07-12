@@ -1,20 +1,18 @@
-local M = {}
-
-if not pcall(require, 'nvim-tmux-navigation') then
-    return nil
-end
-
-require('nvim-tmux-navigation').setup({
-    disable_when_zoomed = true,
-    keybindings = {
-        left = '<M-h>',
-        down = '<M-j>',
-        up = '<M-k>',
-        right = '<M-l>',
-        last_active = '<Leader>lp',
+return {
+    {
+        'alexghergh/nvim-tmux-navigation',
+        opts = {
+            disable_when_zoomed = true,
+            keybindings = {
+                left = '<M-h>',
+                down = '<M-j>',
+                up = '<M-k>',
+                right = '<M-l>',
+                last_active = '<Leader>lp',
+            },
+        },
+        lazy = true,
     },
-})
-
-return M
+}
 
 -- vim: set tw=0 fo-=r ft=lua

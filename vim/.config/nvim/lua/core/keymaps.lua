@@ -6,8 +6,7 @@
 --
 -- notes:
 --   - remap is false by default in vim.keymap.set
---   - other plugin-specific mappings are found in after/plugin/ or in
---      lua/modules/
+--   - other plugin-specific mappings are found in lua/modules/*.lua
 --
 
 --

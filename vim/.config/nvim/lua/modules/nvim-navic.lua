@@ -1,21 +1,27 @@
-local M = {}
+return {
 
-if not pcall(require, 'nvim-navic') then
-    return nil
-end
+    -- cursor scope
+    {
+        'SmiteshP/nvim-navic',
+        opts = {
+            lsp = {
+                auto_attach = true,
+            },
+        },
+        dependencies = {
+            'neovim/nvim-lspconfig',
+        },
+        config = function(_, opts)
+            require('nvim-navic').setup(opts)
 
-require('nvim-navic').setup({
-    lsp = {
-        auto_attach = true,
+            is_available = require('nvim-navic').is_available
+
+            -- set up winbar
+            if is_available then
+                vim.o.winbar = "%{%v:lua.require('nvim-navic').get_location()%}"
+            end
+        end,
     },
-})
-
--- M.is_available = require('nvim-navic').is_available
--- M.get_location = require('nvim-navic').get_location
-
--- set up winbar
-vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
-
-return M
+}
 
 -- vim: set tw=0 fo-=r ft=lua
