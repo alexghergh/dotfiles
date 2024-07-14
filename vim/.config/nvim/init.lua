@@ -12,7 +12,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- source core built-in stuff (settings, autocommands, commands, keymaps,
--- diagnostics, lsp client)
+-- diagnostics)
 require('core')
 
 -- install and configure necessary plugins
