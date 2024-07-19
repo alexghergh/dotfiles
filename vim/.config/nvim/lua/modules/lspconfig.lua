@@ -36,6 +36,35 @@ local servers = {
     'lua_ls',
 }
 
+-- set up completion kinds icons
+local icons = {
+    Class = '󰠱',
+    Color = '󰏘',
+    Constant = '󰏿',
+    Constructor = '',
+    Enum = '',
+    EnumMember = '',
+    Event = '',
+    Field = '󰇽',
+    File = '󰈙',
+    Folder = '󰉋',
+    Function = '󰊕',
+    Interface = '',
+    Keyword = '󰌋',
+    Method = '󰆧',
+    Module = '',
+    Operator = '󰆕',
+    Property = '󰜢',
+    Reference = '',
+    Snippet = '',
+    Struct = '',
+    Text = '',
+    TypeParameter = '󰅲',
+    Unit = '',
+    Value = '󰎠',
+    Variable = '󰂡',
+}
+
 return {
 
     -- neovim development lsp setup
@@ -173,35 +202,6 @@ return {
         },
         opts = {},
         config = function(_, opts)
-            -- set up completion kinds icons
-            local icons = {
-                Class = '󰠱',
-                Color = '󰏘',
-                Constant = '󰏿',
-                Constructor = '',
-                Enum = '',
-                EnumMember = '',
-                Event = '',
-                Field = '󰇽',
-                File = '󰈙',
-                Folder = '󰉋',
-                Function = '󰊕',
-                Interface = '',
-                Keyword = '󰌋',
-                Method = '󰆧',
-                Module = '',
-                Operator = '󰆕',
-                Property = '󰜢',
-                Reference = '',
-                Snippet = '',
-                Struct = '',
-                Text = '',
-                TypeParameter = '󰅲',
-                Unit = '',
-                Value = '󰎠',
-                Variable = '󰂡',
-            }
-
             local function has_words_before()
                 unpack = unpack or table.unpack
                 local line, col = unpack(vim.api.nvim_win_get_cursor(0))
