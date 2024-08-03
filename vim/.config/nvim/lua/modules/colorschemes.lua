@@ -82,7 +82,7 @@ colorscheme_functions = {
 -- with 'melange' should be within a function called `melange()')
 vim.api.nvim_create_autocmd('ColorScheme', {
     callback = function()
-        local status, result = pcall(colorscheme_functions[vim.g.colors_name])
+        local status, _ = pcall(colorscheme_functions[vim.g.colors_name])
         if not status then
             vim.notify(
                 'Colorscheme '
