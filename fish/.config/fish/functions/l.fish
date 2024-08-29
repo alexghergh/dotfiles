@@ -2,7 +2,7 @@ function l
     # if eza is present, use it as opposed to built-in ls
     # see https://github.com/eza-community/eza
     if type -q eza
-        eza -la --icons=auto --hyperlink --color=auto --group --links --git --git-repos --time-style=relative --total-size $argv
+        eza -la --icons=auto --color=auto --group --links --git --git-repos --time-style=relative --total-size --header $argv
     else
         ls -lah --color=tty $argv
     end
