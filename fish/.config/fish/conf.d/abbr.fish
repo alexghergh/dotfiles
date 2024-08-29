@@ -84,6 +84,6 @@ abbr --add tlmgr /usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode
 
 # quick directory scan
 function multilevel_tree
-    echo tree -La (string match --regex '\d+' $argv[1])
+    echo tree -a -L (string match --regex '\d+' $argv[1])
 end
 abbr --add tla --regex '^tl(\d+)' --function multilevel_tree
