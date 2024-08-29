@@ -47,7 +47,7 @@ abbr --add --position anywhere cddotdot --regex '^\.\.+$' --function multicd
 abbr --add cdminus --regex '^-$' cd -
 
 # discourage 'cd' use
-abbr --add cd echo \""Don't! (prefer - or .. or dir name)\""\; cd
+abbr --add cd echo \""Don't! (prefer zoxide's `c`)\""\; cd
 
 # git stuff
 abbr --add ga       git add
@@ -64,12 +64,16 @@ abbr --add gsw      git switch
 abbr --add gpup     git push --set-upstream origin
 abbr --add gds      git diff --staged
 abbr --add gri      git rebase -i
+abbr --add greco    git rebase --continue
+abbr --add greab    git rebase --abort
 
 # discourage xdg-specific stuff
 abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open. If you feel like using it anyway, try \"command xdg-open\".'"
 
 # make sudo commands share the same init.vim config file as the regular user
-abbr --add sudovim sudo -E vim
+abbr --add sudov    sudo -E vim
+abbr --add sudovim  sudo -E vim
+abbr --add sudonvim sudo -E vim
 
 # get my ip
 abbr --add myp curl http://ipecho.net/plain
