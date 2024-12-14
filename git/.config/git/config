@@ -7,7 +7,7 @@
     template = ~/.config/git/git-commit-template
 [core]
     editor = nvim
-    pager = less -FR
+    pager = "less -+X -R"
     askPass = ksshaskpass
     excludesfile = ~/.config/git/git-ignore
 [sendemail]
