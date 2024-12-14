@@ -8,11 +8,14 @@ local config = wezterm.config_builder()
 config.color_scheme = 'Afterglow'
 
 config.font = wezterm.font_with_fallback({
+    'Cascadia Code',
+    'SF Mono',
+    'Source Code Pro',
     'JetBrains Mono',
     'Fira Code',
     'Hack',
-})
-config.font_size = 12
+}, { weight = 'DemiLight' })
+config.font_size = 13
 config.adjust_window_size_when_changing_font_size = false
 config.initial_rows = 37
 config.initial_cols = 150
@@ -90,14 +93,19 @@ config.launch_menu = {
         args = { 'htop' },
     },
     {
-        label = 'neovim - init.lua',
+        label = 'neovim - init',
         args = { 'nvim', 'init.lua' },
         cwd = '/home/alex/.config/nvim/',
     },
     {
-        label = 'neovim - keymaps.lua',
+        label = 'neovim - keymaps',
         args = { 'nvim', 'keymaps.lua' },
         cwd = '/home/alex/.config/nvim/lua/core',
+    },
+    {
+        label = 'neovim - plugins',
+        args = { 'nvim', 'modules' },
+        cwd = '/home/alex/.config/nvim/lua/',
     },
     {
         label = 'wezterm - wezterm.lua',
@@ -110,9 +118,19 @@ config.launch_menu = {
         cwd = '/home/alex/.config/fish/',
     },
     {
+        label = 'fish - functions/',
+        args = { 'nvim', 'functions/' },
+        cwd = '/home/alex/.config/fish/',
+    },
+    {
         label = 'fish - abbr.fish',
         args = { 'nvim', 'conf.d/abbr.fish' },
         cwd = '/home/alex/.config/fish/',
+    },
+    {
+        label = 'Notes / TODOs',
+        args = { 'nvim', 'TODO.md' },
+        cwd = '/home/alex/projects/dotfiles/',
     },
 }
 
@@ -606,11 +624,11 @@ config.mouse_bindings = {
     -- scroll by mouse wheel
     {
         event = { Down = { streak = 1, button = { WheelUp = 1 } } },
-        action = act.ScrollByCurrentEventWheelDelta,
+        action = act.ScrollByLine(-3),
     },
     {
         event = { Down = { streak = 1, button = { WheelDown = 1 } } },
-        action = act.ScrollByCurrentEventWheelDelta,
+        action = act.ScrollByLine(3),
     },
 
     -- open hyperlinks (disable mouse down to avoid unintuitive behaviour)
