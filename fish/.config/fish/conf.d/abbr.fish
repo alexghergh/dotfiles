@@ -53,6 +53,7 @@ abbr --add cd echo \""Don't! (prefer zoxide's `c`)\""\; cd
 abbr --add ga       git add
 abbr --add gap      git add -p
 abbr --add gs       git status
+abbr --add gg       git status
 abbr --add gco      git checkout
 abbr --add gcb      git checkout -b
 abbr --add gc       git commit
@@ -63,6 +64,7 @@ abbr --add gla      git log --oneline --graph --all
 abbr --add gsw      git switch
 abbr --add gpup     git push --set-upstream origin
 abbr --add gds      git diff --staged
+abbr --add gdc      git diff --cached # (same as the above)
 abbr --add gri      git rebase -i
 abbr --add greco    git rebase --continue
 abbr --add greab    git rebase --abort
