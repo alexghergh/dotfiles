@@ -3,6 +3,7 @@ function fish_prompt
 
     # some colors (borrowed from fish's colors to match the scheme)
     set -l normal (set_color normal)
+    set -l end_of_command $fish_color_error
     set -l jobs_present_color $fish_color_error
     set -l jobs_absent_color $fish_color_command
     set -l username_color $fish_color_param
@@ -12,6 +13,9 @@ function fish_prompt
     set -l arrow_color $fish_color_autosuggestion
     set -l sign_color $fish_color_autosuggestion
     set -l cmd_duration_color $fish_color_comment
+
+    # separate from previous command output
+    echo -ns (set_color $end_of_command) "\n--------eoc--------\n"
 
     # jobs
     jobs -q
