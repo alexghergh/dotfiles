@@ -25,9 +25,6 @@ vim.opt.smartcase = true
 -- highlight matched strings as typing occurs
 vim.opt.incsearch = true
 
--- allow neovim to copy and paste directly from the system clipboard
-vim.opt.clipboard:append({ 'unnamedplus' })
-
 -- don't unload buffers when switching, just hide them
 vim.opt.hidden = true
 

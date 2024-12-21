@@ -27,6 +27,12 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 -- cursor moving right feature
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
+-- system yank/put
+vim.keymap.set({ 'n', 'v' }, '<Space>y', '"+y')
+vim.keymap.set({ 'n', 'v' }, '<Space>Y', '"+Y')
+vim.keymap.set({ 'n', 'v' }, '<Space>p', '"+p')
+vim.keymap.set({ 'n', 'v' }, '<Space>P', '"+P')
+
 --
 -- command-line keymaps
 --
