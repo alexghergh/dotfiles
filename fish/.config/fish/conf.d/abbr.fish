@@ -27,6 +27,7 @@ abbr --add untar        tar -xzvf
 abbr --add dotar        tar -czvf
 abbr --add susp         systemctl suspend
 abbr --add httpserver   python -m http.server
+abbr --add psa          'ps aux | grep'
 
 # editor / tools
 abbr --add vim nvim
@@ -68,6 +69,9 @@ abbr --add gdc      git diff --cached # (same as the above)
 abbr --add gri      git rebase -i
 abbr --add greco    git rebase --continue
 abbr --add greab    git rebase --abort
+abbr --add gcl      git clone https://
+abbr --add gcgh     git clone https://github.com/
+abbr --add gcgl     git clone https://gitlab.com/
 
 # discourage xdg-specific stuff
 abbr --add xdg-open "echo 'Please do not use xdg-open; instead use open. If you feel like using it anyway, try \"command xdg-open\".'"
