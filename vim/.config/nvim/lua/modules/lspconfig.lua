@@ -75,74 +75,86 @@ return {
                     -- options for the nvim lsp keymaps
                     local opts = { buffer = args.buf }
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    local vlb = vim.lsp.buf
 
                     -- buffer mappings for LSP servers
 
-                    -- most of the below override the builtins, which is exactly
-                    -- what we want, i.e. have the same mappings whether there
-                    -- is an LSP-server present or not
+                    -- gD and gd below override the builtins, which makes
+                    -- mappings consistent whether there is an LSP or not
 
                     -- goto *
-                    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-                    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-                    vim.keymap.set('n', '<Leader>gi', vim.lsp.buf.implementation, opts)
-                    vim.keymap.set('n', '<Leader>gr', vim.lsp.buf.references, opts)
-                    vim.keymap.set('n', '<Leader>D', vim.lsp.buf.type_definition, opts) -- <L>gt
+                    vim.keymap.set('n', 'gD', vlb.declaration, opts)
+                    vim.keymap.set('n', 'gd', vlb.definition, opts)
+                    vim.keymap.set('n', '<Leader>gi', vlb.implementation, opts)
+                    vim.keymap.set('n', '<Leader>gr', vlb.references, opts)
+                    vim.keymap.set('n', '<Leader>D', vlb.type_definition, opts)
 
                     -- signature help / hover
-                    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-                    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+                    vim.keymap.set('n', 'K', vlb.hover, opts)
+                    vim.keymap.set('n', '<C-k>', vlb.signature_help, opts)
 
                     -- symbol rename
-                    vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
+                    vim.keymap.set('n', '<Leader>rn', vlb.rename, opts)
 
                     -- formatting
                     vim.keymap.set('n', '<Leader>f', function()
-                        vim.lsp.buf.format({ async = true })
+                        vlb.format({ async = true })
                     end, opts)
 
                     -- code actions
                     vim.keymap.set(
                         { 'n', 'v' },
                         '<Leader>ca',
-                        vim.lsp.buf.code_action,
+                        vlb.code_action,
                         opts
                     )
 
                     -- omnifunc / tagfunc completion
                     if client.server_capabilities.completionProvider then
-                        vim.bo[args.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+                        vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
                     end
                     if client.server_capabilities.definitionProvider then
-                        vim.bo[args.buf].tagfunc = "v:lua.vim.lsp.tagfunc"
+                        vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
                     end
 
                     -- symbol highlighting on hover
                     if client.server_capabilities.documentHighlightProvider then
-                        vim.api.nvim_create_augroup('lsp_doc_highlight', { clear = false })
+                        vim.api.nvim_create_augroup(
+                            'lsp_doc_highlight',
+                            { clear = false }
+                        )
                         vim.api.nvim_clear_autocmds({
                             buffer = args.buf,
                             group = 'lsp_doc_highlight',
                         })
-                        vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-                            buffer = args.buf,
-                            group = 'lsp_doc_highlight',
-                            callback = vim.lsp.buf.document_highlight,
-                        })
-                        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-                            buffer = args.buf,
-                            group = 'lsp_doc_highlight',
-                            callback = vim.lsp.buf.clear_references,
-                        })
+                        vim.api.nvim_create_autocmd(
+                            { 'CursorHold', 'CursorHoldI' },
+                            {
+                                buffer = args.buf,
+                                group = 'lsp_doc_highlight',
+                                callback = vlb.document_highlight,
+                            }
+                        )
+                        vim.api.nvim_create_autocmd(
+                            { 'CursorMoved', 'CursorMovedI' },
+                            {
+                                buffer = args.buf,
+                                group = 'lsp_doc_highlight',
+                                callback = vlb.clear_references,
+                            }
+                        )
                     end
                 end,
-                group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
+                group = vim.api.nvim_create_augroup(
+                    '_user_group',
+                    { clear = false }
+                ),
             })
 
-            vim.api.nvim_create_autocmd("LspDetach", {
+            vim.api.nvim_create_autocmd('LspDetach', {
                 callback = function(_)
                     -- reset omnifunc, tagfunc
-                    vim.cmd("setlocal tagfunc< omnifunc<")
+                    vim.cmd('setlocal tagfunc< omnifunc<')
                 end,
             })
 

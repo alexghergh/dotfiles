@@ -131,7 +131,7 @@ return {
     },
 
     {
-        "folke/tokyonight.nvim",
+        'folke/tokyonight.nvim',
         lazy = false,
         priority = 1000,
         config = function(_, opts)
@@ -142,7 +142,7 @@ return {
 
             vim.cmd([[colorscheme tokyonight]])
         end,
-    }
+    },
 }
 
 -- vim: set tw=0 fo-=r ft=lua
