@@ -72,9 +72,34 @@ local function melange()
     set_hl('IblScope', { fg = '#d2691e' })
 end
 
+local function tokyonight()
+    colors = require('lualine.themes._tokyonight').get()
+    normal = colors.normal.a
+
+    -- statusline
+    local statusline_bg = '#1a1c2a'
+    set_hl('StatusLine', { bg = statusline_bg })
+
+    set_hl('StatusLineColor1', { fg = normal.fg, bg = normal.bg, bold = true })
+    set_hl('StatusLineColor2', { fg = '#c8d3f5', bg = '#3e4452' })
+    set_hl('StatusLineColor3', { fg = '#c8d3f5', bg = statusline_bg })
+
+    set_hl('StatusLineSeparator12', { fg = normal.bg, bg = '#3d4451' })
+    set_hl('StatusLineSeparator23', { fg = '#3e4452', bg = statusline_bg })
+
+    -- statusline diff stats (added, removed, modified)
+    set_hl('StatusLineDiffAdd', { fg = normal.bg, bg = statusline_bg })
+    set_hl('StatusLineDiffDelete', { fg = '#7f2530', bg = statusline_bg })
+    set_hl('StatusLineDiffChange', { fg = '#6f4d99', bg = statusline_bg })
+end
+
 -- map colorscheme functions to strings
 colorscheme_functions = {
     ['melange'] = melange,
+    ['tokyonight-moon'] = tokyonight,
+    ['tokyonight-storm'] = tokyonight,
+    ['tokyonight-night'] = tokyonight,
+    ['tokyonight-day'] = tokyonight,
 }
 
 -- run on :colorscheme (re)load; make sure every function is named the same as
@@ -87,7 +112,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
             vim.notify(
                 'Colorscheme '
                     .. vim.g.colors_name
-                    .. ' might not be correctly configured',
+                    .. ' might not be correctly configured (in "colorschemes.lua").',
                 vim.log.levels.WARN
             )
         end
@@ -101,10 +126,23 @@ return {
         lazy = false, -- make sure we load this during startup if it is the main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
-            -- main colorscheme
-            vim.cmd([[colorscheme melange]])
+            -- vim.cmd([[colorscheme melange]])
         end,
     },
+
+    {
+        "folke/tokyonight.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function(_, opts)
+            table.insert(opts, {
+                style = 'storm', -- 'night', 'moon', 'storm', 'day' <- this requires light background
+            })
+            require('tokyonight').setup(opts)
+
+            vim.cmd([[colorscheme tokyonight]])
+        end,
+    }
 }
 
 -- vim: set tw=0 fo-=r ft=lua

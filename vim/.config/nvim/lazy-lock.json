@@ -24,6 +24,7 @@
   "securemodelines": { "branch": "master", "commit": "58c25c4aeacf7dd247f347d6ab7b701e6de34157" },
   "smart-splits.nvim": { "branch": "master", "commit": "b518cfb5283a2da43fa9935e850ba9d77873453d" },
   "telescope.nvim": { "branch": "master", "commit": "a0bbec21143c7bc5f8bb02e0005fa0b982edc026" },
+  "tokyonight.nvim": { "branch": "main", "commit": "45d22cf0e1b93476d3b6d362d720412b3d34465c" },
   "undotree": { "branch": "master", "commit": "56c684a805fe948936cda0d1b19505b84ad7e065" },
   "vim-repeat": { "branch": "master", "commit": "65846025c15494983dafe5e3b46c8f88ab2e9635" },
   "vim-signify": { "branch": "master", "commit": "8670143f9e12ed1cd3c9b2c54f345cdd9a4baac3" },
