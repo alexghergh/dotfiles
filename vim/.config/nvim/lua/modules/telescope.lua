@@ -8,47 +8,47 @@ return {
         dependencies = {
             'nvim-lua/plenary.nvim',
         },
-        opts = {
-            defaults = {
-                mappings = {
-                    i = {
-                        ['<C-h>'] = 'which_key',
-                    },
-                },
-            },
-        },
         event = { 'VeryLazy' },
         config = function(_, opts)
             require('telescope').setup(opts)
 
             local builtin = require('telescope.builtin')
-            -- mnemonic To Files/Grep/Buffers/Help etc.
+            -- mnemonics: To Files/Grep/Buffers/Help etc.
 
-            -- vim stuff
-            vim.keymap.set('n', '<Leader>tf', builtin.find_files, {})
-            vim.keymap.set('n', '<Leader>tg', builtin.live_grep, {})
+            -- file navigation
+            vim.keymap.set('n', '<Leader>hh', builtin.find_files, {})
+            vim.keymap.set('n', '<Leader>tt', builtin.find_files, {})
             vim.keymap.set('n', '<Leader>tb', builtin.buffers, {})
-            vim.keymap.set('n', '<Leader>th', builtin.help_tags, {})
+            vim.keymap.set('n', '<Leader>tg', builtin.live_grep, {})
 
-            vim.keymap.set('n', '<Leader>tc', builtin.commands, {})
+            -- Command/Search History
             vim.keymap.set('n', '<Leader>tch', builtin.command_history, {})
             vim.keymap.set('n', '<Leader>tsh', builtin.search_history, {})
-            vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {}) -- TODO other than man section 1?
 
-            vim.keymap.set('n', '<Leader>tm', builtin.marks, {})
-
-            vim.keymap.set('n', '<Leader>tcs', builtin.colorscheme, {})
-
-            vim.keymap.set('n', '<Leader>tq', builtin.quickfix, {})
-
-            vim.keymap.set('n', '<Leader>to', builtin.vim_options, {})
+            -- MArks/Registers
+            vim.keymap.set('n', '<Leader>tma', builtin.marks, {})
             vim.keymap.set('n', '<Leader>tr', builtin.registers, {})
 
-            vim.keymap.set('n', '<Leader>ta', builtin.autocommands, {})
+            -- Colorschemes
+            vim.keymap.set('n', '<Leader>tcs', builtin.colorscheme, {})
+
+            -- Quickfix window
+            vim.keymap.set('n', '<Leader>tq', builtin.quickfix, {})
+
+            -- Help Pages/Man Pages
+            vim.keymap.set('n', '<Leader>thp', builtin.help_tags, {})
+            vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
+
+            -- Options/CCommands/AutoCommands/Keymaps
+            vim.keymap.set('n', '<Leader>to', builtin.vim_options, {})
+            vim.keymap.set('n', '<Leader>tcc', builtin.commands, {})
+            vim.keymap.set('n', '<Leader>tac', builtin.autocommands, {})
             vim.keymap.set('n', '<Leader>tk', builtin.keymaps, {})
 
+            -- HIghlights
             vim.keymap.set('n', '<Leader>thi', builtin.highlights, {})
 
+            -- Resume (open last picker)/Open all pickers
             vim.keymap.set('n', '<Leader>fr', builtin.resume, {})
             vim.keymap.set('n', '<Leader>fp', builtin.pickers, {})
 
