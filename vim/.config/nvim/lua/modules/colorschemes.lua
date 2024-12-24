@@ -73,8 +73,8 @@ local function melange()
 end
 
 local function tokyonight()
-    colors = require('lualine.themes._tokyonight').get()
-    normal = colors.normal.a
+    local colors = require('lualine.themes._tokyonight').get()
+    local normal = colors.normal.a
 
     -- statusline
     local statusline_bg = '#1a1c2a'
@@ -94,7 +94,7 @@ local function tokyonight()
 end
 
 -- map colorscheme functions to strings
-colorscheme_functions = {
+local colorscheme_functions = {
     ['melange'] = melange,
     ['tokyonight-moon'] = tokyonight,
     ['tokyonight-storm'] = tokyonight,

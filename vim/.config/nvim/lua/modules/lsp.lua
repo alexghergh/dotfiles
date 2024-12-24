@@ -44,6 +44,7 @@ return {
         },
     },
 
+    -- integration with neovim's lspconfig
     {
         'williamboman/mason-lspconfig.nvim',
         opts = {
@@ -51,14 +52,12 @@ return {
         },
     },
 
-    -- neovim development lsp setup
-    -- off spec lsp to assist in lua neovim configs
-    -- sets up runtime dependencies for neovim stuff
+    -- neovim dev off-spec lsp to assist with lua configs; sets up runtime deps
+    -- for neovim
     --
-    -- see :h neodev
+    -- see :h lazydev
     {
-        -- TODO replace with lazydev.nvim
-        'folke/neodev.nvim',
+        'folke/lazydev.nvim',
         opts = {},
         dependencies = {
             'hrsh7th/nvim-cmp',
@@ -74,7 +73,7 @@ return {
         dependencies = {
             'hrsh7th/nvim-cmp',
             'hrsh7th/cmp-nvim-lsp',
-            'folke/neodev.nvim',
+            'folke/lazydev.nvim',
         },
         opts = {},
         config = function(_, _)
