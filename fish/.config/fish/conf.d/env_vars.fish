@@ -25,7 +25,13 @@ set -q XDG_CONFIG_DIRS; or set -gx XDG_CONFIG_DIRS "/etc/xdg/"
 set --path XDG_CONFIG_DIRS $XDG_CONFIG_DIRS
 
 # set biber path, just a hack to work on Arch
-fish_add_path --path --append /usr/bin/vendor_perl
+#fish_add_path --path --append /usr/bin/vendor_perl
+
+# rustup/cargo tools
+fish_add_path --path --append "$HOME/.cargo/bin"
+
+# stylua (provided by mason.nvim)
+fish_add_path --path --append "$HOME/.local/share/nvim/mason/bin/"
 
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
