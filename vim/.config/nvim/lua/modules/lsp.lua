@@ -1,8 +1,8 @@
 --
 -- lsp servers setup
 --
--- this includes setting up the lsp configs, as well as the auto-completion
--- engine managed by nvim-cmp, and any other off-spec lsp servers
+-- includes setting up lsp configs, the auto-completion engine managed by
+-- nvim-cmp, and any other off-spec lsp servers
 --
 -- see :h vim.lsp
 -- see lua/core/lsp_client.lua
@@ -23,20 +23,33 @@ local handlers = {
 
 -- lsp servers
 local servers = {
-    -- pacman ccls
-    'ccls',
-
-    -- pacman pyright
+    -- TODO latex, markdown servers
+    'clangd',
     'pyright',
-
-    -- see ~/packages folder
     'jdtls',
-
-    -- pacman lua-language-server
     'lua_ls',
 }
 
 return {
+
+    -- lsp servers package manager
+    --
+    -- see :h mason.nvim
+    {
+        'williamboman/mason.nvim',
+        opts = {
+            ui = {
+                border = 'rounded',
+            },
+        },
+    },
+
+    {
+        'williamboman/mason-lspconfig.nvim',
+        opts = {
+            ensure_installed = servers,
+        },
+    },
 
     -- neovim development lsp setup
     -- off spec lsp to assist in lua neovim configs
