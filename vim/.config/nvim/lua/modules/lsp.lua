@@ -24,7 +24,7 @@ local handlers = {
 -- lsp servers
 local servers = {
     -- TODO latex, markdown servers
-    'clangd',
+    -- 'clangd', -- find an alternative, arm64 is unsupported for clangd
     'pyright',
     'jdtls',
     'lua_ls',

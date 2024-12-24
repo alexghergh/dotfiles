@@ -6,6 +6,7 @@ return {
     -- see lua/modules/lspconfig.lua
     {
         'L3MON4D3/LuaSnip',
+        run = 'make install_jsregexp',
         dependencies = {
             'honza/vim-snippets',
         },

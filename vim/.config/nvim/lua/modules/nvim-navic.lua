@@ -14,7 +14,7 @@ return {
         config = function(_, opts)
             require('nvim-navic').setup(opts)
 
-            is_available = require('nvim-navic').is_available
+            local is_available = require('nvim-navic').is_available
 
             -- set up winbar
             if is_available then
