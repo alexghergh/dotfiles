@@ -23,15 +23,19 @@ vim.keymap.set({ 'n', 'x' }, 'k', "v:count ? 'k' : 'gk'", { expr = true })
 vim.keymap.set('i', '<C-w>', '<C-g>u<C-w>')
 vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 
--- since we remapped <Leader> to Space, just unmap Space, to avoid the annoying
--- cursor moving right feature
+-- since we remapped <Leader> to Space, just unmap Space, to avoid the cursor
+-- moving right "feature"
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
 -- system yank/put
-vim.keymap.set({ 'n', 'v' }, '<Space>y', '"+y')
-vim.keymap.set({ 'n', 'v' }, '<Space>Y', '"+Y')
-vim.keymap.set({ 'n', 'v' }, '<Space>p', '"+p')
-vim.keymap.set({ 'n', 'v' }, '<Space>P', '"+P')
+vim.keymap.set({ 'n', 'v' }, '<Leader>y', '"+y')
+vim.keymap.set({ 'n', 'v' }, '<Leader>Y', '"+Y')
+vim.keymap.set({ 'n', 'v' }, '<Leader>p', '"+p')
+vim.keymap.set({ 'n', 'v' }, '<Leader>P', '"+P')
+
+-- make delete just... delete (:h "_)
+vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d')
+vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D')
 
 --
 -- command-line keymaps
