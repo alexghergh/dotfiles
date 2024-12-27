@@ -67,7 +67,7 @@ vim.diagnostic.handlers.signs = {
 }
 
 -- diagnostic gutter signs and line number highlight
-local signs = { Error = ' ', Warn = ' ', Hint = ' ', Info = ' ' }
+local signs = { Error = '󰅚 ', Warn = '󰀪 ', Hint = '󰌶 ', Info = ' ' }
 for type, icon in pairs(signs) do
     local hl = 'DiagnosticSign' .. type
     local hl_line = 'DiagnosticLineNr' .. type -- see lua/modules/colorschemes.lua
