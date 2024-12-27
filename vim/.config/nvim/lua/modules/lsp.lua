@@ -30,9 +30,9 @@ local servers = {
                 analysis = {
                     autoSearchPaths = true,
                     typeCheckingMode = 'standard',
-                }
-            }
-        }
+                },
+            },
+        },
     },
     'ruff',
     'jdtls',
