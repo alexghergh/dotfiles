@@ -23,9 +23,6 @@ local handlers = {
 
 -- lsp servers
 local servers = {
-    -- TODO latex, markdown servers
-    -- 'clangd', -- find an alternative, arm64 is unsupported for clangd
-    'pyright',
     {
         'basedpyright',
         settings = {
@@ -44,6 +41,7 @@ local servers = {
     'marksman',
     'yamlls',
     'texlab',
+    'ccls',
 }
 
 return {
@@ -67,10 +65,12 @@ return {
             ensure_installed = (function()
                 local s = {}
                 for _, v in pairs(servers) do
-                    if type(v) ~= 'string' then
-                        table.insert(s, v[1])
-                    else
-                        table.insert(s, v)
+                    if v ~= 'ccls' then -- ignore ccls; mason doesn't support it
+                        if type(v) ~= 'string' then
+                            table.insert(s, v[1])
+                        else
+                            table.insert(s, v)
+                        end
                     end
                 end
                 return s
