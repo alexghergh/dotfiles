@@ -26,8 +26,24 @@ local servers = {
     -- TODO latex, markdown servers
     -- 'clangd', -- find an alternative, arm64 is unsupported for clangd
     'pyright',
+    {
+        'basedpyright',
+        settings = {
+            basedpyright = {
+                analysis = {
+                    autoSearchPaths = true,
+                    typeCheckingMode = 'standard',
+                }
+            }
+        }
+    },
+    'ruff',
     'jdtls',
     'lua_ls',
+    { 'harper_ls', filetypes = { 'markdown', 'latex', 'tex', 'text' } },
+    'marksman',
+    'yamlls',
+    'texlab',
 }
 
 return {
@@ -48,7 +64,17 @@ return {
     {
         'williamboman/mason-lspconfig.nvim',
         opts = {
-            ensure_installed = servers,
+            ensure_installed = (function()
+                local s = {}
+                for _, v in pairs(servers) do
+                    if type(v) ~= 'string' then
+                        table.insert(s, v[1])
+                    else
+                        table.insert(s, v)
+                    end
+                end
+                return s
+            end)(),
         },
     },
 
@@ -89,6 +115,10 @@ return {
                     local client = vim.lsp.get_client_by_id(args.data.client_id)
                     local vlb = vim.lsp.buf
 
+                    if client == nil then
+                        return
+                    end
+
                     -- buffer mappings for LSP servers
 
                     -- gD and gd below override the builtins, which makes
@@ -99,7 +129,7 @@ return {
                     vim.keymap.set('n', 'gd', vlb.definition, opts)
                     vim.keymap.set('n', '<Leader>gi', vlb.implementation, opts)
                     vim.keymap.set('n', '<Leader>gr', vlb.references, opts)
-                    vim.keymap.set('n', '<Leader>D', vlb.type_definition, opts)
+                    vim.keymap.set('n', '<Leader>td', vlb.type_definition, opts)
 
                     -- signature help / hover
                     vim.keymap.set('n', 'K', vlb.hover, opts)
@@ -172,10 +202,28 @@ return {
 
             -- setup the lsp servers
             for _, lsp in ipairs(servers) do
-                require('lspconfig')[lsp].setup({
+
+                -- global opts
+                local opts = {
                     capabilities = require('cmp_nvim_lsp').default_capabilities(),
                     handlers = handlers,
-                })
+                }
+
+                -- spec in the form { 'lsp_name', opt1 = {..}, opt2 = '..' } for
+                -- server-specific opts
+                if type(lsp) == 'table' then
+                    for k, v in pairs(lsp) do
+                        if type(k) == 'string' then
+                            opts[k] = v
+                        end
+                    end
+                    -- finally extract server name (should be first)
+                    lsp = lsp[1]
+                end
+
+                -- print(lsp, vim.inspect(opts))
+                -- print(vim.inspect(require('lspconfig')))
+                require('lspconfig')[lsp].setup(opts)
             end
         end,
     },
