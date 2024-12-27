@@ -76,8 +76,9 @@ config.set_environment_variables = {
 
 config.scrollback_lines = 10000
 
--- adjust quick selection key press alphabet
-config.quick_select_alphabet = 'aoeuqjkxpyhtnsgcrlmwvzfidb'
+-- quick selection key press alphabet (prefer right hand first, due to left
+-- shift pinky press on copy/paste)
+config.quick_select_alphabet = 'htnsgcrlmwvzfdbaoeuqjkxpyi'
 
 -- configs for hyperlink rules (make things clickable in wezterm)
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
