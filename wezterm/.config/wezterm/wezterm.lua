@@ -226,7 +226,11 @@ config.keys = {
     { key = 'z', mods = 'LEADER', action = act.ToggleFullScreen },
 
     -- show launcher
-    { key = 'l', mods = 'LEADER', action = act.ShowLauncher },
+    {
+        key = 'l',
+        mods = 'LEADER',
+        action = act.ShowLauncherArgs({ flags = 'LAUNCH_MENU_ITEMS' }),
+    },
 
     -- show command palette
     { key = 'h', mods = 'LEADER', action = act.ActivateCommandPalette },
