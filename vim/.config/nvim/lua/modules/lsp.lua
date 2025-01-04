@@ -202,7 +202,6 @@ return {
 
             -- setup the lsp servers
             for _, lsp in ipairs(servers) do
-
                 -- global opts
                 local opts = {
                     capabilities = require('cmp_nvim_lsp').default_capabilities(),
