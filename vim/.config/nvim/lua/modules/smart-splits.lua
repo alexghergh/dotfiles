@@ -28,10 +28,10 @@ return {
             vim.keymap.set('n', '<Leader>wk', splits.resize_up)
 
             -- swap neovim splits
-            vim.keymap.set('n', '<leader><leader>h', splits.swap_buf_left)
-            vim.keymap.set('n', '<leader><leader>j', splits.swap_buf_down)
-            vim.keymap.set('n', '<leader><leader>k', splits.swap_buf_up)
-            vim.keymap.set('n', '<leader><leader>l', splits.swap_buf_right)
+            vim.keymap.set('n', '<Leader><Leader>h', splits.swap_buf_left)
+            vim.keymap.set('n', '<Leader><Leader>j', splits.swap_buf_down)
+            vim.keymap.set('n', '<Leader><Leader>k', splits.swap_buf_up)
+            vim.keymap.set('n', '<Leader><Leader>l', splits.swap_buf_right)
         end,
     },
 }
