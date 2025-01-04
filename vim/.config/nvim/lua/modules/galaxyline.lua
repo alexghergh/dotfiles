@@ -18,6 +18,7 @@ return {
             separator_style = 'arrow',
         },
         config = function(_, opts)
+            local galaxyline = require('galaxyline')
             local condition = require('galaxyline.condition')
             local gls = require('galaxyline').section
 
@@ -172,6 +173,29 @@ return {
             --
             local right_statusline_section = {
                 {
+                    CodeCompanion = {
+                        provider = function()
+                            if galaxyline.codecompanion_processing == nil then
+                                galaxyline.codecompanion_processing = false
+                            end
+
+                            if galaxyline.codecompanion_processing == false then
+                                return ' '
+                            else
+                                return '⏳'
+                            end
+                        end,
+                        highlight = 'StatusLineColor3',
+                    },
+                },
+                {
+                    EmptySpace4 = {
+                        -- stylua: ignore
+                        provider = function() return ' ' end,
+                        highlight = 'StatusLineColor3',
+                    },
+                },
+                {
                     FileEncoding = {
                         provider = 'FileEncode',
                         highlight = 'StatusLineColor3',
@@ -180,7 +204,7 @@ return {
                     },
                 },
                 {
-                    EmptySpace4 = {
+                    EmptySpace5 = {
                         -- stylua: ignore
                         provider = function() return ' ' end,
                         highlight = 'StatusLineColor3',
@@ -196,7 +220,7 @@ return {
                     },
                 },
                 {
-                    EmptySpace5 = {
+                    EmptySpace6 = {
                         -- stylua: ignore
                         provider = function() return ' ' end,
                         highlight = 'StatusLineColor3',

@@ -1,6 +1,8 @@
 return {
 
-    -- AI code-assistant
+    -- LLM code-assistant
+    --
+    -- also see lua/modules/galaxyline.lua for statusline component
     {
         'olimorris/codecompanion.nvim',
         dependencies = {
@@ -61,6 +63,25 @@ return {
 
             -- set this to override _all_ open chat buffers with a specific llm
             -- vim.g.codecompanion_adapter = 'ollama'
+
+            -- visual statusline indication when the LLM is processing input
+            local status, galaxyline = pcall(require, 'galaxyline')
+            if status ~= false then
+                local group = vim.api.nvim_create_augroup('CodeCompanion', {})
+
+                vim.api.nvim_create_autocmd({ 'User' }, {
+                    pattern = 'CodeCompanionRequest*',
+                    group = group,
+                    callback = function(req)
+                        if req.match == 'CodeCompanionRequestStarted' then
+                            galaxyline.codecompanion_processing = true
+                        elseif req.match == 'CodeCompanionRequestFinished' then
+                            galaxyline.codecompanion_processing = false
+                        end
+                        galaxyline.load_galaxyline()
+                    end,
+                })
+            end
         end,
     },
 }
