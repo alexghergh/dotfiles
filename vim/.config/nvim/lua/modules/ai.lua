@@ -15,7 +15,7 @@ return {
                     return require('codecompanion.adapters').extend('ollama', {
                         schema = {
                             model = {
-                                default = 'codellama:latest',
+                                default = 'llama3.2:latest',
                             },
                         },
                         num_ctx = {
@@ -74,9 +74,9 @@ return {
                     group = group,
                     callback = function(req)
                         if req.match == 'CodeCompanionRequestStarted' then
-                            galaxyline.codecompanion_processing = true
+                            galaxyline.llm_processing = true
                         elseif req.match == 'CodeCompanionRequestFinished' then
-                            galaxyline.codecompanion_processing = false
+                            galaxyline.llm_processing = false
                         end
                         galaxyline.load_galaxyline()
                     end,

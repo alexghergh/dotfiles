@@ -18,7 +18,7 @@ return {
             separator_style = 'arrow',
         },
         config = function(_, opts)
-            local galaxyline = require('galaxyline')
+            local gl = require('galaxyline')
             local condition = require('galaxyline.condition')
             local gls = require('galaxyline').section
 
@@ -175,15 +175,33 @@ return {
                 {
                     CodeCompanion = {
                         provider = function()
-                            if galaxyline.codecompanion_processing == nil then
-                                galaxyline.codecompanion_processing = false
+                            -- see also lua/modules/ai.lua
+                            gl.llm_processing = gl.llm_processing or false
+
+                            if gl.llm_processing == false then
+                                return ' '
                             end
 
-                            if galaxyline.codecompanion_processing == false then
-                                return ' '
+                            -- stylua: ignore
+                            local spinner_list = {
+                                "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
+                            }
+
+                            if gl.llm_spinner_idx == nil then
+                                gl.llm_spinner_idx = 1
                             else
-                                return '⏳'
+                                gl.llm_spinner_idx = (
+                                    gl.llm_spinner_idx % #spinner_list
+                                ) + 1
                             end
+
+                            if gl.llm_symbol_timer == nil then
+                                gl.llm_symbol_timer = vim.defer_fn(function()
+                                    gl.llm_symbol_timer = nil
+                                    gl.load_galaxyline()
+                                end, 120)
+                            end
+                            return spinner_list[gl.llm_spinner_idx]
                         end,
                         highlight = 'StatusLineColor3',
                     },
