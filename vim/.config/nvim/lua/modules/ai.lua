@@ -11,18 +11,6 @@ return {
         },
         opts = {
             adapters = {
-                ollama = function()
-                    return require('codecompanion.adapters').extend('ollama', {
-                        schema = {
-                            model = {
-                                default = 'phi3.5:latest',
-                            },
-                        },
-                        num_ctx = {
-                            default = 4096,
-                        },
-                    })
-                end,
                 llama_cpp = function()
                     return require('codecompanion.adapters').extend('openai_compatible', {
                         name = 'llama_cpp',
@@ -48,11 +36,6 @@ return {
                     })
                 end,
             },
-            display = {
-                action_palette = {
-                    provider = 'telescope',
-                },
-            },
             strategies = {
                 chat = {
                     adapter = 'llama_cpp',
@@ -61,18 +44,14 @@ return {
                     adapter = 'llama_cpp',
                 },
             },
-            system_prompt = function(adapter)
-                if adapter == 'ollama' then
-                    return "Custom prompt"
-                end
-            end
+            display = {
+                action_palette = {
+                    provider = 'telescope',
+                },
+            },
         },
         config = function(_, opts)
             require('codecompanion').setup(opts)
-
-            -- TODO changing assistant on the fly?
-            -- TODO how can i complete the following in-line?
-            -- write lua function to reverse a list of items
 
             -- chat toggle
             vim.keymap.set(
