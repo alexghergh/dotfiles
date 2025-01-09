@@ -15,11 +15,35 @@ return {
                     return require('codecompanion.adapters').extend('ollama', {
                         schema = {
                             model = {
-                                default = 'llama3.2:latest',
+                                default = 'phi3.5:latest',
                             },
                         },
                         num_ctx = {
-                            default = 2048,
+                            default = 4096,
+                        },
+                    })
+                end,
+                llama_cpp = function()
+                    return require('codecompanion.adapters').extend('openai_compatible', {
+                        name = 'llama_cpp',
+                        env = {
+                            url = "http://localhost:11435",
+                            chat_url = "/v1/chat/completions",
+                        },
+                        num_ctx = {
+                            default = 4096,
+                        },
+                        handlers = {
+                            chat_output = function(self, data)
+                                -- there's an issue with llama.cpp not adding
+                                -- 'role' to its outputs, so we add it manually
+                                local openai = require('codecompanion.adapters.openai')
+                                local output = openai.handlers.chat_output(self, data)
+                                if output ~= nil then
+                                    output.output.role = 'assistant'
+                                end
+                                return output
+                            end,
                         },
                     })
                 end,
@@ -31,15 +55,24 @@ return {
             },
             strategies = {
                 chat = {
-                    adapter = 'ollama',
+                    adapter = 'llama_cpp',
                 },
                 inline = {
-                    adapter = 'ollama',
+                    adapter = 'llama_cpp',
                 },
             },
+            system_prompt = function(adapter)
+                if adapter == 'ollama' then
+                    return "Custom prompt"
+                end
+            end
         },
         config = function(_, opts)
             require('codecompanion').setup(opts)
+
+            -- TODO changing assistant on the fly?
+            -- TODO how can i complete the following in-line?
+            -- write lua function to reverse a list of items
 
             -- chat toggle
             vim.keymap.set(
@@ -59,7 +92,12 @@ return {
             )
 
             -- expand cc to CodeCompanion in the command line
-            vim.keymap.set('c', 'cc', 'CodeCompanion')
+            vim.keymap.set(
+                'c',
+                'cc',
+                "getcmdtype() == ':' ? 'CodeCompanion' : 'cc'",
+                { expr = true }
+            )
 
             -- set this to override _all_ open chat buffers with a specific llm
             -- vim.g.codecompanion_adapter = 'ollama'
