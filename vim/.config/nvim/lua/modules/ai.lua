@@ -12,28 +12,33 @@ return {
         opts = {
             adapters = {
                 llama_cpp = function()
-                    return require('codecompanion.adapters').extend('openai_compatible', {
-                        name = 'llama_cpp',
-                        env = {
-                            url = "http://localhost:11435",
-                            chat_url = "/v1/chat/completions",
-                        },
-                        num_ctx = {
-                            default = 4096,
-                        },
-                        handlers = {
-                            chat_output = function(self, data)
-                                -- there's an issue with llama.cpp not adding
-                                -- 'role' to its outputs, so we add it manually
-                                local openai = require('codecompanion.adapters.openai')
-                                local output = openai.handlers.chat_output(self, data)
-                                if output ~= nil then
-                                    output.output.role = 'assistant'
-                                end
-                                return output
-                            end,
-                        },
-                    })
+                    return require('codecompanion.adapters').extend(
+                        'openai_compatible',
+                        {
+                            name = 'llama_cpp',
+                            env = {
+                                url = 'http://localhost:11435',
+                                chat_url = '/v1/chat/completions',
+                            },
+                            num_ctx = {
+                                default = 4096,
+                            },
+                            handlers = {
+                                chat_output = function(self, data)
+                                    -- there's an issue with llama.cpp not adding
+                                    -- 'role' to its outputs, so we add it manually
+                                    local openai =
+                                        require('codecompanion.adapters.openai')
+                                    local output =
+                                        openai.handlers.chat_output(self, data)
+                                    if output ~= nil then
+                                        output.output.role = 'assistant'
+                                    end
+                                    return output
+                                end,
+                            },
+                        }
+                    )
                 end,
             },
             strategies = {
