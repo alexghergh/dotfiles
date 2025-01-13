@@ -60,6 +60,8 @@ return {
                 'markdown',
                 'bibtex',
                 'fish',
+                'html',
+                'go',
             },
 
             highlight = {
