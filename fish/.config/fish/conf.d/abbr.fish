@@ -18,20 +18,25 @@ abbr --add --position anywhere fconf    ~/.config/fish/
 abbr --add --position anywhere wconf    ~/.config/wezterm/
 
 # system stuff
-abbr --add h            history
-abbr --add p            pwd
-abbr --add mem          df -h
-abbr --add dush         du -sh
-abbr --add chx          chmod +x
-abbr --add untar        tar -xzvf
-abbr --add dotar        tar -czvf
-abbr --add susp         systemctl suspend
-abbr --add httpserver   python -m http.server
-abbr --add psa          'ps aux | grep'
+abbr --add                      h           history
+abbr --add                      p           pwd
+abbr --add                      mem         df -h
+abbr --add                      dush        du -sh
+abbr --add                      chx         chmod +x
+abbr --add                      untar       tar -xvf
+abbr --add                      unztar      tar -xzvf
+abbr --add                      dotar       tar -cvf
+abbr --add                      doztar      tar -czvf
+abbr --add --position anywhere  sys         systemctl
+abbr --add --position anywhere  stat        status
+abbr --add                      susp        systemctl suspend
+abbr --add                      httpserver  python -m http.server
+abbr --add                      psa         'ps aux | grep'
 
 # editor / tools
-abbr --add vim nvim
 abbr --add v   nvim
+abbr --add vi  nvim
+abbr --add vim nvim
 abbr --add py  python
 
 # enables multicd:
