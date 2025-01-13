@@ -20,8 +20,16 @@ return {
                                 url = 'http://localhost:11435',
                                 chat_url = '/v1/chat/completions',
                             },
-                            num_ctx = {
-                                default = 4096,
+                            schema = {
+                                num_ctx = {
+                                    default = 8192,
+                                },
+                                num_predict = {
+                                    default = -1,
+                                },
+                                repeat_penalty = {
+                                    default = 1.0,
+                                },
                             },
                             handlers = {
                                 chat_output = function(self, data)
