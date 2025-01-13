@@ -39,9 +39,9 @@ return {
             vim.keymap.set('n', '<Leader>thp', builtin.help_tags, {})
             vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
 
-            -- Options/CCommands/AutoCommands/Keymaps
+            -- Options/COmmands/AutoCommands/Keymaps
             vim.keymap.set('n', '<Leader>to', builtin.vim_options, {})
-            vim.keymap.set('n', '<Leader>tcc', builtin.commands, {})
+            vim.keymap.set('n', '<Leader>tco', builtin.commands, {})
             vim.keymap.set('n', '<Leader>tac', builtin.autocommands, {})
             vim.keymap.set('n', '<Leader>tk', builtin.keymaps, {})
 
