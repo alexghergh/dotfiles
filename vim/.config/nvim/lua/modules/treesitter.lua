@@ -10,7 +10,7 @@ return {
         end,
         event = { 'VeryLazy' },
         lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-        init = function(plugin)
+        init = function(_)
             -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
             -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
             -- no longer trigger the **nvim-treesitter** module to be loaded in time.
@@ -21,13 +21,29 @@ return {
         end,
         cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
         keys = {
-            -- stylua: ignore start
-            { '<Leader>nu', desc = 'Increment node selection (mnemonic Node Up)' },
-            { '<BS>',       desc = 'Decrement node selection',                     mode = 'x' },
-            { '<Leader>su', desc = 'Increment scope selection (mnemonic Scope Up)' },
-            { '<Leader>sy', '<Cmd>Inspect<CR>',                                    desc = 'Inspect syntax group under cursor (mnemonic SYntax)' },
-            { '<Leader>tn', '<Cmd>InspectTree<CR>',                                desc = 'Show treesitter node under cursor (mnemonic Treesitter Node)' },
-            -- stylua: ignore end
+            {
+                '<Leader>nu',
+                desc = 'Increment node selection (mnemonic Node Up)',
+            },
+            {
+                '<BS>',
+                desc = 'Decrement node selection',
+                mode = 'x',
+            },
+            {
+                '<Leader>su',
+                desc = 'Increment scope selection (mnemonic Scope Up)',
+            },
+            {
+                '<Leader>sy',
+                '<Cmd>Inspect<CR>',
+                desc = 'Inspect syntax group under cursor (mnemonic SYntax)',
+            },
+            {
+                '<Leader>tn',
+                '<Cmd>InspectTree<CR>',
+                desc = 'Show treesitter node under cursor (mnemonic Treesitter Node)',
+            },
         },
         opts = {
             ensure_installed = {
