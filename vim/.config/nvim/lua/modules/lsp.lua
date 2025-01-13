@@ -42,6 +42,7 @@ local servers = {
     'yamlls',
     'texlab',
     'ccls',
+    'gopls',
 }
 
 return {
