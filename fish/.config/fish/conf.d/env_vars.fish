@@ -7,6 +7,7 @@
 
 # basic setup
 set -gx EDITOR nvim
+set -gx SYSTEMD_EDITOR nvim
 set -gx VISUAL nvim
 set -gx BROWSER firefox
 set -gx PAGER less
