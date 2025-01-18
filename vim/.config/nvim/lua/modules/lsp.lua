@@ -221,8 +221,6 @@ return {
                     lsp = lsp[1]
                 end
 
-                -- print(lsp, vim.inspect(opts))
-                -- print(vim.inspect(require('lspconfig')))
                 require('lspconfig')[lsp].setup(opts)
             end
         end,
