@@ -58,9 +58,11 @@ return {
                 -- s('expand twice', fmt('expand {} expand {}', { i(1), i(0) }))
             })
 
-            ls.add_snippets('markdown', {
+            ls.add_snippets('lua', {
+                s('lreq', fmt("local {} = require('{}')", { i(1), i(0) })),
+            })
 
-                -- add paper to reading list
+            ls.add_snippets('markdown', {
                 s(
                     'paper',
                     fmt('- ["{}" ({} et al. - {})]({}) - {}', {
@@ -68,7 +70,7 @@ return {
                         i(2, "Author's last name"),
                         i(3, 'Date published'),
                         i(4, 'URL'),
-                        i(5, 'Description'),
+                        i(0, 'Description'),
                     })
                 ),
             })
