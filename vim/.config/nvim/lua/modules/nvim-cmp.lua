@@ -97,23 +97,11 @@ return {
                     ['<C-e>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.abort()
-                        elseif luasnip.choice_active() then
-                            luasnip.change_choice(1)
                         else
                             fallback()
                         end
                     end, { 'i', 's' }),
-                    ['<CR>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            if luasnip.expandable() then
-                                luasnip.expand()
-                            else
-                                cmp.confirm({ select = true })
-                            end
-                        else
-                            fallback()
-                        end
-                    end),
+                    ['<CR>'] = cmp.mapping.confirm(),
                     ['<Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
                             cmp.select_next_item()
@@ -128,6 +116,26 @@ return {
                             cmp.select_prev_item()
                         elseif luasnip.locally_jumpable(-1) then
                             luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+
+                    -- quick expand (don't Tab + CR) or jump forward
+                    ['<C-j>'] = cmp.mapping(function(fallback)
+                        if luasnip.expandable() then
+                            luasnip.expand()
+                        elseif luasnip.locally_jumpable(1) then
+                            luasnip.jump(1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+
+                    -- "list" (i.e. change) choices
+                    ['<C-l>'] = cmp.mapping(function(fallback)
+                        if luasnip.choice_active() then
+                            luasnip.change_choice(1)
                         else
                             fallback()
                         end
