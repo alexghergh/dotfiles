@@ -83,5 +83,3 @@ vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternat
 vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float)
 vim.keymap.set('n', '<Leader>dn', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<Leader>dp', vim.diagnostic.goto_prev)
-
--- vim: set tw=0 fo-=r ft=lua

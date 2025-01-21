@@ -20,5 +20,3 @@ return {
         end,
     },
 }
-
--- vim: set tw=0 fo-=r ft=lua

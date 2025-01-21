@@ -21,5 +21,3 @@ vim.opt.rtp:prepend(lazypath)
 
 -- import plugin specs from lua/modules/*.lua
 require('lazy').setup('modules')
-
--- vim: set tw=0 fo-=r ft=lua

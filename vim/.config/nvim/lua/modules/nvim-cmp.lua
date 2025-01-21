@@ -223,5 +223,3 @@ return {
     { 'hrsh7th/cmp-path' },
     { 'saadparwaiz1/cmp_luasnip' },
 }
-
--- vim: set tw=0 fo-=r ft=lua

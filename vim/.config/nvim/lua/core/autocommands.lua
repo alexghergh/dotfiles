@@ -86,5 +86,3 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end,
     group = user_group,
 })
-
--- vim: set tw=0 fo-=r ft=lua

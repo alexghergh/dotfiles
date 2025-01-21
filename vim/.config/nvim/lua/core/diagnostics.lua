@@ -73,5 +73,3 @@ for type, icon in pairs(signs) do
     local hl_line = 'DiagnosticLineNr' .. type -- see lua/modules/colorschemes.lua
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl_line })
 end
-
--- vim: set tw=0 fo-=r ft=lua

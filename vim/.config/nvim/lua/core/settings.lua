@@ -133,8 +133,7 @@ vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 vim.opt.tabstop = 4
 
--- disable modelines in favor of secure modelines
--- (see the secure modelines plugin)
+-- disable modelines
 vim.opt.modeline = false
 
 -- enable undo files, disable swap files
@@ -143,5 +142,3 @@ vim.opt.swapfile = false
 
 -- format options, describe how autoformatting is done
 vim.opt.formatoptions = 'tcrqnlj'
-
--- vim: set tw=0 fo-=r ft=lua

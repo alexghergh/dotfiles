@@ -6,5 +6,3 @@ return {
         lazy = true,
     },
 }
-
--- vim: set tw=0 fo-=r ft=lua

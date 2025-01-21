@@ -16,5 +16,3 @@ require('core.keymaps')
 
 -- built-in diagnostics setup
 require('core.diagnostics')
-
--- vim: set tw=0 fo-=r ft=lua

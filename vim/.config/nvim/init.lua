@@ -19,5 +19,3 @@ require('plugins')
 
 -- file-type specific stuff is processed later
 -- see after/ftplugin/
-
--- vim: set tw=0 fo-=r ft=lua

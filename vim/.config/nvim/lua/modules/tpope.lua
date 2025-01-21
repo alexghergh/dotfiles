@@ -9,5 +9,3 @@ return {
     -- pairs of mappings
     { 'tpope/vim-unimpaired', dependencies = { 'tpope/vim-repeat' } },
 }
-
--- vim: set tw=0 fo-=r ft=lua
