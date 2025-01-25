@@ -22,7 +22,7 @@ return {
             -- GLyphs
             vim.keymap.set(
                 'n',
-                '<Leader>gl',
+                '<Leader>tgl',
                 telescope.extensions.nerdy.nerdy,
                 {}
             )
