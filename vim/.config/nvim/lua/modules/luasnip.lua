@@ -22,8 +22,6 @@ return {
             update_events = { 'TextChanged', 'TextChangedI' },
 
             enable_autosnippets = true,
-
-            -- ext_opts
         },
         config = function(_, opts)
             local ls = require('luasnip')
@@ -41,6 +39,24 @@ return {
             local rep = require('luasnip.extras').rep
 
             -- snippet expand/jumps and change choice are mapped in
+            local types = require('luasnip.util.types')
+
+            -- virtual text opts (highlight groups are defined in
+            -- lua/modules/colorschemes.lua, per colorscheme)
+            opts['ext_opts'] = {
+                [types.insertNode] = {
+                    active = {
+                        virt_text = { { '●', 'LuasnipInsertNodeActiveDot' } },
+                    },
+                },
+                [types.choiceNode] = {
+                    active = {
+                        virt_text = { { '●', 'LuasnipChoiceNodeActiveDot' } },
+                    },
+                },
+            }
+
+            -- snippet expand/jumps and change choice keymaps can be found in
             -- lua/modules/nvim-cmp.lua as Tab/S-Tab/Ctrl-j/Ctrl-l
             ls.setup(opts)
 

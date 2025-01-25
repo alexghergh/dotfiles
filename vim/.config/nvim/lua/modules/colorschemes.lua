@@ -70,6 +70,8 @@ local function melange()
     -- indentation guides
     set_hl('IblIndent', { fg = '#403c3b' })
     set_hl('IblScope', { fg = '#d2691e' })
+
+    -- TODO luasnip, see tokyonight
 end
 
 local function tokyonight()
@@ -91,6 +93,10 @@ local function tokyonight()
     set_hl('StatusLineDiffAdd', { fg = normal.bg, bg = statusline_bg })
     set_hl('StatusLineDiffDelete', { fg = '#7f2530', bg = statusline_bg })
     set_hl('StatusLineDiffChange', { fg = '#6f4d99', bg = statusline_bg })
+
+    -- LuaSnip
+    set_hl('LuasnipInsertNodeActiveDot', { fg = '#86e1fc' })
+    set_hl('LuasnipChoiceNodeActiveDot', { fg = '#ff966c' })
 end
 
 -- map colorscheme functions to strings
@@ -112,7 +118,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
             vim.notify(
                 'Colorscheme '
                     .. vim.g.colors_name
-                    .. ' might not be correctly configured (in "colorschemes.lua").',
+                    .. ' might not be correctly configured (see "colorschemes.lua").',
                 vim.log.levels.WARN
             )
         end
