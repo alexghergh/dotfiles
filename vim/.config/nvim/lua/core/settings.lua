@@ -94,10 +94,10 @@ vim.opt.laststatus = 3
 vim.opt.number = true
 vim.opt.relativenumber = true
 
--- display the sign column, automatically resizing to accomodate between 1 and 4
+-- display the sign column, automatically resizing to accomodate between 2 and 4
 -- signs (by default, a 'sign' takes 2 characters/columns, so 4 signs will take
--- a total of 8 columns)
-vim.opt.signcolumn = 'auto:1-4'
+-- a total of 8 columns); min 2 for LSP and git gutter
+vim.opt.signcolumn = 'auto:2-4'
 
 -- visually break lines at max width
 vim.opt.linebreak = true
