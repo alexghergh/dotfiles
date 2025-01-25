@@ -22,7 +22,7 @@ config.initial_cols = 150
 
 config.window_padding = {
     left = 5,
-    right = 5,
+    right = 15,
     bottom = 5,
     top = 5,
 }
@@ -101,11 +101,16 @@ config.launch_menu = {
     {
         label = 'neovim - keymaps',
         args = { 'nvim', 'keymaps.lua' },
-        cwd = '/home/alex/.config/nvim/lua/core',
+        cwd = '/home/alex/.config/nvim/lua/core/',
     },
     {
         label = 'neovim - plugins',
         args = { 'nvim', 'modules' },
+        cwd = '/home/alex/.config/nvim/lua/',
+    },
+    {
+        label = 'neovim - snippets',
+        args = { 'nvim', 'snippets' },
         cwd = '/home/alex/.config/nvim/lua/',
     },
     {
