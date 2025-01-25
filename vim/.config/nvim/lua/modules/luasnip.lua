@@ -4,6 +4,7 @@ return {
 
     -- see :h luasnip.txt
     -- see lua/modules/nvim-cmp.lua
+    -- see lua/snippets/<ft>.lua
     {
         'L3MON4D3/LuaSnip',
         tag = 'v2.*',
@@ -25,20 +26,6 @@ return {
         },
         config = function(_, opts)
             local ls = require('luasnip')
-
-            -- snippet creator s(<trigger>, <nodes>)
-            local s = ls.s
-
-            -- format node fmt(<string>, { ...nodes })
-            local fmt = require('luasnip.extras.fmt').fmt
-
-            -- insert node i(<position>, [default_text])
-            local i = ls.insert_node
-
-            -- repeat node rep(<position>)
-            local rep = require('luasnip.extras').rep
-
-            -- snippet expand/jumps and change choice are mapped in
             local types = require('luasnip.util.types')
 
             -- virtual text opts (highlight groups are defined in
@@ -63,33 +50,25 @@ return {
             -- load vim-snippets
             require('luasnip.loaders.from_snipmate').lazy_load()
 
-            -- other custom snippets here
-
-            -- ls.add_snippets(<filetype>, { ...snippets })
-            ls.add_snippets('all', {
-                -- VSCode-style snippets
-                -- ls.parser.parse_snippet('expand', 'expanded text!'),
-
-                -- lua-style snippets
-                -- s('expand twice', fmt('expand {} expand {}', { i(1), i(0) }))
+            -- load custom snippets (see lua/snippets/<ft>.lua)
+            require('luasnip.loaders.from_lua').load({
+                paths = '~/.config/nvim/lua/snippets',
             })
 
-            ls.add_snippets('lua', {
-                s('lreq', fmt("local {} = require('{}')", { i(1), i(0) })),
-            })
+            -- select_choice with vim.ui.select (Ctrl-l in insert mode mapped in
+            -- lua/modules/nvim-cmp.lua; this keymap is normal mode for choice)
+            vim.keymap.set(
+                'n',
+                '<Leader><C-l>',
+                require('luasnip.extras.select_choice')
+            )
 
-            ls.add_snippets('markdown', {
-                s(
-                    'paper',
-                    fmt('- ["{}" ({} et al. - {})]({}) - {}', {
-                        i(1, 'Paper title'),
-                        i(2, "Author's last name"),
-                        i(3, 'Date published'),
-                        i(4, 'URL'),
-                        i(0, 'Description'),
-                    })
-                ),
-            })
+            -- edit snippets
+            vim.keymap.set(
+                'n',
+                '<Leader><Leader>s',
+                require('luasnip.loaders').edit_snippet_files
+            )
         end,
     },
 }
