@@ -31,15 +31,19 @@ return {
                 ext_opts = {
                     [types.insertNode] = {
                         active = {
-                            virt_text = { { '●', 'LuasnipInsertNodeActiveDot' } },
+                            virt_text = {
+                                { '●', 'LuasnipInsertNodeActiveDot' },
+                            },
                         },
                     },
                     [types.choiceNode] = {
                         active = {
-                            virt_text = { { '●', 'LuasnipChoiceNodeActiveDot' } },
+                            virt_text = {
+                                { '●', 'LuasnipChoiceNodeActiveDot' },
+                            },
                         },
                     },
-                }
+                },
             }
         end,
         config = function(_, opts)
@@ -54,7 +58,7 @@ return {
 
             -- load custom snippets (see lua/snippets/<ft>.lua)
             require('luasnip.loaders.from_lua').load({
-                paths = '~/.config/nvim/lua/snippets',
+                paths = { '~/.config/nvim/lua/snippets' },
             })
 
             -- select_choice with vim.ui.select (Ctrl-l in insert mode mapped in

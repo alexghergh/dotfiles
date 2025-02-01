@@ -207,6 +207,9 @@ return {
                 local opts = {
                     capabilities = require('cmp_nvim_lsp').default_capabilities(),
                     handlers = handlers,
+                    init_options = {
+                        usePlaceholders = true, -- snippet expansion for func args
+                    },
                 }
 
                 -- spec in the form { 'lsp_name', opt1 = {..}, opt2 = '..' } for
