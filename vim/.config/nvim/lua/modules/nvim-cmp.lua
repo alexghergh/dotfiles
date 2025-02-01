@@ -109,8 +109,8 @@ return {
                     },
                     sources = {
                         { name = 'lazydev', group_index = 0 }, -- skip LuaLS completions
-                        { name = 'nvim_lsp' },
                         { name = 'luasnip' },
+                        { name = 'nvim_lsp' },
                         { name = 'path' },
                         {
                             name = 'buffer',
@@ -214,12 +214,11 @@ return {
                         },
                         ['<CR>'] = { c = cmp.mapping.confirm() },
                     }),
-                    sources = cmp.config.sources({
+                    sources = {
                         { name = 'path' },
                         { name = 'cmdline' },
                         { name = 'buffer' },
-                    }),
-                    matching = { disallow_symbol_nonprefix_matching = true },
+                    },
                 },
             }
         end,
