@@ -12,36 +12,38 @@ return {
         dependencies = {
             'honza/vim-snippets',
         },
-        opts = {
-            -- keep around last snippet, if accidentally moving out of it
-            keep_roots = true,
-            link_roots = true,
-            link_children = true,
-            exit_roots = false,
+        opts = function(_, _)
+            local types = require('luasnip.util.types')
+            return {
+                -- keep around last snippet, if accidentally moving out of it
+                keep_roots = true,
+                link_roots = true,
+                link_children = true,
+                exit_roots = false,
 
-            -- update snippets as you type
-            update_events = { 'TextChanged', 'TextChangedI' },
+                -- update snippets as you type
+                update_events = { 'TextChanged', 'TextChangedI' },
 
-            enable_autosnippets = true,
-        },
+                enable_autosnippets = true,
+
+                -- virtual text opts (highlight groups are defined in
+                -- lua/modules/colorschemes.lua, per colorscheme)
+                ext_opts = {
+                    [types.insertNode] = {
+                        active = {
+                            virt_text = { { '●', 'LuasnipInsertNodeActiveDot' } },
+                        },
+                    },
+                    [types.choiceNode] = {
+                        active = {
+                            virt_text = { { '●', 'LuasnipChoiceNodeActiveDot' } },
+                        },
+                    },
+                }
+            }
+        end,
         config = function(_, opts)
             local ls = require('luasnip')
-            local types = require('luasnip.util.types')
-
-            -- virtual text opts (highlight groups are defined in
-            -- lua/modules/colorschemes.lua, per colorscheme)
-            opts['ext_opts'] = {
-                [types.insertNode] = {
-                    active = {
-                        virt_text = { { '●', 'LuasnipInsertNodeActiveDot' } },
-                    },
-                },
-                [types.choiceNode] = {
-                    active = {
-                        virt_text = { { '●', 'LuasnipChoiceNodeActiveDot' } },
-                    },
-                },
-            }
 
             -- snippet expand/jumps and change choice keymaps can be found in
             -- lua/modules/nvim-cmp.lua as Tab/S-Tab/Ctrl-j/Ctrl-l
