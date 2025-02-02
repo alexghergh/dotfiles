@@ -9,6 +9,14 @@ return {
             'nvim-lua/plenary.nvim',
         },
         event = { 'VeryLazy' },
+        opts = {
+            defaults = {
+                cache_picker = {
+                    num_pickers = 100,
+                    limit_entries = 1000,
+                },
+            },
+        },
         config = function(_, opts)
             require('telescope').setup(opts)
 
@@ -19,7 +27,7 @@ return {
             vim.keymap.set('n', '<Leader>hh', builtin.find_files, {})
             vim.keymap.set('n', '<Leader>tt', builtin.find_files, {})
             vim.keymap.set('n', '<Leader>tb', builtin.buffers, {})
-            vim.keymap.set('n', '<Leader>tg', builtin.live_grep, {})
+            vim.keymap.set('n', '<Leader>tgr', builtin.live_grep, {})
 
             -- Command/Search History
             vim.keymap.set('n', '<Leader>tch', builtin.command_history, {})
@@ -48,9 +56,12 @@ return {
             -- HIghlights
             vim.keymap.set('n', '<Leader>thi', builtin.highlights, {})
 
-            -- Resume (open last picker)/Open all pickers
-            vim.keymap.set('n', '<Leader>fr', builtin.resume, {})
-            vim.keymap.set('n', '<Leader>fp', builtin.pickers, {})
+            -- Open Last picker/Open list of All previously opened pickers
+            vim.keymap.set('n', '<Leader>tol', builtin.resume, {})
+            vim.keymap.set('n', '<Leader>toa', builtin.pickers, {})
+
+            -- Git Commits
+            vim.keymap.set('n', '<Leader>tgc', builtin.git_commits, {})
 
             -- lsp
             -- TODO definition, references etc. in lsp.lua
@@ -59,9 +70,6 @@ return {
             vim.keymap.set('n', '<Leader>lo', builtin.lsp_outgoing_calls, {})
 
             vim.keymap.set('n', '<Leader>ld', builtin.diagnostics, {})
-
-            -- git stuff
-            vim.keymap.set('n', '<Leader>gc', builtin.git_commits, {})
 
             -- treesitter
 
