@@ -123,7 +123,7 @@ return {
                     -- buffer mappings for LSP servers
 
                     -- gD and gd below override the builtins, which makes
-                    -- mappings consistent whether there is an LSP or not
+                    -- mappings consistent whether there is an LSP server or not
 
                     -- goto *
                     vim.keymap.set('n', 'gD', vlb.declaration, opts)
