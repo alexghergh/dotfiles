@@ -12,8 +12,12 @@ return {
             },
             virtual_text = {
                 enabled = true,
-                text = '    ⚡',
-                hl = vim.api.nvim_set_hl(0, 'LightBulbVirtualText', { link = 'Constant' })
+                text = '    👁', -- ⚡
+                hl = vim.api.nvim_set_hl(
+                    0,
+                    'LightBulbVirtualText',
+                    { link = '@markup.heading.2.markdown' }
+                ),
             },
         },
     },
