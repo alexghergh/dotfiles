@@ -77,25 +77,25 @@ local background = {
             source = {
                 File = path .. 'Clouds 2/1.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 2/2.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 2/3.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 2/4.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
     },
     {
