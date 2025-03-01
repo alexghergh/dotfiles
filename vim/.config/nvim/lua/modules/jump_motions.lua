@@ -21,10 +21,6 @@ return {
             require('leap').opts.equivalence_classes =
                 { ' \t\r\n', '([{', ')]}', '\'"`' }
 
-            -- use <CR>/<Backspace> to repeat the previous motion without
-            -- explicitly invoking Leap
-            require('leap.user').set_repeat_keys('<CR>', '<Backspace>')
-
             -- define a preview filter (skip the middle of alphanumeric words)
             require('leap').opts.preview_filter = function(ch0, ch1, ch2)
                 return not (
@@ -35,9 +31,13 @@ return {
                 )
             end
 
-            vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap-forward)')
-            vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap-backward)')
+            vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap)')
             vim.keymap.set({ 'n', 'x', 'o' }, 'gs', '<Plug>(leap-from-window)')
+
+            -- remote action
+            vim.keymap.set({ 'n', 'x', 'o' }, 'gS', function()
+                require('leap.remote').action()
+            end)
         end,
     },
 }
