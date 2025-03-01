@@ -22,7 +22,7 @@ config.initial_cols = 150
 
 config.window_padding = {
     left = 5,
-    right = 15,
+    right = 30,
     bottom = 5,
     top = 5,
 }
@@ -74,7 +74,7 @@ config.set_environment_variables = {
 }
 -- config.term = 'wezterm' -- ncurses fucked this up (again), keep commented for now
 
-config.scrollback_lines = 10000
+config.scrollback_lines = 100000
 
 -- quick selection key press alphabet (prefer right hand first, due to left
 -- shift pinky press on copy/paste)
