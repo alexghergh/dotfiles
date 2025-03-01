@@ -5,18 +5,18 @@ if not status is-interactive
     return
 end
 
-# duplicate last word in the commandline
+# duplicate last word in the commandline (Ctrl-o + Ctrl-d)
 function __dup_last_word
     set -l cmd (string split ' ' (string trim (commandline)))
     commandline --insert $cmd[-1]
 end
 bind \co\cd __dup_last_word
 
-# transpose the 2 previous arguments to the cursor if on a word
-# if the cursor is on an empty space, transpose the adjacent 2 arguments
+# transpose the 2 previous arguments to the cursor if on a word; if the cursor
+# is on an empty space, transpose the adjacent 2 arguments (Ctrl-o + Ctrl-t)
 bind \co\ct 'transpose-words'
 
-# cycle through long/short path displays
+# cycle through long/short path displays (Ctrl-o + Ctrl-r)
 # see https://fishshell.com/docs/current/cmds/prompt_pwd.html)
 function __cycle_prompt_display
     test $fish_prompt_pwd_full_dirs -eq 1
@@ -27,7 +27,7 @@ end
 bind \co\cr __cycle_prompt_display
 
 # navigate directory history (same as cdh) with left and right arrow keys, if
-# command line is empty, otherwise just move a character
+# command line is empty, otherwise just move a character (Left/Right)
 function __prevd-or-backward-char
     # get initial cursor position
     set -l initial_cursor_position (commandline --cursor)

@@ -1,4 +1,4 @@
-# taken with no modifications from https://github.com/snptrs/fish-osc133
+# copied with no modifications from https://github.com/snptrs/fish-osc133
 # see https://gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/proposals/semantic-prompts.md
 # see https://wezfurlong.org/wezterm/config/lua/keyassignment/ScrollToPrompt.html
 
