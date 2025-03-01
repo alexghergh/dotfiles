@@ -43,6 +43,7 @@ local servers = {
     'texlab',
     'ccls',
     'gopls',
+    'rust_analyzer',
 }
 
 return {
