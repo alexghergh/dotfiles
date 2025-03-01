@@ -11,6 +11,36 @@ return {
         },
         opts = {
             adapters = {
+                opts = {
+                    show_defaults = false, -- only show user-defined adapters
+                },
+                faur_ai = function()
+                    return require('codecompanion.adapters').extend(
+                        'openai_compatible',
+                        {
+                            name = 'faur_ai',
+                            env = {
+                                url = 'https://platform.faur.ai/serve/0mPacnNvPnlrk1dkHA2L',
+                                chat_url = '/v1/chat/completions',
+                                api_key = 'REDACTED',
+                            },
+                            schema = {
+                                num_ctx = {
+                                    default = 32768,
+                                },
+                                num_predict = {
+                                    default = -1,
+                                },
+                                repeat_penalty = {
+                                    default = 1.0,
+                                },
+                                model = {
+                                    default = '/shared/meta-llama/Llama-3.1-8B-Instruct',
+                                },
+                            },
+                        }
+                    )
+                end,
                 llama_cpp = function()
                     return require('codecompanion.adapters').extend(
                         'openai_compatible',
@@ -51,10 +81,10 @@ return {
             },
             strategies = {
                 chat = {
-                    adapter = 'llama_cpp',
+                    adapter = 'faur_ai',
                 },
                 inline = {
-                    adapter = 'llama_cpp',
+                    adapter = 'faur_ai',
                 },
             },
             display = {
