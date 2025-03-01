@@ -25,7 +25,7 @@ local background = {
             source = {
                 File = path .. 'game_background_3/game_background_3.png',
             },
-            hsb = { brightness = 0.4 },
+            hsb = { brightness = 0.1 },
         },
     },
     {
@@ -103,19 +103,19 @@ local background = {
             source = {
                 File = path .. 'Clouds 3/1.png',
             },
-            hsb = { brightness = 0.5 },
+            hsb = { brightness = 0.1 },
         },
         {
             source = {
                 File = path .. 'Clouds 3/3.png',
             },
-            hsb = { brightness = 0.5 },
+            hsb = { brightness = 0.1 },
         },
         {
             source = {
                 File = path .. 'Clouds 3/4.png',
             },
-            hsb = { brightness = 0.5 },
+            hsb = { brightness = 0.1 },
         },
     },
     {
@@ -279,7 +279,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_2/5.png',
             },
-            hsb = { brightness = 0.15 },
+            hsb = { brightness = 0.03 },
         },
     },
     {
@@ -311,19 +311,19 @@ local background = {
             source = {
                 File = path .. 'Ocean_6/1.png',
             },
-            hsb = { brightness = 0.3 },
+            hsb = { brightness = 0.05 },
         },
         {
             source = {
                 File = path .. 'Ocean_6/3.png',
             },
-            hsb = { brightness = 0.3 },
+            hsb = { brightness = 0.05 },
         },
         {
             source = {
                 File = path .. 'Ocean_6/4.png',
             },
-            hsb = { brightness = 0.3 },
+            hsb = { brightness = 0.05 },
         },
     },
     {
