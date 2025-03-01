@@ -53,15 +53,17 @@ return {
                 'latex',
                 'lua',
                 'python',
+                'go',
+                'rust',
                 'query',
                 'vim',
                 'cmake',
                 'make',
                 'markdown',
+                'yaml',
                 'bibtex',
                 'fish',
                 'html',
-                'go',
             },
 
             highlight = {
