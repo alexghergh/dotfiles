@@ -66,7 +66,7 @@ return {
                     floating_preview_opts = {},
                     peek_definition_code = {
                         ['<leader>sf'] = '@function.outer', -- mnemonic See Function
-                        ['<leader>sc'] = '@class.outer',    -- mnemonic See Class
+                        ['<leader>sc'] = '@class.outer', -- mnemonic See Class
                     },
                 },
             },
@@ -74,5 +74,5 @@ return {
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
         end,
-    }
+    },
 }
