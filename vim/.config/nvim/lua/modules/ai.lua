@@ -19,6 +19,7 @@ return {
                         'openai_compatible',
                         {
                             name = 'faur_ai',
+                            formatted_name = 'Faur.AI remote',
                             env = {
                                 url = 'https://platform.faur.ai/serve/0mPacnNvPnlrk1dkHA2L',
                                 chat_url = '/v1/chat/completions',
@@ -46,6 +47,7 @@ return {
                         'openai_compatible',
                         {
                             name = 'llama_cpp',
+                            formatted_name = 'llama.cpp local',
                             env = {
                                 url = 'http://localhost:11435',
                                 chat_url = '/v1/chat/completions',
@@ -85,6 +87,14 @@ return {
                 },
                 inline = {
                     adapter = 'faur_ai',
+                    keymaps = {
+                        accept_change = {
+                            modes = { n = '<Nop>' },
+                        },
+                        reject_change = {
+                            modes = { n = '<Nop>' },
+                        },
+                    },
                 },
             },
             display = {
