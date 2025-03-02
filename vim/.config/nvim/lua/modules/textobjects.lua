@@ -58,6 +58,17 @@ return {
                         ['[M'] = '@function.outer',
                     },
                 },
+
+                -- lsp interoperability
+                lsp_interop = {
+                    enable = true,
+                    border = 'rounded',
+                    floating_preview_opts = {},
+                    peek_definition_code = {
+                        ['<leader>sf'] = '@function.outer', -- mnemonic See Function
+                        ['<leader>sc'] = '@class.outer',    -- mnemonic See Class
+                    },
+                },
             },
         },
         config = function(_, opts)
