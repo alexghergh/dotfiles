@@ -21,10 +21,16 @@ return {
             vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<CR>')
 
             -- hunk text objects
-            vim.keymap.set('o', 'ic', '<Plug>(signify-motion-inner-pending)')
-            vim.keymap.set('x', 'ic', '<Plug>(signify-motion-inner-visual)')
-            vim.keymap.set('o', 'ac', '<Plug>(signify-motion-outer-pending)')
-            vim.keymap.set('x', 'ac', '<Plug>(signify-motion-outer-visual)')
+            vim.keymap.set('o', 'ih', '<Plug>(signify-motion-inner-pending)')
+            vim.keymap.set('x', 'ih', '<Plug>(signify-motion-inner-visual)')
+            vim.keymap.set('o', 'ah', '<Plug>(signify-motion-outer-pending)')
+            vim.keymap.set('x', 'ah', '<Plug>(signify-motion-outer-visual)')
+
+            -- hunk navigation
+            vim.keymap.set('n', ']h', '<Plug>(signify-next-hunk)')
+            vim.keymap.set('n', '[h', '<Plug>(signify-prev-hunk)')
+            vim.keymap.set('n', ']H', '9999]h')
+            vim.keymap.set('n', ']H', '9999[h')
 
             -- show the current hunk number out of the total when jumping
             vim.api.nvim_create_autocmd('User', {
