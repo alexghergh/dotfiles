@@ -39,6 +39,7 @@ return {
                 require('leap.remote').action()
             end)
 
+            -- treesitter node selection
             vim.keymap.set({ 'n', 'x', 'o' }, '<leader>gs', function()
                 require('leap.treesitter').select()
             end)

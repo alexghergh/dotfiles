@@ -4,7 +4,7 @@ return {
     -- see :h signify
     {
         'mhinz/vim-signify',
-        init = function()
+        config = function()
             -- toggle line highlighting (mnemonic Hunk/Highlight Toggle)
             vim.keymap.set('n', '<Leader>ht', '<Cmd>SignifyToggleHighlight<CR>')
 
@@ -29,8 +29,8 @@ return {
             -- hunk navigation
             vim.keymap.set('n', ']h', '<Plug>(signify-next-hunk)')
             vim.keymap.set('n', '[h', '<Plug>(signify-prev-hunk)')
-            vim.keymap.set('n', ']H', '9999]h')
-            vim.keymap.set('n', ']H', '9999[h')
+            vim.keymap.set('n', ']H', '9999]h', { remap = true })
+            vim.keymap.set('n', '[H', '9999[h', { remap = true })
 
             -- show the current hunk number out of the total when jumping
             vim.api.nvim_create_autocmd('User', {
