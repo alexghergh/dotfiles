@@ -38,6 +38,10 @@ return {
             vim.keymap.set({ 'n', 'x', 'o' }, 'gS', function()
                 require('leap.remote').action()
             end)
+
+            vim.keymap.set({ 'n', 'x', 'o' }, '<leader>gs', function()
+                require('leap.treesitter').select()
+            end)
         end,
     },
 }
