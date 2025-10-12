@@ -74,6 +74,7 @@ abbr --add gdc      git diff --cached # (same as the above)
 abbr --add gri      git rebase -i
 abbr --add greco    git rebase --continue
 abbr --add greab    git rebase --abort
+abbr --add grs      git restore --staged
 abbr --add gcl      git clone https://
 abbr --add gcgh     git clone https://github.com/
 abbr --add gcgl     git clone https://gitlab.com/
