@@ -59,18 +59,49 @@ function lmgo -d "Run an LLM through Llama.cpp's server command."
             return 1
         end
 
+        # defaults (common to all models, overridable)
+        set -l options "--model $argv[1]/$argv[2]" \
+                        "--alias $argv[2]" \
+                        "--no-webui" \
+                        "--port 11435" \
+                        "--log-prefix" \
+                        "--log-timestamps" \
+                        "--threads 4" \
+                        "--threads-batch 4" \
+                        "--threads-http 4" \
+                        "--batch-size 2048" \
+                        "--ubatch-size 512"
+
+                        # TODO fix override these
+                        # "--ctx-size 8192" \
+                        # "--gpu-layers 1000" \
+
+        # model-specific opts
+        set -l model_options '{
+            "gpt-oss": "--cpu-moe --gpu-layers 0 --device none --temp 1.0 --top-p 1.0 --ctx-size 0 --jinja --chat-template-kwargs {\"reasoning_effort\":\"low\"}"
+        }'
+
+        # select specific-opts based on input model
+        set -l model_key (echo "$model_options" | jq -r --arg model "$argv[2]" 'reduce (keys[]) as $k (null;
+                if ($model | contains($k)) then $k else . end
+            ) // empty')
+
+        # check if model has specific opts
+        if string length -q $model_key
+            set -l model_specific_options (echo $model_options | jq -r --arg k "$model_key" '.[$k]')
+            echo -s "Using specific options for model '$argv[2]': $model_specific_options"
+            set options $options $model_specific_options
+        else
+            echo -s "No specific options for model '$argv[2]'. Using defaults."
+        end
+
+        # run the server (multi-add is broken for MoE models, due to likely
+        # HoneyKrisp driver bug; see
+        # https://github.com/ggml-org/llama.cpp/issues/16188
+        # https://gitlab.freedesktop.org/mesa/mesa/-/issues/13990)
+        GGML_VK_DISABLE_MULTI_ADD=1 \
         "$HOME"/packages/llama.cpp/build/bin/llama-server \
-            --model "$argv[1]/$argv[2]" \
-            --alias $argv[2] \
-            --ctx-size 8192 \
-            --gpu-layers 1000 \
-            --no-webui \
-            --port 11435 \
-            --log-prefix \
-            --log-timestamps \
-            --threads 4 \
-            --threads-batch 4 \
-            --threads-http 4 \
+            (echo $options | string split ' ') \
         &>> "$log_path/server.log"
 
         if not test $status -eq 0
