@@ -109,8 +109,8 @@ return {
                     },
                     sources = {
                         { name = 'lazydev', group_index = 0 }, -- skip LuaLS completions
-                        { name = 'luasnip' },
                         { name = 'nvim_lsp' },
+                        { name = 'luasnip' },
                         { name = 'path' },
                         {
                             name = 'buffer',
@@ -125,11 +125,8 @@ return {
                     },
                     formatting = {
                         format = function(entry, vim_item)
-                            vim_item.kind = string.format(
-                                '%s %s',
-                                icons[vim_item.kind],
-                                vim_item.kind
-                            )
+                            vim_item.kind =
+                                string.format('%s %s', icons[vim_item.kind], vim_item.kind)
                             vim_item.menu = ({
                                 buffer = '[Buffer]',
                                 path = '[Path]',
@@ -140,6 +137,31 @@ return {
                             })[entry.source.name]
                             return vim_item
                         end,
+                    },
+                    sorting = {
+                        comparators = {
+                            cmp.config.compare.exact,
+                            cmp.config.compare.offset,
+                            cmp.config.compare.score,
+                            cmp.config.compare.recently_used,
+                            cmp.config.compare.locality,
+                            -- copied from lukas-reineke/cmp-under-comparator
+                            function(entry1, entry2)
+                                local _, entry1_under = entry1.completion_item.label:find('^_+')
+                                local _, entry2_under = entry2.completion_item.label:find('^_+')
+                                entry1_under = entry1_under or 0
+                                entry2_under = entry2_under or 0
+                                if entry1_under > entry2_under then
+                                    return false
+                                elseif entry1_under < entry2_under then
+                                    return true
+                                end
+                            end,
+                            cmp.config.compare.kind,
+                            cmp.config.compare.sort_text,
+                            cmp.config.compare.length,
+                            cmp.config.compare.order,
+                        },
                     },
                     experimental = {
                         ghost_text = true,
@@ -156,11 +178,7 @@ return {
                         -- disable in prompts
                         enabled = enabled
                             and not (
-                                vim.api.nvim_get_option_value(
-                                    'buftype',
-                                    { buf = 0 }
-                                )
-                                == 'prompt'
+                                vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt'
                             )
 
                         -- disable in macros
@@ -169,10 +187,6 @@ return {
 
                         return enabled
                     end,
-                    window = {
-                        completion = cmp.config.window.bordered(),
-                        documentation = cmp.config.window.bordered(),
-                    },
                 },
 
                 -- search (/, ?)
@@ -205,15 +219,59 @@ return {
 
                 -- command line (:)
                 opts_cmd_command = {
-                    mapping = cmp.mapping.preset.cmdline({
+                    mapping = {
+                        ['<Tab>'] = {
+                            c = function()
+                                if cmp.visible() then
+                                    cmp.select_next_item()
+                                else
+                                    cmp.complete()
+                                end
+                            end,
+                        },
+                        ['<S-Tab>'] = {
+                            c = function()
+                                if cmp.visible() then
+                                    cmp.select_prev_item()
+                                else
+                                    cmp.complete()
+                                end
+                            end,
+                        },
+                        ['<C-n>'] = {
+                            c = function(fallback)
+                                if cmp.visible() then
+                                    cmp.select_next_item()
+                                else
+                                    fallback()
+                                end
+                            end,
+                        },
+                        ['<C-p>'] = {
+                            c = function(fallback)
+                                if cmp.visible() then
+                                    cmp.select_prev_item()
+                                else
+                                    fallback()
+                                end
+                            end,
+                        },
+                        ['<C-e>'] = {
+                            c = cmp.mapping.abort(),
+                        },
                         ['<C-f>'] = {
                             c = function(fallback)
                                 cmp.close()
                                 fallback()
                             end,
                         },
-                        ['<CR>'] = { c = cmp.mapping.confirm() },
-                    }),
+                        ['<CR>'] = {
+                            c = function(fallback)
+                                cmp.mapping.confirm()
+                                fallback()
+                            end,
+                        },
+                    },
                     sources = {
                         { name = 'path' },
                         { name = 'cmdline' },

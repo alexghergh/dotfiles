@@ -45,12 +45,7 @@ vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D')
 vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 
 -- expand into the current file's working directory
-vim.keymap.set(
-    'c',
-    '%%',
-    "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'",
-    { expr = true }
-)
+vim.keymap.set('c', '%%', "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'", { expr = true })
 
 --
 -- navigation/code-flow keymaps

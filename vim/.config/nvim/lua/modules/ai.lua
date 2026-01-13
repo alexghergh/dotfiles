@@ -7,92 +7,90 @@ return {
         'olimorris/codecompanion.nvim',
         dependencies = {
             'nvim-lua/plenary.nvim',
-            'nvim-tresitter/nvim-treesitter',
+            'nvim-treesitter/nvim-treesitter',
         },
         opts = {
             adapters = {
-                opts = {
-                    show_defaults = false, -- only show user-defined adapters
+                acp = {
+                    opts = {
+                        show_presets = false, -- only show user-defined adapters
+                        show_model_choices = true, -- show model choices
+                    },
                 },
-                faur_ai = function()
-                    return require('codecompanion.adapters').extend(
-                        'openai_compatible',
-                        {
-                            name = 'faur_ai',
-                            formatted_name = 'Faur.AI remote',
+                http = {
+                    opts = {
+                        show_presets = false, -- only show user-defined adapters
+                        show_model_choices = true, -- show model choices
+                    },
+                    fep = function()
+                        return require('codecompanion.adapters').extend('openai_compatible', {
+                            name = 'upb.fep',
+                            formatted_name = 'UPB fep remote',
                             env = {
-                                url = 'https://platform.faur.ai/serve/0mPacnNvPnlrk1dkHA2L',
+                                url = 'http://localhost:34561',
                                 chat_url = '/v1/chat/completions',
                                 api_key = 'REDACTED',
                             },
                             schema = {
-                                num_ctx = {
-                                    default = 32768,
-                                },
-                                num_predict = {
-                                    default = -1,
-                                },
-                                repeat_penalty = {
-                                    default = 1.0,
-                                },
                                 model = {
-                                    default = '/shared/meta-llama/Llama-3.1-8B-Instruct',
+                                    default = 'gpt-oss-120b',
                                 },
                             },
-                        }
-                    )
-                end,
-                llama_cpp = function()
-                    return require('codecompanion.adapters').extend(
-                        'openai_compatible',
-                        {
+                        })
+                    end,
+                    llama_cpp = function()
+                        return require('codecompanion.adapters').extend('openai_compatible', {
                             name = 'llama_cpp',
                             formatted_name = 'llama.cpp local',
                             env = {
                                 url = 'http://localhost:11435',
                                 chat_url = '/v1/chat/completions',
                             },
-                            schema = {
-                                num_ctx = {
-                                    default = 8192,
-                                },
-                                num_predict = {
-                                    default = -1,
-                                },
-                                repeat_penalty = {
-                                    default = 1.0,
-                                },
-                            },
                             handlers = {
                                 chat_output = function(self, data)
                                     -- there's an issue with llama.cpp not adding
                                     -- 'role' to its outputs, so we add it manually
-                                    local openai =
-                                        require('codecompanion.adapters.openai')
-                                    local output =
-                                        openai.handlers.chat_output(self, data)
+                                    local openai = require('codecompanion.adapters.openai')
+                                    local output = openai.handlers.chat_output(self, data)
                                     if output ~= nil then
                                         output.output.role = 'assistant'
                                     end
                                     return output
                                 end,
                             },
-                        }
-                    )
-                end,
+                            schema = {
+                                model = {
+                                    default = 'gpt-oss-20b',
+                                },
+                            },
+                        })
+                    end,
+                    riolab_openai = function()
+                        return require('codecompanion.adapters').extend('openai', {
+                            schema = {
+                                model = {
+                                    default = 'gpt-5-mini',
+                                },
+                            },
+                            env = {
+                                api_key = 'REDACTED',
+                            },
+                        })
+                    end,
+                },
             },
-            strategies = {
+            interactions = {
                 chat = {
-                    adapter = 'faur_ai',
+                    adapter = 'fep',
                 },
                 inline = {
-                    adapter = 'faur_ai',
+                    adapter = 'fep',
                     keymaps = {
                         accept_change = {
-                            modes = { n = '<Nop>' },
+                            modes = { n = '<Leader>gdy' },
                         },
                         reject_change = {
-                            modes = { n = '<Nop>' },
+                            modes = { n = '<Leader>gdn' },
                         },
                     },
                 },
@@ -107,21 +105,13 @@ return {
             require('codecompanion').setup(opts)
 
             -- chat toggle
-            vim.keymap.set(
-                { 'n', 'v' },
-                '<Leader>cc',
-                '<Cmd>CodeCompanionChat Toggle<CR>'
-            )
+            vim.keymap.set({ 'n', 'v' }, '<Leader>cc', '<Cmd>CodeCompanionChat Toggle<CR>')
 
             -- add code from current visual selection to chat buffer
             vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>')
 
             -- code actions (Companion Do)
-            vim.keymap.set(
-                { 'n', 'v' },
-                '<Leader>cd',
-                '<Cmd>CodeCompanionActions<CR>'
-            )
+            vim.keymap.set({ 'n', 'v' }, '<Leader>cd', '<Cmd>CodeCompanionActions<CR>')
 
             -- expand cc to CodeCompanion in the command line
             vim.keymap.set(

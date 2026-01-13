@@ -22,8 +22,7 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         vim.api.nvim_create_autocmd('FileType', {
             callback = function()
                 -- filetype regex patterns to match against
-                local regex =
-                    vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
+                local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
 
                 -- position of the "last-position" mark in the file (:h '")
                 local mark_pos = vim.fn.line([['"]])

@@ -5,48 +5,14 @@ return {
     -- see :h nvim-treesitter
     {
         'nvim-treesitter/nvim-treesitter',
+        branch = 'main',
+        lazy = false,
         build = function()
-            require('nvim-treesitter.install').update({ with_sync = true })()
+            require('nvim-treesitter').update():wait(300000)
         end,
-        event = { 'VeryLazy' },
-        lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
-        init = function(_)
-            -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
-            -- This is needed because a bunch of plugins no longer `require("nvim-treesitter")`, which
-            -- no longer trigger the **nvim-treesitter** module to be loaded in time.
-            -- Luckily, the only things that those plugins need are the custom queries, which we make available
-            -- during startup. See https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/treesitter.lua
-            -- require('lazy.core.loader').add_to_rtp(plugin)
-            -- require('nvim-treesitter.query_predicates')
-        end,
-        cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
-        keys = {
-            {
-                '<Leader>nu',
-                desc = 'Increment node selection (mnemonic Node Up)',
-            },
-            {
-                '<BS>',
-                desc = 'Decrement node selection',
-                mode = 'x',
-            },
-            {
-                '<Leader>su',
-                desc = 'Increment scope selection (mnemonic Scope Up)',
-            },
-            {
-                '<Leader>sy',
-                '<Cmd>Inspect<CR>',
-                desc = 'Inspect syntax group under cursor (mnemonic SYntax)',
-            },
-            {
-                '<Leader>tn',
-                '<Cmd>InspectTree<CR>',
-                desc = 'Show treesitter node under cursor (mnemonic Treesitter Node)',
-            },
-        },
-        opts = {
-            ensure_installed = {
+        config = function()
+            -- ensure the following are installed
+            local languages = {
                 'c',
                 'cpp',
                 'java',
@@ -64,38 +30,11 @@ return {
                 'bibtex',
                 'fish',
                 'html',
-            },
+                'vimdoc',
+            }
 
-            highlight = {
-                enable = true,
-
-                -- disable for HUGE files
-                disable = function(_, buf)
-                    local max_filesize = 500 * 1024 -- 500 KB
-                    local ok, stats =
-                        pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-                    if ok and stats and stats.size > max_filesize then
-                        return true
-                    end
-                end,
-            },
-
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = 'gn',
-                    node_incremental = ';',
-                    node_decremental = ',',
-                    scope_incremental = '<Leader>su',
-                },
-            },
-
-            indent = {
-                enable = true,
-            },
-        },
-        config = function(_, opts)
-            require('nvim-treesitter.configs').setup(opts)
+            -- install languages (this runs async)
+            require('nvim-treesitter').install(languages)
 
             -- show tree-sitter syntax group under cursor; mnemonic "SYntax"
             vim.keymap.set('n', '<Leader>sy', '<Cmd>Inspect<CR>')
@@ -103,9 +42,48 @@ return {
             -- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
             vim.keymap.set('n', '<Leader>tn', '<Cmd>InspectTree<CR>')
 
-            -- set folding function
-            vim.o.foldmethod = 'expr'
-            vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+            -- parse 'tex' files as 'latex'
+            vim.treesitter.language.register('latex', { 'tex' })
+
+            -- highlighting
+            vim.api.nvim_create_autocmd('FileType', {
+                -- apply to
+                pattern = {
+                    -- the following captures exceptions like 'tex'
+                    -- see vim.treesitter.language.get_filetypes()
+                    table.unpack(
+                        vim.iter(languages)
+                            :map(vim.treesitter.language.get_filetypes)
+                            :flatten()
+                            :totable()
+                    ),
+                },
+                callback = function(ev)
+                    -- disable for HUGE files
+                    local disable = function()
+                        local max_filesize = 500 * 1024 -- 500 KB
+                        local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(ev.buf))
+                        if ok and stats and stats.size > max_filesize then
+                            return true
+                        end
+                    end
+
+                    if not disable() then
+                        -- highlights provided by neovim
+                        vim.treesitter.start()
+
+                        -- only if additional legacy syntax is needed
+                        -- vim.bo[args.buf].syntax = 'on'
+                    end
+
+                    -- set folding method (provided by neovim)
+                    vim.wo[0][0].foldmethod = 'expr'
+                    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
+                    -- set indentation method (provided by nvim-treesitter)
+                    vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+                end,
+            })
         end,
     },
 }

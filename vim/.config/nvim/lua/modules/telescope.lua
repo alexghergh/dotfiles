@@ -1,31 +1,49 @@
 return {
 
+    -- smart sorter for files
+    {
+        'danielfalk/smart-open.nvim',
+        branch = '0.2.x',
+        dependencies = {
+            'kkharji/sqlite.lua',
+        },
+    },
+
     -- TODO (comments + more keymaps)
     -- see :h telescope
     {
         'nvim-telescope/telescope.nvim',
-        tag = '0.1.8',
+        version = '*',
         dependencies = {
             'nvim-lua/plenary.nvim',
         },
-        event = { 'VeryLazy' },
         opts = {
             defaults = {
                 cache_picker = {
                     num_pickers = 100,
                     limit_entries = 1000,
                 },
+                layout_strategy = 'horizontal',
+                layout_config = {
+                    horizontal = {
+                        prompt_position = 'top',
+                        height = 0.4,
+                        width = 0.5,
+                    },
+                },
             },
         },
         config = function(_, opts)
-            require('telescope').setup(opts)
+            local telescope = require('telescope')
+            telescope.setup(opts)
+            require('telescope').load_extension('smart_open') -- smart files picker/sorter
 
             local builtin = require('telescope.builtin')
             -- mnemonics: To Files/Grep/Buffers/Help etc.
 
             -- file navigation
             vim.keymap.set('n', '<Leader>hh', builtin.find_files, {})
-            vim.keymap.set('n', '<Leader>tt', builtin.find_files, {})
+            vim.keymap.set('n', '<Leader>tt', telescope.extensions.smart_open.smart_open, {})
             vim.keymap.set('n', '<Leader>tb', builtin.buffers, {})
             vim.keymap.set('n', '<Leader>tgr', builtin.live_grep, {})
 
@@ -48,7 +66,7 @@ return {
             vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
 
             -- Options/COmmands/AutoCommands/Keymaps
-            vim.keymap.set('n', '<Leader>to', builtin.vim_options, {})
+            vim.keymap.set('n', '<Leader>too', builtin.vim_options, {})
             vim.keymap.set('n', '<Leader>tco', builtin.commands, {})
             vim.keymap.set('n', '<Leader>tac', builtin.autocommands, {})
             vim.keymap.set('n', '<Leader>tk', builtin.keymaps, {})

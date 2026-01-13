@@ -67,9 +67,30 @@ vim.diagnostic.handlers.signs = {
 }
 
 -- diagnostic gutter signs and line number highlight
-local signs = { Error = '󰅚 ', Warn = '󰀪 ', Hint = '󰌶 ', Info = ' ' }
-for type, icon in pairs(signs) do
-    local hl = 'DiagnosticSign' .. type
-    local hl_line = 'DiagnosticLineNr' .. type -- see lua/modules/colorschemes.lua
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl_line })
-end
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '󰅚 ',
+            [vim.diagnostic.severity.WARN] = '󰀪 ',
+            [vim.diagnostic.severity.HINT] = '󰌶 ',
+            [vim.diagnostic.severity.INFO] = ' ',
+        },
+        texthl = {
+            -- see lua/modules/colorschemes.lua
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarm',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+        },
+        numhl = {
+            -- see lua/modules/colorschemes.lua
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticLineNrError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticLineNrWarm',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticLineNrHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticLineNrInfo',
+        },
+    },
+    virtual_text = true,
+    update_in_insert = true,
+    severity_sort = true,
+})

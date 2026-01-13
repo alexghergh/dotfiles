@@ -109,8 +109,7 @@ return {
                 {
                     DiffAdd = {
                         provider = 'DiffAdd',
-                        condition = condition.check_git_workspace
-                            and condition.hide_in_width,
+                        condition = condition.check_git_workspace and condition.hide_in_width,
                         icon = ' +',
                         highlight = 'StatusLineDiffAdd',
                     },
@@ -118,8 +117,7 @@ return {
                 {
                     DiffRemove = {
                         provider = 'DiffRemove',
-                        condition = condition.check_git_workspace
-                            and condition.hide_in_width,
+                        condition = condition.check_git_workspace and condition.hide_in_width,
                         icon = ' -',
                         highlight = 'StatusLineDiffDelete',
                     },
@@ -127,8 +125,7 @@ return {
                 {
                     DiffModified = {
                         provider = 'DiffModified',
-                        condition = condition.check_git_workspace
-                            and condition.hide_in_width,
+                        condition = condition.check_git_workspace and condition.hide_in_width,
                         icon = ' ~',
                         highlight = 'StatusLineDiffChange',
                     },
@@ -155,11 +152,7 @@ return {
                     ArgsList = {
                         provider = function()
                             if vim.fn.argc() > 1 then
-                                return '('
-                                    .. vim.fn.argidx() + 1
-                                    .. '/'
-                                    .. vim.fn.argc()
-                                    .. ')'
+                                return '(' .. vim.fn.argidx() + 1 .. '/' .. vim.fn.argc() .. ')'
                             end
                         end,
                         icon = ' ',
@@ -190,11 +183,11 @@ return {
                             if gl.llm_spinner_idx == nil then
                                 gl.llm_spinner_idx = 1
                             else
-                                gl.llm_spinner_idx = (
-                                    gl.llm_spinner_idx % #spinner_list
-                                ) + 1
+                                gl.llm_spinner_idx = (gl.llm_spinner_idx % #spinner_list) + 1
                             end
 
+                            -- this asynchronously calls itself to update the
+                            -- status line symbol
                             if gl.llm_symbol_timer == nil then
                                 gl.llm_symbol_timer = vim.defer_fn(function()
                                     gl.llm_symbol_timer = nil

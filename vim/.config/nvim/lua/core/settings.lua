@@ -57,6 +57,9 @@ vim.opt.wildignore:append({
 })
 vim.opt.wildmode = 'longest:full,full'
 
+-- enable fuzzy command-line completion
+vim.opt.wildoptions:append({ 'fuzzy' })
+
 -- incremental live completion
 vim.opt.inccommand = 'nosplit'
 
@@ -77,6 +80,9 @@ vim.opt.listchars = {
     ['extends'] = '→',
     ['precedes'] = '←',
 }
+
+-- rounded borders
+vim.opt.winborder = 'rounded'
 
 -- display unprintable characters as hex numbers
 -- show characters for line too long at the bottom of the screen
