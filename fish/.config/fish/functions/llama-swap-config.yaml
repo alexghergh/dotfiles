@@ -1,0 +1,137 @@
+healthCheckTimeout: 100
+logLevel: info
+metricsMaxInMemory: 100
+startPort: 8080
+
+macros:
+  "default_command": >
+    /home/alex/packages/llama.cpp/build/bin/llama-server
+    --no-webui
+    --port ${PORT}
+    --log-prefix
+    --log-timestamps
+    --threads 4
+    --threads-batch 4
+    --threads-http 4
+    --batch-size 512
+    --ubatch-size 2048
+
+models:
+  # GPT OSS 20B
+  "gpt-oss-20b-moe":
+    macros:
+      "model": gpt-oss-20b-mxfp4.gguf
+      "reasoning_effort": "low"
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --cpu-moe
+        --gpu-layers 0
+        --device none
+        --temp 1.0
+        --top-p 1.0
+        --ctx-size 131072
+        --jinja
+        --chat-template-kwargs {\"reasoning_effort\":\"${reasoning_effort}\"}
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "gpt-oss-20b"
+    filters:
+      strip_params: "temperature, top_p, top_k"
+    ttl: 900
+
+  # SmolLM2 1.7B
+  "smollm2-1.7b":
+    macros:
+      "model": smollm2-1.7b-instruct-q4_k_m.gguf
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --gpu-layers 20
+        --temp 0.2
+        --top-p 0.9
+        --ctx-size 8192
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "smollm2-1.7b"
+    filters:
+      strip_params: "temperature, top_p, top_k"
+    ttl: 900
+
+  # SmolLM3 3B
+  "smollm3-3b":
+    macros:
+      "model": SmolLM3-3B-128K-Q4_K_M.gguf
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --gpu-layers 20
+        --temp 0.6
+        --top-p 0.95
+        --ctx-size 131072
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "smollm3-3b"
+    filters:
+      strip_params: "temperature, top_p, top_k"
+    ttl: 900
+
+  # Qwen2.5-Coder 3B
+  "qwen2.5-coder-3b":
+    macros:
+      "model": qwen2.5-coder-3b-instruct-q4_k_m.gguf
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --gpu-layers 20
+        --temp 0.7
+        --top-p 0.8
+        --ctx-size 131072
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "qwen2.5-coder-3b"
+    filters:
+      strip_params: "temperature, top_p, top_k"
+    ttl: 900
+
+  # Qwen3 4b
+  "qwen3-4b":
+    macros:
+      "model": Qwen3-4B-Q4_K_M.gguf
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --gpu-layers 20
+        --temp 0.7
+        --top-p 0.8
+        --top-k 20
+        --min-p 0
+        --ctx-size 266144
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "qwen3-4b"
+    filters:
+      strip_params: "temperature, top_p, top_k, min_p"
+    ttl: 900
+
+  # Qwen3 0.6B embedding
+  "qwen3-embedding-0.6b":
+    macros:
+      "model": Qwen3-Embedding-0.6B-Q8_0.gguf
+      "specific_opts": >
+        --model /home/alex/.llama.cpp/models/${model}
+        --alias ${model}
+        --gpu-layers 99
+        --embedding
+        --pooling last
+        --ctx-size 32768
+    cmd: >
+      ${default_command}
+      ${specific_opts}
+    name: "qwen3-embedding-0.6b"
+    ttl: 900
