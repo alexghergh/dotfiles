@@ -9,7 +9,7 @@ local background = {
             source = {
                 File = path .. 'game_background_1/game_background_1.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
     },
     {
@@ -33,7 +33,7 @@ local background = {
             source = {
                 File = path .. 'game_background_4/game_background_4.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.03 },
         },
     },
     {
@@ -41,7 +41,7 @@ local background = {
             source = {
                 File = path .. 'springstar_fields.png',
             },
-            hsb = { brightness = 0.07 },
+            hsb = { brightness = 0.01 },
         },
     },
     {
@@ -49,7 +49,7 @@ local background = {
             source = {
                 File = path .. 'windrise-background-4k.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.02 },
         },
     },
     {
@@ -57,19 +57,19 @@ local background = {
             source = {
                 File = path .. 'Clouds 1/1.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 1/2.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 1/4.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
     },
     {
@@ -123,19 +123,19 @@ local background = {
             source = {
                 File = path .. 'Clouds 4/1.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
         {
             source = {
                 File = path .. 'Clouds 4/3.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
         {
             source = {
                 File = path .. 'Clouds 4/4.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
     },
     {
@@ -143,25 +143,25 @@ local background = {
             source = {
                 File = path .. 'Clouds 5/1.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.015 },
         },
         {
             source = {
                 File = path .. 'Clouds 5/3.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.015 },
         },
         {
             source = {
                 File = path .. 'Clouds 5/4.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.015 },
         },
         {
             source = {
                 File = path .. 'Clouds 5/5.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.015 },
         },
     },
     {
@@ -207,25 +207,25 @@ local background = {
             source = {
                 File = path .. 'Clouds 7/1.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
         {
             source = {
                 File = path .. 'Clouds 7/2.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 7/3.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
         {
             source = {
                 File = path .. 'Clouds 7/4.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
     },
     {
@@ -233,37 +233,37 @@ local background = {
             source = {
                 File = path .. 'Clouds 8/1.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.04 },
         },
         {
             source = {
                 File = path .. 'Clouds 8/2.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 8/3.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 8/4.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 8/5.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
         {
             source = {
                 File = path .. 'Clouds 8/6.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.02 },
         },
     },
     {
@@ -271,7 +271,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_1/4.png',
             },
-            hsb = { brightness = 0.15 },
+            hsb = { brightness = 0.05 },
         },
     },
     {
@@ -287,7 +287,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_3/5.png',
             },
-            hsb = { brightness = 0.1 },
+            hsb = { brightness = 0.03 },
         },
     },
     {
@@ -303,7 +303,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_5/5.png',
             },
-            hsb = { brightness = 0.15 },
+            hsb = { brightness = 0.03 },
         },
     },
     {
@@ -331,7 +331,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_7/6.png',
             },
-            hsb = { brightness = 0.05 },
+            hsb = { brightness = 0.01 },
         },
     },
     {
@@ -339,7 +339,7 @@ local background = {
             source = {
                 File = path .. 'Ocean_8/6.png',
             },
-            hsb = { brightness = 0.15 },
+            hsb = { brightness = 0.02 },
         },
     },
 }
