@@ -121,7 +121,7 @@ vim.opt.foldcolumn = '1'
 vim.opt.foldminlines = 3
 
 -- set max fold level
-vim.opt.foldnestmax = 4
+vim.opt.foldnestmax = 10
 
 -- display cursorline
 vim.opt.cursorline = true
