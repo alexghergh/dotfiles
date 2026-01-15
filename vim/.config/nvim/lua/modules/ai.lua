@@ -1,5 +1,10 @@
 return {
 
+    -- LLM session history (see settings in 'extensions' config below)
+    {
+        'ravitemer/codecompanion-history.nvim',
+    },
+
     -- LLM code-assistant
     --
     -- also see lua/modules/galaxyline.lua for statusline component
@@ -29,12 +34,26 @@ return {
                             env = {
                                 url = 'http://localhost:34561',
                                 chat_url = '/v1/chat/completions',
-                                api_key = 'REDACTED',
                             },
                             schema = {
                                 model = {
-                                    default = 'gpt-oss-120b',
+                                    default = 'openai/gpt-oss-120b',
                                 },
+                            },
+                            handlers = {
+                                -- correctly format reasoning content if there's any
+                                parse_message_meta = function(_, data)
+                                    local extra = data.extra
+                                    if extra.reasoning_content then
+                                        -- codecompanion expect the reasoning tokens in this format
+                                        data.output.reasoning =
+                                            { content = extra.reasoning_content }
+                                        if data.output.content == '' then
+                                            data.output.content = nil
+                                        end
+                                    end
+                                    return data
+                                end,
                             },
                         })
                     end,
@@ -45,6 +64,11 @@ return {
                             env = {
                                 url = 'http://localhost:11435',
                                 chat_url = '/v1/chat/completions',
+                            },
+                            schema = {
+                                model = {
+                                    default = 'gpt-oss-20b',
+                                },
                             },
                             handlers = {
                                 chat_output = function(self, data)
@@ -57,23 +81,31 @@ return {
                                     end
                                     return output
                                 end,
-                            },
-                            schema = {
-                                model = {
-                                    default = 'gpt-oss-20b',
-                                },
+                                -- correctly format reasoning content if there's any
+                                parse_message_meta = function(_, data)
+                                    local extra = data.extra
+                                    if extra.reasoning_content then
+                                        -- codecompanion expect the reasoning tokens in this format
+                                        data.output.reasoning =
+                                            { content = extra.reasoning_content }
+                                        if data.output.content == '' then
+                                            data.output.content = nil
+                                        end
+                                    end
+                                    return data
+                                end,
                             },
                         })
                     end,
                     riolab_openai = function()
-                        return require('codecompanion.adapters').extend('openai', {
+                        return require('codecompanion.adapters').extend('openai_responses', {
+                            env = {
+                                api_key = 'REDACTED',
+                            },
                             schema = {
                                 model = {
                                     default = 'gpt-5-mini',
                                 },
-                            },
-                            env = {
-                                api_key = 'REDACTED',
                             },
                         })
                     end,
@@ -82,22 +114,49 @@ return {
             interactions = {
                 chat = {
                     adapter = 'fep',
+                    variables = {
+                        ['buffer'] = {
+                            opts = {
+                                default_params = 'diff',
+                            },
+                        },
+                    },
                 },
                 inline = {
                     adapter = 'fep',
                     keymaps = {
                         accept_change = {
+                            -- diff yes
                             modes = { n = '<Leader>gdy' },
                         },
                         reject_change = {
+                            -- diff no
                             modes = { n = '<Leader>gdn' },
                         },
                     },
+                },
+                cmd = {
+                    adapter = 'fep',
                 },
             },
             display = {
                 action_palette = {
                     provider = 'telescope',
+                },
+                chat = {
+                    auto_scroll = 'false',
+                    icons = {
+                        chat_context = '📎️',
+                    },
+                    fold_context = true,
+                },
+            },
+            extensions = {
+                history = {
+                    opts = {
+                        auto_generate_title = false,
+                        continue_last_chat = true,
+                    },
                 },
             },
         },
