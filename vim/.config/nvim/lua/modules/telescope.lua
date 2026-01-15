@@ -7,6 +7,18 @@ return {
         dependencies = {
             'kkharji/sqlite.lua',
         },
+        config = function()
+            -- smart files picker/sorter
+            require('telescope').load_extension('smart_open')
+        end,
+    },
+
+    {
+        'nvim-telescope/telescope-ui-select.nvim',
+        config = function()
+            -- replace vim.ui.select
+            require('telescope').load_extension('ui-select')
+        end,
     },
 
     -- TODO (comments + more keymaps)
@@ -36,7 +48,6 @@ return {
         config = function(_, opts)
             local telescope = require('telescope')
             telescope.setup(opts)
-            require('telescope').load_extension('smart_open') -- smart files picker/sorter
 
             local builtin = require('telescope.builtin')
             -- mnemonics: To Files/Grep/Buffers/Help etc.
