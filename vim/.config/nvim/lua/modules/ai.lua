@@ -105,7 +105,123 @@ return {
                             schema = {
                                 model = {
                                     default = 'gpt-5-mini',
+                                    -- see https://platform.openai.com/docs/pricing
+                                    choices = {
+                                        ['gpt-5.2'] = {
+                                            formatted_name = 'GPT‑5.2 ($14 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.1'] = {
+                                            formatted_name = 'GPT‑5.1 ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5'] = {
+                                            formatted_name = 'GPT‑5 ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5-mini'] = {
+                                            formatted_name = 'GPT‑5 Mini ($2 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5-nano'] = {
+                                            formatted_name = 'GPT‑5 Nano ($0.40 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.2-chat-latest'] = {
+                                            formatted_name = 'GPT‑5.2 Chat (Latest) ($14 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.1-chat-latest'] = {
+                                            formatted_name = 'GPT‑5.1 Chat (Latest) ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                            },
+                                        },
+                                        ['gpt-5-chat-latest'] = {
+                                            formatted_name = 'GPT‑5 Chat (Latest) ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                            },
+                                        },
+                                        ['gpt-5.2-codex'] = {
+                                            formatted_name = 'GPT‑5.2 Codex ($14 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.1-codex'] = {
+                                            formatted_name = 'GPT‑5.1 Codex ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.1-codex-max'] = {
+                                            formatted_name = 'GPT‑5.1 Codex Max ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5-codex'] = {
+                                            formatted_name = 'GPT‑5 Codex ($10 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                            },
+                                        },
+                                        ['gpt-5.2-pro'] = {
+                                            formatted_name = 'GPT‑5.2 Pro ($168 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                                stream = false,
+                                            },
+                                        },
+                                        ['gpt-5-pro'] = {
+                                            formatted_name = 'GPT‑5 Pro ($120 output)',
+                                            opts = {
+                                                has_function_calling = true,
+                                                has_vision = true,
+                                                can_reason = true,
+                                                stream = false,
+                                            },
+                                        },
+                                    },
                                 },
+                                ['reasoning.effort'] = 'high', -- high, medium, low, minimal
                             },
                         })
                     end,
