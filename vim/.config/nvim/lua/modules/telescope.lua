@@ -53,7 +53,7 @@ return {
             -- mnemonics: To Files/Grep/Buffers/Help etc.
 
             -- file navigation
-            vim.keymap.set('n', '<Leader>hh', builtin.find_files, {})
+            vim.keymap.set('n', '<Leader>hh', telescope.extensions.smart_open.smart_open, {})
             vim.keymap.set('n', '<Leader>tt', telescope.extensions.smart_open.smart_open, {})
             vim.keymap.set('n', '<Leader>tb', builtin.buffers, {})
             vim.keymap.set('n', '<Leader>tgr', builtin.live_grep, {})
@@ -72,8 +72,9 @@ return {
             -- Quickfix window
             vim.keymap.set('n', '<Leader>tq', builtin.quickfix, {})
 
-            -- Help Pages/Man Pages
+            -- Help Pages/Man Pages (or Harry Potter) (or Get Help)
             vim.keymap.set('n', '<Leader>thp', builtin.help_tags, {})
+            vim.keymap.set('n', '<Leader>tgh', builtin.help_tags, {})
             vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
 
             -- Options/COmmands/AutoCommands/Keymaps
