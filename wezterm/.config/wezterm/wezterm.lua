@@ -138,6 +138,11 @@ config.launch_menu = {
         args = { 'nvim', 'TODO.md' },
         cwd = '/home/alex/projects/dotfiles/',
     },
+    {
+        label = 'Papers',
+        args = { 'nvim', 'papers.txt' },
+        cwd = '/home/alex/projects/uni-research/',
+    },
 }
 
 wezterm.on('update-right-status', function(window, _)
@@ -345,6 +350,9 @@ config.key_tables = {
 
         -- zoom pane
         { key = 'z', action = act.TogglePaneZoomState },
+
+        -- kill pane
+        { key = 'x', action = act.CloseCurrentPane({ confirm = true }) },
 
         { key = 'Escape', action = 'PopKeyTable' },
     },
