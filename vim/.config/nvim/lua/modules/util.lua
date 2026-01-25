@@ -31,10 +31,10 @@ return {
     {
         'rcarriga/nvim-notify',
         opts = {
-            render = 'compact',
+            render = 'wrapped-compact',
             fps = 60,
-            timeout = 2,
             top_down = false,
+            max_width = vim.o.columns / 2,
         },
         config = function(_, opts)
             require('notify').setup(opts)
