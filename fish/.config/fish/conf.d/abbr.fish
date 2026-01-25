@@ -65,6 +65,7 @@ abbr --add gcb      git checkout -b
 abbr --add gc       git commit
 abbr --add gca      git commit --amend
 abbr --add gp       git push
+abbr --add gpf      git push -f
 abbr --add gl       git log
 abbr --add gla      git log --oneline --graph --all
 abbr --add gsw      git switch

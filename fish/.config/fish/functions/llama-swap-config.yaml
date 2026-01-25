@@ -6,7 +6,6 @@ startPort: 8080
 macros:
   "default_command": >
     /home/alex/packages/llama.cpp/build/bin/llama-server
-    --no-webui
     --port ${PORT}
     --log-prefix
     --log-timestamps

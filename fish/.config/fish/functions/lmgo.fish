@@ -9,7 +9,8 @@ function lmgo -d "LLM inference through llama-swap (llama.cpp as a local backend
         set -f log_path $default_log_path
     end
 
-    echo -s "Starting llama-swap (llama.cpp backend) server"
+    set -l default_port 11435
+    echo -s "Starting llama-swap (llama.cpp backend) server. Listening on $default_port..."
     echo -s "Logging to '$log_path/server.log'."
 
     set -l llamaswap_bin "$HOME"/packages/llama-swap/build/llama-swap-linux-arm64
@@ -21,7 +22,7 @@ function lmgo -d "LLM inference through llama-swap (llama.cpp as a local backend
     end
 
     $llamaswap_bin \
-        -listen :11435 \
+        -listen :$default_port \
         -config "$HOME"/.config/fish/functions/llama-swap-config.yaml \
     &>> "$log_path/server.log"
 
