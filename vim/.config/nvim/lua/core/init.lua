@@ -8,9 +8,6 @@ require('core.settings')
 -- source autocommands
 require('core.autocommands')
 
--- source user commands
-require('core.commands')
-
 -- source keymaps
 require('core.keymaps')
 
