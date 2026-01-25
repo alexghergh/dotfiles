@@ -104,7 +104,7 @@ return {
                             },
                             schema = {
                                 model = {
-                                    default = 'gpt-5-mini',
+                                    default = 'gpt-5.2-codex',
                                     -- see https://platform.openai.com/docs/pricing
                                     choices = {
                                         ['gpt-5.2'] = {
@@ -221,7 +221,29 @@ return {
                                         },
                                     },
                                 },
-                                ['reasoning.effort'] = 'high', -- high, medium, low, minimal
+                                ['reasoning.effort'] = {
+                                    default = 'high', -- high, medium, low, minimal
+                                },
+                                top_p = {
+                                    default = 1,
+                                    enabled = function(self)
+                                        local model = self.schema.model.default
+                                        if type(model) == 'function' then
+                                            model = model()
+                                        end
+                                        if string.match(model, 'codex') then
+                                            return false
+                                        end
+                                        return true
+                                    end,
+                                },
+                            },
+                        })
+                    end,
+                    riolab_anthropic = function()
+                        return require('codecompanion.adapters').extend('anthropic', {
+                            env = {
+                                api_key = 'REDACTED',
                             },
                         })
                     end,
@@ -229,7 +251,7 @@ return {
             },
             interactions = {
                 chat = {
-                    adapter = 'fep',
+                    adapter = 'riolab_openai',
                     variables = {
                         ['buffer'] = {
                             opts = {
@@ -239,7 +261,7 @@ return {
                     },
                 },
                 inline = {
-                    adapter = 'fep',
+                    adapter = 'riolab_openai',
                     keymaps = {
                         accept_change = {
                             -- diff yes
@@ -252,7 +274,7 @@ return {
                     },
                 },
                 cmd = {
-                    adapter = 'fep',
+                    adapter = 'riolab_openai',
                 },
             },
             display = {
@@ -260,11 +282,24 @@ return {
                     provider = 'telescope',
                 },
                 chat = {
-                    auto_scroll = 'false',
+                    auto_scroll = false,
                     icons = {
                         chat_context = '📎️',
                     },
                     fold_context = true,
+                    show_header_separator = true,
+                    separator = '/',
+                    debug_window = {
+                        width = vim.o.columns - 30,
+                        height = vim.o.lines - 12,
+                        relative = 'editor',
+                        opts = {
+                            wrap = false,
+                            number = false,
+                            relativenumber = false,
+                            signcolumn = 'no',
+                        },
+                    },
                 },
             },
             extensions = {
