@@ -35,11 +35,6 @@ return {
                                 url = 'http://localhost:34561',
                                 chat_url = '/v1/chat/completions',
                             },
-                            schema = {
-                                model = {
-                                    default = 'openai/gpt-oss-120b',
-                                },
-                            },
                             handlers = {
                                 -- correctly format reasoning content if there's any
                                 parse_message_meta = function(_, data)
@@ -65,22 +60,7 @@ return {
                                 url = 'http://localhost:11435',
                                 chat_url = '/v1/chat/completions',
                             },
-                            schema = {
-                                model = {
-                                    default = 'gpt-oss-20b',
-                                },
-                            },
                             handlers = {
-                                chat_output = function(self, data)
-                                    -- there's an issue with llama.cpp not adding
-                                    -- 'role' to its outputs, so we add it manually
-                                    local openai = require('codecompanion.adapters.openai')
-                                    local output = openai.handlers.chat_output(self, data)
-                                    if output ~= nil then
-                                        output.output.role = 'assistant'
-                                    end
-                                    return output
-                                end,
                                 -- correctly format reasoning content if there's any
                                 parse_message_meta = function(_, data)
                                     local extra = data.extra
