@@ -13,14 +13,6 @@ return {
         end,
     },
 
-    {
-        'nvim-telescope/telescope-ui-select.nvim',
-        config = function()
-            -- replace vim.ui.select
-            require('telescope').load_extension('ui-select')
-        end,
-    },
-
     -- TODO (comments + more keymaps)
     -- see :h telescope
     {
@@ -73,8 +65,8 @@ return {
             vim.keymap.set('n', '<Leader>tq', builtin.quickfix, {})
 
             -- Help Pages/Man Pages (or Harry Potter) (or Get Help)
-            vim.keymap.set('n', '<Leader>thp', builtin.help_tags, {})
-            vim.keymap.set('n', '<Leader>tgh', builtin.help_tags, {})
+            vim.keymap.set('n', '<Leader>hp', builtin.help_tags, {})
+            vim.keymap.set('n', '<Leader>gh', builtin.help_tags, {})
             vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
 
             -- Options/COmmands/AutoCommands/Keymaps
