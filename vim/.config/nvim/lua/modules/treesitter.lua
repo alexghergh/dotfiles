@@ -76,9 +76,12 @@ return {
                         -- vim.bo[args.buf].syntax = 'on'
                     end
 
-                    -- set folding method (provided by neovim)
-                    vim.wo[0][0].foldmethod = 'expr'
-                    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                    -- set folding method (provided by nvim's treesitter)
+                    local win = vim.api.nvim_get_current_win()
+                    if vim.wo[win][0].foldexpr == '0' then
+                        vim.wo[win][0].foldmethod = 'expr'
+                        vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                    end
 
                     -- set indentation method (provided by nvim-treesitter)
                     vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"

@@ -12,6 +12,7 @@ vim.diagnostic.config({
         source = 'if_many',
         prefix = '● ',
         spacing = 15,
+        current_line = true,
     },
     float = {
         border = 'rounded',

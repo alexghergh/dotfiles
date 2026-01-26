@@ -105,10 +105,11 @@ return {
                 callback = function(args)
                     -- options for the nvim lsp keymaps
                     local opts = { buffer = args.buf }
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    local win = vim.api.nvim_get_current_win()
+                    local Client = vim.lsp.get_client_by_id(args.data.client_id)
                     local vlb = vim.lsp.buf
 
-                    if client == nil then
+                    if Client == nil then
                         return
                     end
 
@@ -144,7 +145,7 @@ return {
                     vim.keymap.set('n', '<Leader>rn', vlb.rename, opts)
 
                     -- formatting
-                    vim.keymap.set('n', '<Leader>f', function()
+                    vim.keymap.set({ 'n', 'v' }, '<Leader>f', function()
                         vlb.format({ async = true })
                     end, vim.tbl_extend('error', opts, { desc = 'format' }))
 
@@ -152,15 +153,15 @@ return {
                     vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vlb.code_action, opts)
 
                     -- omnifunc / tagfunc completion
-                    if client:supports_method('completionItem/resolve') then
+                    if Client:supports_method('completionItem/resolve') then
                         vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
                     end
-                    if client:supports_method('textDocument/definition') then
+                    if Client:supports_method('textDocument/definition') then
                         vim.bo[args.buf].tagfunc = 'v:lua.vim.lsp.tagfunc'
                     end
 
                     -- symbol highlighting on hover
-                    if client:supports_method('textDocument/documentHighlight') then
+                    if Client:supports_method('textDocument/documentHighlight') then
                         vim.api.nvim_create_augroup('lsp_doc_highlight', { clear = false })
                         vim.api.nvim_clear_autocmds({
                             buffer = args.buf,
@@ -177,14 +178,20 @@ return {
                             callback = vlb.clear_references,
                         })
                     end
+
+                    -- folding (overrides treesitter's folding method)
+                    if Client:supports_method('textDocument/foldingRange') then
+                        vim.wo[win][0].foldmethod = 'expr'
+                        vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+                    end
                 end,
                 group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
             })
 
             vim.api.nvim_create_autocmd('LspDetach', {
                 callback = function(_)
-                    -- reset omnifunc, tagfunc
-                    vim.cmd('setlocal tagfunc< omnifunc<')
+                    -- reset omnifunc, tagfunc, foldexpr
+                    vim.cmd('setlocal tagfunc< omnifunc< foldexpr<')
                 end,
             })
 
