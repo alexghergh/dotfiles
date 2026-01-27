@@ -40,7 +40,7 @@ return {
                                 parse_message_meta = function(_, data)
                                     local extra = data.extra
                                     if extra.reasoning_content then
-                                        -- codecompanion expect the reasoning tokens in this format
+                                        -- codecompanion expects the reasoning tokens in this format
                                         data.output.reasoning =
                                             { content = extra.reasoning_content }
                                         if data.output.content == '' then
@@ -268,7 +268,7 @@ return {
                     },
                     fold_context = true,
                     show_header_separator = true,
-                    separator = '/',
+                    separator = ' ',
                     debug_window = {
                         width = vim.o.columns - 30,
                         height = vim.o.lines - 12,
