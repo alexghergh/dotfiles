@@ -94,6 +94,10 @@ local function tokyonight()
     -- LuaSnip
     set_hl('LuasnipInsertNodeActiveDot', { fg = '#86e1fc' })
     set_hl('LuasnipChoiceNodeActiveDot', { fg = '#ff966c' })
+
+    -- CodeCompanion
+    set_hl('CodeCompanionChatSeparator', { fg = '#008b8b', bg = '#302a25' })
+    set_hl('CodeCompanionChatHeader', { fg = '#008b8b' })
 end
 
 -- map colorscheme functions to strings
