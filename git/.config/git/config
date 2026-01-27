@@ -16,12 +16,11 @@
     smtpserverport = 587
     smtpencryption = tls
 [merge]
-    tool = nvim
+    tool = vimdiff
 [mergetool]
     prompt = false
-#this only works with vim-fugitive installed as a plugin
-[mergetool "nvim"]
-    cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+[mergetool "vimdiff"]
+    cmd = nvim -d "$LOCAL" "$REMOTE"
 [init]
     defaultBranch = main
 [filter "lfs"]
