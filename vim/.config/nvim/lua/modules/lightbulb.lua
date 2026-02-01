@@ -1,6 +1,7 @@
 return {
 
     -- lightbulb for code actions
+    -- see also lua/modules/colorschemes.lua
     {
         'kosayoda/nvim-lightbulb',
         opts = {
@@ -14,7 +15,6 @@ return {
                 enabled = true,
                 text = '       👁', -- ⚡
                 pos = 'eol',
-                hl = vim.api.nvim_set_hl(0, 'LightBulbVirtualText', { fg = '#ffc777' }),
             },
         },
     },

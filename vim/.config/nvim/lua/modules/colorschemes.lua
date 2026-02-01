@@ -9,98 +9,105 @@
 -- see :h highlight
 -- see :h colorscheme
 
-local function set_hl(...)
-    vim.api.nvim_set_hl(0, ...)
+local function _colorscheme_defaults()
+    return {
+        -- LuaSnip
+        ['LuasnipInsertNodeActiveDot'] = { fg = '#86e1fc' },
+        ['LuasnipChoiceNodeActiveDot'] = { fg = '#ff966c' },
+
+        -- CodeCompanion
+        ['CodeCompanionChatSeparator'] = { bg = '#b26a00' },
+
+        -- lightbulb code actions
+        ['LightBulbVirtualText'] = { fg = '#ffc777' },
+    }
 end
 
 local function melange()
-    -- floating windows
-    set_hl('NormalFloat', { fg = 'None', bg = 'None' })
-    set_hl('FloatBorder', { fg = '#c5cdd9', bg = 'None' })
-
-    -- diagnostics
-    set_hl('DiagnosticLineNrError', { fg = '#ff0000', bg = '#51202a' })
-    set_hl('DiagnosticLineNrWarn', { fg = '#ffa500', bg = '#51412a' })
-    set_hl('DiagnosticLineNrInfo', { fg = '#00ffff', bg = '#1e535d' })
-    set_hl('DiagnosticLineNrHint', { fg = '#0000ff', bg = '#1e205d' })
-
-    -- statusline
     local statusline_bg = '#282c34'
-    set_hl('StatusLine', { bg = statusline_bg })
 
-    set_hl('StatusLineColor1', { fg = '#3d4451', bg = '#8ab977', bold = true })
-    set_hl('StatusLineColor2', { fg = '#a9a9af', bg = '#3e4452' })
-    set_hl('StatusLineColor3', { fg = '#c2c2c2', bg = statusline_bg })
+    return {
+        -- floating windows
+        ['NormalFloat'] = { fg = 'None', bg = 'None' },
+        ['FloatBorder'] = { fg = '#c5cdd9', bg = 'None' },
 
-    set_hl('StatusLineSeparator12', { fg = '#8ab977', bg = '#3d4451' })
-    set_hl('StatusLineSeparator23', { fg = '#3e4452', bg = statusline_bg })
+        -- diagnostics
+        ['DiagnosticLineNrError'] = { fg = '#ff0000', bg = '#51202a' },
+        ['DiagnosticLineNrWarn'] = { fg = '#ffa500', bg = '#51412a' },
+        ['DiagnosticLineNrInfo'] = { fg = '#00ffff', bg = '#1e535d' },
+        ['DiagnosticLineNrHint'] = { fg = '#0000ff', bg = '#1e205d' },
 
-    -- statusline diff stats (added, removed, modified)
-    set_hl('StatusLineDiffAdd', { fg = '#78997a', bg = statusline_bg })
-    set_hl('StatusLineDiffDelete', { fg = '#bd8183', bg = statusline_bg })
-    set_hl('StatusLineDiffChange', { fg = '#b380b0', bg = statusline_bg })
+        -- statusline
+        ['StatusLine'] = { bg = statusline_bg },
 
-    -- autocompletion menu items (nvim-cmp)
-    -- gray
-    set_hl('CmpItemAbbrDeprecated', { fg = '#808080', bg = 'None', strikethrough = true })
-    -- blue
-    set_hl('CmpItemAbbrMatch', { fg = '#569CD6', bg = 'None' })
-    set_hl('CmpItemAbbrMatchFuzzy', { link = 'CmpIntemAbbrMatch' })
-    -- light blue
-    set_hl('CmpItemKindVariable', { fg = '#9CDCFE', bg = 'None' })
-    set_hl('CmpItemKindInterface', { link = 'CmpItemKindVariable' })
-    set_hl('CmpItemKindText', { link = 'CmpItemKindVariable' })
-    -- pink
-    set_hl('CmpItemKindFunction', { fg = '#C586C0', bg = 'None' })
-    set_hl('CmpItemKindMethod', { link = 'CmpItemKindFunction' })
-    -- front
-    set_hl('CmpItemKindKeyword', { fg = '#D4D4D4', bg = 'None' })
-    set_hl('CmpItemKindProperty', { link = 'CmpItemKindKeyword' })
-    set_hl('CmpItemKindUnit', { link = 'CmpItemKindKeyword' })
+        ['StatusLineColor1'] = { fg = '#3d4451', bg = '#8ab977', bold = true },
+        ['StatusLineColor2'] = { fg = '#a9a9af', bg = '#3e4452' },
+        ['StatusLineColor3'] = { fg = '#c2c2c2', bg = statusline_bg },
 
-    -- lsp (highlight symbol under cursor)
-    set_hl('HighlightSymbol', { bg = '#4a4745' })
-    set_hl('LspReferenceRead', { link = 'HighlightSymbol' })
-    set_hl('LspReferenceText', { link = 'HighlightSymbol' })
-    set_hl('LspReferenceWrite', { link = 'HighlightSymbol' })
+        ['StatusLineSeparator12'] = { fg = '#8ab977', bg = '#3d4451' },
+        ['StatusLineSeparator23'] = { fg = '#3e4452', bg = statusline_bg },
 
-    -- indentation guides
-    set_hl('IblIndent', { fg = '#403c3b' })
-    set_hl('IblScope', { fg = '#d2691e' })
+        -- statusline diff stats (added, removed, modified)
+        ['StatusLineDiffAdd'] = { fg = '#78997a', bg = statusline_bg },
+        ['StatusLineDiffDelete'] = { fg = '#bd8183', bg = statusline_bg },
+        ['StatusLineDiffChange'] = { fg = '#b380b0', bg = statusline_bg },
 
-    -- TODO luasnip, see tokyonight
+        -- autocompletion menu items (nvim-cmp)
+        -- gray
+        ['CmpItemAbbrDeprecated'] = { fg = '#808080', bg = 'None', strikethrough = true },
+        -- blue
+        ['CmpItemAbbrMatch'] = { fg = '#569CD6', bg = 'None' },
+        ['CmpItemAbbrMatchFuzzy'] = { link = 'CmpIntemAbbrMatch' },
+        -- light blue
+        ['CmpItemKindVariable'] = { fg = '#9CDCFE', bg = 'None' },
+        ['CmpItemKindInterface'] = { link = 'CmpItemKindVariable' },
+        ['CmpItemKindText'] = { link = 'CmpItemKindVariable' },
+        -- pink
+        ['CmpItemKindFunction'] = { fg = '#C586C0', bg = 'None' },
+        ['CmpItemKindMethod'] = { link = 'CmpItemKindFunction' },
+        -- front
+        ['CmpItemKindKeyword'] = { fg = '#D4D4D4', bg = 'None' },
+        ['CmpItemKindProperty'] = { link = 'CmpItemKindKeyword' },
+        ['CmpItemKindUnit'] = { link = 'CmpItemKindKeyword' },
+
+        -- lsp (highlight symbol under cursor)
+        ['HighlightSymbol'] = { bg = '#4a4745' },
+        ['LspReferenceRead'] = { link = 'HighlightSymbol' },
+        ['LspReferenceText'] = { link = 'HighlightSymbol' },
+        ['LspReferenceWrite'] = { link = 'HighlightSymbol' },
+
+        -- indentation guides
+        ['IblIndent'] = { fg = '#403c3b' },
+        ['IblScope'] = { fg = '#d2691e' },
+    }
 end
 
 local function tokyonight()
     local colors = require('lualine.themes._tokyonight').get()
     local normal = colors.normal.a
+    local statusline_bg = '#1a1c2a'
 
     -- statusline
-    local statusline_bg = '#1a1c2a'
-    set_hl('StatusLine', { bg = statusline_bg })
+    return {
+        ['StatusLine'] = { bg = statusline_bg },
 
-    set_hl('StatusLineColor1', { fg = normal.fg, bg = normal.bg, bold = true })
-    set_hl('StatusLineColor2', { fg = '#c8d3f5', bg = '#3e4452' })
-    set_hl('StatusLineColor3', { fg = '#c8d3f5', bg = statusline_bg })
+        ['StatusLineColor1'] = { fg = normal.fg, bg = normal.bg, bold = true },
+        ['StatusLineColor2'] = { fg = '#c8d3f5', bg = '#3e4452' },
+        ['StatusLineColor3'] = { fg = '#c8d3f5', bg = statusline_bg },
 
-    set_hl('StatusLineSeparator12', { fg = normal.bg, bg = '#3d4451' })
-    set_hl('StatusLineSeparator23', { fg = '#3e4452', bg = statusline_bg })
+        ['StatusLineSeparator12'] = { fg = normal.bg, bg = '#3d4451' },
+        ['StatusLineSeparator23'] = { fg = '#3e4452', bg = statusline_bg },
 
-    -- statusline diff stats (added, removed, modified)
-    set_hl('StatusLineDiffAdd', { fg = normal.bg, bg = statusline_bg })
-    set_hl('StatusLineDiffDelete', { fg = '#7f2530', bg = statusline_bg })
-    set_hl('StatusLineDiffChange', { fg = '#6f4d99', bg = statusline_bg })
-
-    -- LuaSnip
-    set_hl('LuasnipInsertNodeActiveDot', { fg = '#86e1fc' })
-    set_hl('LuasnipChoiceNodeActiveDot', { fg = '#ff966c' })
-
-    -- CodeCompanion
-    set_hl('CodeCompanionChatSeparator', { bg = '#b26a00' })
+        -- statusline diff stats (added, removed, modified)
+        ['StatusLineDiffAdd'] = { fg = normal.bg, bg = statusline_bg },
+        ['StatusLineDiffDelete'] = { fg = '#7f2530', bg = statusline_bg },
+        ['StatusLineDiffChange'] = { fg = '#6f4d99', bg = statusline_bg },
+    }
 end
 
--- map colorscheme functions to strings
-local colorscheme_functions = {
+-- map colorscheme functions to strings; every function should be named the same
+-- as the colorscheme it represents
+local _colorscheme_functions_table = {
     ['melange'] = melange,
     ['tokyonight-moon'] = tokyonight,
     ['tokyonight-storm'] = tokyonight,
@@ -108,17 +115,28 @@ local colorscheme_functions = {
     ['tokyonight-day'] = tokyonight,
 }
 
--- run on :colorscheme (re)load; make sure every function is named the same as
--- the colorscheme it represents (i.e. the custom colors/highlights associated
--- with 'melange' should be within a function called `melange()')
+-- run on :colorscheme (re)load
 vim.api.nvim_create_autocmd('ColorScheme', {
     callback = function()
-        local status, _ = pcall(colorscheme_functions[vim.g.colors_name])
-        if not status then
-            vim.notify(
-                'Colorscheme ' .. vim.g.colors_name .. ' might not be correctly configured (see "colorschemes.lua").',
-                vim.log.levels.WARN
-            )
+        local match = vim.g.colors_name -- args.match doesn't exactly work
+
+        -- get defaults shared among colorschemes
+        local spec = _colorscheme_defaults()
+
+        -- apply colorscheme specific stuff
+        local cs_func = _colorscheme_functions_table[match]
+        if cs_func ~= nil then
+            spec = vim.tbl_deep_extend('force', spec, cs_func())
+            for hi, opts in pairs(spec) do
+                vim.api.nvim_set_hl(0, hi, opts)
+            end
+            vim.schedule(function()
+                vim.notify("Set colorscheme to '" .. match .. "'", vim.log.levels.INFO)
+            end)
+        else
+            vim.schedule(function()
+                vim.notify("Colorscheme '" .. match .. "' is not correctly configured (see 'colorschemes.lua').", vim.log.levels.ERROR)
+            end)
         end
     end,
     group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
@@ -127,10 +145,10 @@ vim.api.nvim_create_autocmd('ColorScheme', {
 return {
     {
         'savq/melange-nvim',
-        lazy = false, -- make sure we load this during startup if it is the main colorscheme
+        lazy = false, -- don't load plugin unless this colorscheme is used
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
-            -- vim.cmd([[colorscheme melange]])
+            -- vim.cmd.colorscheme('melange')
         end,
     },
 
@@ -138,13 +156,12 @@ return {
         'folke/tokyonight.nvim',
         lazy = false,
         priority = 1000,
+        opts = {
+            style = 'moon', -- 'night', 'moon', 'storm', 'day' <- this requires light background
+        },
         config = function(_, opts)
-            table.insert(opts, {
-                style = 'storm', -- 'night', 'moon', 'storm', 'day' <- this requires light background
-            })
             require('tokyonight').setup(opts)
-
-            vim.cmd([[colorscheme tokyonight]])
+            vim.cmd.colorscheme('tokyonight')
         end,
     },
 }
