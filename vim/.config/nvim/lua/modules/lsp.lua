@@ -125,6 +125,7 @@ return {
                     -- signature help / hover
                     vim.keymap.set('n', 'K', vlb.hover, { buffer = buf, desc = 'Symbol hover information' })
                     vim.keymap.set('n', '<C-k>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
+                    vim.keymap.set('i', '<C-/>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
 
                     -- TODO document_symbol + on_list to filter e.g. only functions
                     -- that should be easier to navigate properly in the file
