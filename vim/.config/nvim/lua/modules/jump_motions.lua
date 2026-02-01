@@ -22,27 +22,22 @@ return {
 
             -- define a preview filter (skip the middle of alphanumeric words)
             require('leap').opts.preview_filter = function(ch0, ch1, ch2)
-                return not (
-                    ch1:match('%s')
-                    or ch0:match('%a') and ch1:match('%a') and ch2:match('%a')
-                )
+                return not (ch1:match('%s') or ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
             end
 
             -- movement
-            vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap)')
-            -- stylua: ignore
-            vim.keymap.set('n',              'gs', '<Plug>(leap-from-window)')
+            vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap)', { desc = 'Leap in file' })
+            vim.keymap.set('n', 'gs', '<Plug>(leap-from-window)', { desc = 'Leap from window' })
 
             -- remote action
             vim.keymap.set({ 'n', 'x', 'o' }, 'gS', function()
-                -- automatically start visual mode upon jump
-                require('leap.remote').action({ input = 'v' })
-            end)
+                require('leap.remote').action({ input = '' })
+            end, { desc = 'Leap + remote action and come back' })
 
             -- treesitter node selection
             vim.keymap.set({ 'n', 'x', 'o' }, '<leader>gs', function()
                 require('leap.treesitter').select()
-            end)
+            end, { desc = 'Tree sitter leap visual selection' })
         end,
     },
 }

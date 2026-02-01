@@ -63,10 +63,15 @@ return {
 
             -- select_choice with vim.ui.select (Ctrl-l in insert mode mapped in
             -- lua/modules/nvim-cmp.lua; this keymap is normal mode for choice)
-            vim.keymap.set('n', '<Leader><C-l>', require('luasnip.extras.select_choice'))
+            vim.keymap.set('n', '<Leader><C-l>', require('luasnip.extras.select_choice'), { desc = 'Select snippet choice' })
 
             -- edit snippets
-            vim.keymap.set('n', '<Leader><Leader>s', require('luasnip.loaders').edit_snippet_files)
+            vim.keymap.set(
+                'n',
+                '<Leader><Leader>s',
+                require('luasnip.loaders').edit_snippet_files,
+                { desc = 'Edit snippets for current filetypes' }
+            )
         end,
     },
 }

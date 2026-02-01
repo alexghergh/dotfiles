@@ -13,7 +13,6 @@ return {
         end,
     },
 
-    -- TODO (comments + more keymaps)
     -- see :h telescope
     {
         'nvim-telescope/telescope.nvim',
@@ -45,57 +44,60 @@ return {
             -- mnemonics: To Files/Grep/Buffers/Help etc.
 
             -- file navigation
-            vim.keymap.set('n', '<Leader>hh', telescope.extensions.smart_open.smart_open, {})
-            vim.keymap.set('n', '<Leader>tt', telescope.extensions.smart_open.smart_open, {})
-            vim.keymap.set('n', '<Leader>tb', builtin.buffers, {})
-            vim.keymap.set('n', '<Leader>tgr', builtin.live_grep, {})
+            vim.keymap.set('n', '<Leader>hh', builtin.find_files, { desc = 'Find files (Telescope)' })
+            vim.keymap.set('n', '<Leader>tt', telescope.extensions.smart_open.smart_open, { desc = 'Find files (smart_open)' })
+            vim.keymap.set('n', '<Leader>tb', builtin.buffers, { desc = 'Open buffers' })
+            vim.keymap.set('n', '<Leader>tgr', builtin.live_grep, { desc = 'Live grep' })
 
             -- Command/Search History
-            vim.keymap.set('n', '<Leader>tch', builtin.command_history, {})
-            vim.keymap.set('n', '<Leader>tsh', builtin.search_history, {})
+            vim.keymap.set('n', '<Leader>tch', builtin.command_history, { desc = 'Command line history' })
+            vim.keymap.set('n', '<Leader>tsh', builtin.search_history, { desc = 'Search history' })
 
             -- MArks/Registers
-            vim.keymap.set('n', '<Leader>tma', builtin.marks, {})
-            vim.keymap.set('n', '<Leader>tr', builtin.registers, {})
+            vim.keymap.set('n', '<Leader>tma', builtin.marks, { desc = 'Marks' })
+            vim.keymap.set('n', '<Leader>tr', builtin.registers, { desc = 'Registers' })
 
             -- Colorschemes
-            vim.keymap.set('n', '<Leader>tcs', builtin.colorscheme, {})
+            vim.keymap.set('n', '<Leader>tcs', builtin.colorscheme, { desc = 'Colorschemes' })
 
             -- Quickfix window
-            vim.keymap.set('n', '<Leader>tq', builtin.quickfix, {})
+            vim.keymap.set('n', '<Leader>tq', builtin.quickfix, { desc = 'Quickfix list' })
 
             -- Help Pages/Man Pages (or Harry Potter) (or Get Help)
-            vim.keymap.set('n', '<Leader>hp', builtin.help_tags, {})
-            vim.keymap.set('n', '<Leader>gh', builtin.help_tags, {})
-            vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, {})
+            vim.keymap.set('n', '<Leader>hp', builtin.help_tags, { desc = 'Help tags' })
+            vim.keymap.set('n', '<Leader>gh', builtin.help_tags, { desc = 'Help tags' })
+            vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, { desc = 'Man pages' })
 
             -- Options/COmmands/AutoCommands/Keymaps
-            vim.keymap.set('n', '<Leader>too', builtin.vim_options, {})
-            vim.keymap.set('n', '<Leader>tco', builtin.commands, {})
-            vim.keymap.set('n', '<Leader>tac', builtin.autocommands, {})
-            vim.keymap.set('n', '<Leader>tk', builtin.keymaps, {})
+            vim.keymap.set('n', '<Leader>too', builtin.vim_options, { desc = 'Vim options' })
+            vim.keymap.set('n', '<Leader>tco', builtin.commands, { desc = 'Commands' })
+            vim.keymap.set('n', '<Leader>tac', builtin.autocommands, { desc = 'Autocommands' })
+            vim.keymap.set('n', '<Leader>tk', builtin.keymaps, { desc = 'Keymaps' })
 
             -- HIghlights
-            vim.keymap.set('n', '<Leader>thi', builtin.highlights, {})
+            vim.keymap.set('n', '<Leader>thi', builtin.highlights, { desc = 'Color highlights' })
 
             -- Open Last picker/Open list of All previously opened pickers
-            vim.keymap.set('n', '<Leader>tol', builtin.resume, {})
-            vim.keymap.set('n', '<Leader>toa', builtin.pickers, {})
+            vim.keymap.set('n', '<Leader>tol', builtin.resume, { desc = 'Resume last picker' })
+            vim.keymap.set('n', '<Leader>toa', builtin.pickers, { desc = 'Open all previous pickers' })
 
             -- Git Commits
-            vim.keymap.set('n', '<Leader>tgc', builtin.git_commits, {})
+            vim.keymap.set('n', '<Leader>gg', builtin.git_status, { desc = 'List diffs in current repo' })
+            vim.keymap.set('n', '<Leader>gf', builtin.git_files, { desc = 'List all git files under workspace' })
+            vim.keymap.set('n', '<Leader>gc', builtin.git_commits, { desc = 'Git commits' })
 
-            -- lsp
-            -- TODO definition, references etc. in lsp.lua
-            vim.keymap.set('n', '<Leader>lr', builtin.lsp_references, {})
-            vim.keymap.set('n', '<Leader>li', builtin.lsp_incoming_calls, {})
-            vim.keymap.set('n', '<Leader>lo', builtin.lsp_outgoing_calls, {})
+            -- Lsp (see also lua/modules/lsp.lua)
+            vim.keymap.set('n', '<Leader>lgd', builtin.lsp_definitions, { desc = 'LSP definition for symbol under cursor' })
+            vim.keymap.set('n', '<Leader>lgi', builtin.lsp_implementations, { desc = 'LSP implementation for symbol under cursor' })
+            vim.keymap.set('n', '<Leader>lgr', builtin.lsp_references, { desc = 'LSP references for symbol under cursor' })
+            vim.keymap.set('n', '<Leader>li', builtin.lsp_incoming_calls, { desc = 'LSP incoming calls' })
+            vim.keymap.set('n', '<Leader>lo', builtin.lsp_outgoing_calls, { desc = 'LSP outgoing calls' })
 
-            vim.keymap.set('n', '<Leader>ld', builtin.diagnostics, {})
+            -- diagnostics
+            vim.keymap.set('n', '<Leader>ld', builtin.diagnostics, { desc = 'Workspace diagnostics' })
 
-            -- treesitter
-
-            -- lists
+            -- treesitter Current Variables
+            vim.keymap.set('n', '<Leader>cv', builtin.treesitter, { desc = 'Treesitter symbols (functions, vars etc.)' })
         end,
     },
 }

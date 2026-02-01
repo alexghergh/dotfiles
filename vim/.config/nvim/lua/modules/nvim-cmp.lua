@@ -27,6 +27,70 @@ local icons = {
     Variable = '󰂡',
 }
 
+-- custom comparators
+local cmp_under_comparator = function(entry1, entry2)
+    local _, entry1_under = entry1.completion_item.label:find('^_+')
+    local _, entry2_under = entry2.completion_item.label:find('^_+')
+    entry1_under = entry1_under or 0
+    entry2_under = entry2_under or 0
+    if entry1_under > entry2_under then
+        return false
+    elseif entry1_under < entry2_under then
+        return true
+    end
+end
+
+-- see https://github.com/hrsh7th/nvim-cmp/issues/156
+local cmp_lspkind = (function(conf)
+    local lsp_types = require('cmp.types').lsp
+    return function(entry1, entry2)
+        if entry1.source.name ~= 'nvim_lsp' then
+            if entry2.source.name == 'nvim_lsp' then
+                return false
+            else
+                return nil
+            end
+        end
+        local kind1 = lsp_types.CompletionItemKind[entry1:get_kind()]
+        local kind2 = lsp_types.CompletionItemKind[entry2:get_kind()]
+
+        local priority1 = conf.kind_priority[kind1] or 0
+        local priority2 = conf.kind_priority[kind2] or 0
+        if priority1 == priority2 then
+            return nil
+        end
+        return priority2 < priority1
+    end
+end)({
+    kind_priority = {
+        Field = 11,
+        Property = 11,
+        Constant = 10,
+        Enum = 10,
+        EnumMember = 10,
+        Event = 10,
+        Function = 10,
+        Method = 10,
+        Operator = 10,
+        Reference = 10,
+        Struct = 10,
+        Variable = 9,
+        File = 8,
+        Folder = 8,
+        Class = 5,
+        Color = 5,
+        Module = 5,
+        Keyword = 2,
+        Constructor = 1,
+        Interface = 1,
+        Snippet = 0,
+        Text = 1,
+        TypeParameter = 1,
+        Unit = 1,
+        Value = 1,
+    },
+})
+
 return {
 
     -- sources for nvim-cmp
@@ -59,6 +123,24 @@ return {
             return {
                 opts = {
                     mapping = cmp.mapping.preset.insert({
+                        ['<C-u>'] = {
+                            i = function()
+                                if cmp.visible() then
+                                    cmp.select_prev_item({ count = 12 })
+                                else
+                                    cmp.complete()
+                                end
+                            end,
+                        },
+                        ['<C-d>'] = {
+                            i = function()
+                                if cmp.visible() then
+                                    cmp.select_next_item({ count = 12 })
+                                else
+                                    cmp.complete()
+                                end
+                            end,
+                        },
                         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
                         ['<C-f>'] = cmp.mapping.scroll_docs(4),
                         ['<C-e>'] = cmp.mapping.abort(),
@@ -125,8 +207,7 @@ return {
                     },
                     formatting = {
                         format = function(entry, vim_item)
-                            vim_item.kind =
-                                string.format('%s %s', icons[vim_item.kind], vim_item.kind)
+                            vim_item.kind = string.format('%s %s', icons[vim_item.kind], vim_item.kind)
                             vim_item.menu = ({
                                 buffer = '[Buffer]',
                                 path = '[Path]',
@@ -146,18 +227,9 @@ return {
                             cmp.config.compare.recently_used,
                             cmp.config.compare.locality,
                             -- copied from lukas-reineke/cmp-under-comparator
-                            function(entry1, entry2)
-                                local _, entry1_under = entry1.completion_item.label:find('^_+')
-                                local _, entry2_under = entry2.completion_item.label:find('^_+')
-                                entry1_under = entry1_under or 0
-                                entry2_under = entry2_under or 0
-                                if entry1_under > entry2_under then
-                                    return false
-                                elseif entry1_under < entry2_under then
-                                    return true
-                                end
-                            end,
-                            cmp.config.compare.kind,
+                            cmp_under_comparator,
+                            -- cmp.config.compare.kind, -- see custom kind comparator
+                            cmp_lspkind,
                             cmp.config.compare.sort_text,
                             cmp.config.compare.length,
                             cmp.config.compare.order,
@@ -171,15 +243,10 @@ return {
 
                         -- disable in comments
                         local context = require('cmp.config.context')
-                        enabled = enabled
-                            and not context.in_treesitter_capture('comment')
-                            and not context.in_syntax_group('Comment')
+                        enabled = enabled and not context.in_treesitter_capture('comment') and not context.in_syntax_group('Comment')
 
                         -- disable in prompts
-                        enabled = enabled
-                            and not (
-                                vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt'
-                            )
+                        enabled = enabled and not (vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt')
 
                         -- disable in macros
                         enabled = enabled and not (vim.fn.reg_recording() ~= '')

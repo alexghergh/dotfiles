@@ -41,6 +41,6 @@ return {
         require('neo-tree').setup(opts)
 
         -- default keymap
-        vim.keymap.set('n', '<Leader>nt', '<Cmd>Neotree source=last toggle=true reveal=true<CR>')
+        vim.keymap.set('n', '<Leader>nt', '<Cmd>Neotree source=last toggle=true reveal=true<CR>', { desc = 'Open Neotree' })
     end,
 }

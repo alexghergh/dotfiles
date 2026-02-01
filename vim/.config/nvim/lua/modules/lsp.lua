@@ -13,7 +13,6 @@ local servers = {
     'ruff',
     'jdtls',
     'lua_ls',
-    'harper_ls',
     'marksman',
     'yamlls',
     'texlab',
@@ -95,16 +94,13 @@ return {
                     },
                 },
             })
-            vim.lsp.config('harper_ls', {
-                filetypes = { 'markdown', 'latex', 'tex', 'text' },
-            })
 
             -- custom LspAttach / LspDetach functionality for the built-in
             -- neovim lsp client
             vim.api.nvim_create_autocmd('LspAttach', {
                 callback = function(args)
                     -- options for the nvim lsp keymaps
-                    local opts = { buffer = args.buf }
+                    local buf = args.buf
                     local win = vim.api.nvim_get_current_win()
                     local Client = vim.lsp.get_client_by_id(args.data.client_id)
                     local vlb = vim.lsp.buf
@@ -118,39 +114,30 @@ return {
                     -- gD and gd below override the builtins, which makes
                     -- mappings consistent whether there is an LSP server or not
 
-                    -- goto *
-                    vim.keymap.set('n', 'gD', vlb.declaration, opts)
-                    vim.keymap.set('n', 'gd', vlb.definition, opts)
-                    vim.keymap.set('n', '<Leader>gi', vlb.implementation, opts)
-                    vim.keymap.set('n', '<Leader>gr', vlb.references, opts)
-                    vim.keymap.set('n', '<Leader>td', vlb.type_definition, opts)
-                    vim.keymap.set('n', '<Leader>th', vlb.typehierarchy, opts)
+                    -- goto * (see also lua/modules/telescope.lua)
+                    vim.keymap.set('n', 'gD', vlb.declaration, { buffer = buf, desc = 'Go to declaration' })
+                    vim.keymap.set('n', 'gd', vlb.definition, { buffer = buf, desc = 'Go to definition' })
+                    vim.keymap.set('n', '<Leader>gi', vlb.implementation, { buffer = buf, desc = 'Go to implementation' })
+                    vim.keymap.set('n', '<Leader>gr', vlb.references, { buffer = buf, desc = 'Go to references' })
+                    vim.keymap.set('n', '<Leader>td', vlb.type_definition, { buffer = buf, desc = 'Go to type definition' })
+                    vim.keymap.set('n', '<Leader>th', vlb.typehierarchy, { buffer = buf, desc = 'Go to type hierarchy' })
 
                     -- signature help / hover
-                    vim.keymap.set('n', 'K', function()
-                        vlb.hover()
-                    end, vim.tbl_extend('error', opts, { desc = 'hover' }))
-                    vim.keymap.set('n', '<C-k>', function()
-                        vlb.signature_help()
-                    end, vim.tbl_extend(
-                        'error',
-                        opts,
-                        { desc = 'signature_help' }
-                    ))
+                    vim.keymap.set('n', 'K', vlb.hover, { buffer = buf, desc = 'Symbol hover information' })
+                    vim.keymap.set('n', '<C-k>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
 
                     -- TODO document_symbol + on_list to filter e.g. only functions
                     -- that should be easier to navigate properly in the file
 
                     -- symbol rename
-                    vim.keymap.set('n', '<Leader>rn', vlb.rename, opts)
+                    vim.keymap.set('n', '<Leader>rn', vlb.rename, { buffer = buf, desc = 'Rename symbol under cursor' })
 
                     -- formatting
                     vim.keymap.set({ 'n', 'v' }, '<Leader>f', function()
                         vlb.format({ async = true })
-                    end, vim.tbl_extend('error', opts, { desc = 'format' }))
-
+                    end, { buffer = buf, desc = 'Format text' })
                     -- code actions
-                    vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vlb.code_action, opts)
+                    vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vlb.code_action, { buffer = buf, desc = 'Display code actions' })
 
                     -- omnifunc / tagfunc completion
                     if Client:supports_method('completionItem/resolve') then

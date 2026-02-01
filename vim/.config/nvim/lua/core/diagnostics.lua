@@ -23,19 +23,18 @@ vim.diagnostic.config({
 
 -- display the diagnostic on curser hover
 vim.api.nvim_create_autocmd('CursorHold', {
-    buffer = bufnr,
     callback = function()
-        local opts = {
-            focusable = false,
-            close_events = {
-                'BufLeave',
-                'CursorMoved',
-                'InsertEnter',
-                'FocusLost',
-            },
-            scope = 'cursor',
-        }
-        vim.diagnostic.open_float(nil, opts)
+        -- see https://www.reddit.com/r/neovim/comments/uqb50c/with_native_lsp_nvimcmp_how_do_you_prevent_the/
+        local curr_cursor = vim.api.nvim_win_get_cursor(0)
+        local last_curr = vim.w.lsp_diags_last_cursor or { nil, nil }
+
+        -- show the popup diagnostics window, but only once for the current cursor location (unless
+        -- moved afterwards); prevents reappearing if trying to open different float (e.g. symbol
+        -- hover)
+        if not (curr_cursor[1] == last_curr[1] and curr_cursor[2] == last_curr[2]) then
+            vim.w.lsp_diags_last_cursor = curr_cursor
+            vim.diagnostic.open_float({ scope = 'cursor' })
+        end
     end,
 })
 

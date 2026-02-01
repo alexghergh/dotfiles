@@ -41,8 +41,7 @@ return {
                                     local extra = data.extra
                                     if extra.reasoning_content then
                                         -- codecompanion expects the reasoning tokens in this format
-                                        data.output.reasoning =
-                                            { content = extra.reasoning_content }
+                                        data.output.reasoning = { content = extra.reasoning_content }
                                         if data.output.content == '' then
                                             data.output.content = nil
                                         end
@@ -66,8 +65,7 @@ return {
                                     local extra = data.extra
                                     if extra.reasoning_content then
                                         -- codecompanion expect the reasoning tokens in this format
-                                        data.output.reasoning =
-                                            { content = extra.reasoning_content }
+                                        data.output.reasoning = { content = extra.reasoning_content }
                                         if data.output.content == '' then
                                             data.output.content = nil
                                         end
@@ -295,21 +293,16 @@ return {
             require('codecompanion').setup(opts)
 
             -- chat toggle
-            vim.keymap.set({ 'n', 'v' }, '<Leader>cc', '<Cmd>CodeCompanionChat Toggle<CR>')
+            vim.keymap.set({ 'n', 'v' }, '<Leader>cc', '<Cmd>CodeCompanionChat Toggle<CR>', { desc = 'Toggle Code companion chat' })
 
             -- add code from current visual selection to chat buffer
-            vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>')
+            vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add code from selection to Code companion chat window' })
 
             -- code actions (Companion Do)
-            vim.keymap.set({ 'n', 'v' }, '<Leader>cd', '<Cmd>CodeCompanionActions<CR>')
+            vim.keymap.set({ 'n', 'v' }, '<Leader>cd', '<Cmd>CodeCompanionActions<CR>', { desc = 'Open Code companion actions' })
 
             -- expand cc to CodeCompanion in the command line
-            vim.keymap.set(
-                'c',
-                'cc',
-                "getcmdtype() == ':' ? 'CodeCompanion' : 'cc'",
-                { expr = true }
-            )
+            vim.keymap.set('c', 'cc', "getcmdtype() == ':' ? 'CodeCompanion' : 'cc'", { expr = true })
 
             -- set this to override _all_ open chat buffers with a specific llm
             -- vim.g.codecompanion_adapter = 'ollama'

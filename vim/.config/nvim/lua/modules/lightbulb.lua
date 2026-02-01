@@ -12,12 +12,9 @@ return {
             },
             virtual_text = {
                 enabled = true,
-                text = '    👁', -- ⚡
-                hl = vim.api.nvim_set_hl(
-                    0,
-                    'LightBulbVirtualText',
-                    { link = '@markup.heading.2.markdown' }
-                ),
+                text = '       👁', -- ⚡
+                pos = 'eol',
+                hl = vim.api.nvim_set_hl(0, 'LightBulbVirtualText', { fg = '#ffc777' }),
             },
         },
     },

@@ -28,14 +28,14 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
 -- system yank/put
-vim.keymap.set({ 'n', 'v' }, '<Leader>y', '"+y')
-vim.keymap.set({ 'n', 'v' }, '<Leader>Y', '"+Y')
-vim.keymap.set({ 'n', 'v' }, '<Leader>p', '"+p')
-vim.keymap.set({ 'n', 'v' }, '<Leader>P', '"+P')
+vim.keymap.set({ 'n', 'v' }, '<Leader>y', '"+y', { desc = 'System clipboard yank' })
+vim.keymap.set({ 'n', 'v' }, '<Leader>Y', '"+Y', { desc = 'System clipboard yank' })
+vim.keymap.set({ 'n', 'v' }, '<Leader>p', '"+p', { desc = 'System clipboard put' })
+vim.keymap.set({ 'n', 'v' }, '<Leader>P', '"+P', { desc = 'System clipboard put' })
 
 -- make delete just... delete (:h "_)
-vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d')
-vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D')
+vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d', { desc = 'Delete without register' })
+vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D', { desc = 'Delete without register' })
 
 --
 -- command-line keymaps
@@ -52,21 +52,20 @@ vim.keymap.set('c', '%%', "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'", { 
 --
 
 -- switch to last file
-vim.keymap.set('n', '<Leader>o', '<C-^>')
+vim.keymap.set('n', '<Leader>o', '<C-^>', { desc = 'Switch to last file' })
 
 -- navigate tags (mnemonic Switch Tag)
-vim.keymap.set('n', '<Leader>st', '<C-]>')
+vim.keymap.set('n', '<Leader>st', '<C-]>', { desc = 'Navigate to tag' })
 
 --
 -- window keymaps
 --
-vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>')
-vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>')
-vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>')
-vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>')
-vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>')
-vim.keymap.set('n', '<Leader>wz', '<Cmd>call functions#Zoom()<CR>')
-vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternate file
+vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>', { desc = 'Resize window height (-10)' })
+vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>', { desc = 'Resize window height (+10)' })
+vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>', { desc = 'Resize window width (-10)' })
+vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>', { desc = 'Resize window width (+10)' })
+vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>', { desc = 'Make windows equal' })
+vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>', { desc = 'Split and edit alternate file' })
 
 --
 -- diagnostics keymaps
@@ -75,4 +74,4 @@ vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>') -- splits and edits alternat
 --
 
 -- show diagnostics in a floating window (mnemonic Diagnostics Show)
-vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float)
+vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float, { desc = 'Open diagnostic window' })

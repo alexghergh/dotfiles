@@ -116,9 +116,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
         local status, _ = pcall(colorscheme_functions[vim.g.colors_name])
         if not status then
             vim.notify(
-                'Colorscheme '
-                    .. vim.g.colors_name
-                    .. ' might not be correctly configured (see "colorschemes.lua").',
+                'Colorscheme ' .. vim.g.colors_name .. ' might not be correctly configured (see "colorschemes.lua").',
                 vim.log.levels.WARN
             )
         end

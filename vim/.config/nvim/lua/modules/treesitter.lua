@@ -37,10 +37,10 @@ return {
             require('nvim-treesitter').install(languages)
 
             -- show tree-sitter syntax group under cursor; mnemonic "SYntax"
-            vim.keymap.set('n', '<Leader>sy', '<Cmd>Inspect<CR>')
+            vim.keymap.set('n', '<Leader>sy', '<Cmd>Inspect<CR>', { desc = 'Show syntax / highlight under cursor' })
 
             -- show tree-sitter node under cursor; mnemonic "Tree-sitter Node"
-            vim.keymap.set('n', '<Leader>tn', '<Cmd>InspectTree<CR>')
+            vim.keymap.set('n', '<Leader>tn', '<Cmd>InspectTree<CR>', { desc = 'Show tree-sitter editor' })
 
             -- parse 'tex' files as 'latex'
             vim.treesitter.language.register('latex', { 'tex' })
@@ -51,12 +51,7 @@ return {
                 pattern = {
                     -- the following captures exceptions like 'tex'
                     -- see vim.treesitter.language.get_filetypes()
-                    table.unpack(
-                        vim.iter(languages)
-                            :map(vim.treesitter.language.get_filetypes)
-                            :flatten()
-                            :totable()
-                    ),
+                    table.unpack(vim.iter(languages):map(vim.treesitter.language.get_filetypes):flatten():totable()),
                 },
                 callback = function(ev)
                     -- disable for HUGE files
