@@ -356,6 +356,10 @@ return {
             -- setup cmdline auto-completion
             cmp.setup.cmdline({ '/', '?' }, opts['opts_cmd_search'])
             cmp.setup.cmdline(':', opts['opts_cmd_command'])
+
+            -- autopairs on function / method insert
+            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+            cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
         end,
     },
 }
