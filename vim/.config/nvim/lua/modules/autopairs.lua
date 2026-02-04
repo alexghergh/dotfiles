@@ -12,13 +12,21 @@ return {
         },
         config = function(_, opts)
             local npairs = require('nvim-autopairs')
-            local Rule = require('nvim-autopairs.rule')
 
             npairs.setup(opts)
 
             -- exception for codecompanion filetype, which is basically an .md
             table.insert(npairs.get_rule('```').filetypes, 'codecompanion')
             table.insert(npairs.get_rule('```.*$').filetypes, 'codecompanion')
+
+            -- pairs also autocomplete if selecting a function from the completion menu
+            -- see lua/modules/nvim-cmp.lua
         end,
+    },
+
+    -- move to autopairs on multi-line as well, from insert mode
+    {
+        'alexghergh/pairs-jump.nvim',
+        opts = {},
     },
 }
