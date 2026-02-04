@@ -1,6 +1,5 @@
-# EditorConfig is awesome: https://editorconfig.org
+root = true
 
-# Lua files
 [*.lua]
 indent_style = space
 indent_size = 4
