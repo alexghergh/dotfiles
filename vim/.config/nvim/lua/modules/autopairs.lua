@@ -21,4 +21,10 @@ return {
             table.insert(npairs.get_rule('```.*$').filetypes, 'codecompanion')
         end,
     },
+
+    -- move to autopairs on multi-line as well, from insert mode
+    {
+        'alexghergh/pairs-jump.nvim',
+        opts = {},
+    },
 }
