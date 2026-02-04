@@ -9,7 +9,7 @@
 -- see :h highlight
 -- see :h colorscheme
 
-local function _colorscheme_defaults()
+local function colorscheme_defaults()
     return {
         -- LuaSnip
         ['LuasnipInsertNodeActiveDot'] = { fg = '#86e1fc' },
@@ -17,6 +17,7 @@ local function _colorscheme_defaults()
 
         -- CodeCompanion
         ['CodeCompanionChatSeparator'] = { bg = '#b26a00' },
+        ['CodeCompanionChatTokens'] = { fg = '#ebccc5' },
 
         -- lightbulb code actions
         ['LightBulbVirtualText'] = { fg = '#ffc777' },
@@ -121,7 +122,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
         local match = vim.g.colors_name -- args.match doesn't exactly work
 
         -- get defaults shared among colorschemes
-        local spec = _colorscheme_defaults()
+        local spec = colorscheme_defaults()
 
         -- apply colorscheme specific stuff
         local cs_func = _colorscheme_functions_table[match]
