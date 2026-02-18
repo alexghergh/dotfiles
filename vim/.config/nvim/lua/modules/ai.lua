@@ -21,6 +21,13 @@ return {
                         show_presets = false, -- only show user-defined adapters
                         show_model_choices = true, -- show model choices
                     },
+                    codex = function()
+                        return require('codecompanion.adapters').extend('codex', {
+                            defaults = {
+                                auth_method = 'chatgpt', -- 'openai-api-key'|'codex-api-key'|'chatgpt'
+                            },
+                        })
+                    end,
                 },
                 http = {
                     opts = {
@@ -39,12 +46,19 @@ return {
                                 -- correctly format reasoning content if there's any
                                 parse_message_meta = function(_, data)
                                     local extra = data.extra
+
+                                    -- sglang
                                     if extra.reasoning_content then
                                         -- codecompanion expects the reasoning tokens in this format
                                         data.output.reasoning = { content = extra.reasoning_content }
                                         if data.output.content == '' then
                                             data.output.content = nil
                                         end
+                                    end
+
+                                    -- vllm
+                                    if extra.reasoning then
+                                        data.output.reasoning = { content = extra.reasoning }
                                     end
                                     return data
                                 end,
@@ -201,6 +215,16 @@ return {
                                 },
                                 ['reasoning.effort'] = {
                                     default = 'high', -- high, medium, low, minimal
+                                    enabled = function(self)
+                                        local model = self.schema.model.default
+                                        if type(model) == 'function' then
+                                            model = model()
+                                        end
+                                        if string.match(model, '5.') then -- codex / chatgpt 5.x models
+                                            return false
+                                        end
+                                        return true
+                                    end,
                                 },
                                 top_p = {
                                     default = 1,
@@ -209,7 +233,7 @@ return {
                                         if type(model) == 'function' then
                                             model = model()
                                         end
-                                        if string.match(model, 'codex') then
+                                        if string.match(model, 'codex') or string.match(model, '5.') then -- codex / chatgpt 5.x models
                                             return false
                                         end
                                         return true
@@ -229,7 +253,7 @@ return {
             },
             interactions = {
                 chat = {
-                    adapter = 'riolab_openai',
+                    adapter = 'codex',
                     variables = {
                         ['buffer'] = {
                             opts = {
@@ -239,7 +263,7 @@ return {
                     },
                 },
                 inline = {
-                    adapter = 'riolab_openai',
+                    adapter = 'codex',
                     keymaps = {
                         accept_change = {
                             -- diff yes
@@ -252,7 +276,7 @@ return {
                     },
                 },
                 cmd = {
-                    adapter = 'riolab_openai',
+                    adapter = 'codex',
                 },
             },
             display = {
@@ -260,7 +284,7 @@ return {
                     provider = 'telescope',
                 },
                 chat = {
-                    auto_scroll = false,
+                    auto_scroll = true,
                     icons = {
                         chat_context = '📎️',
                     },
@@ -284,7 +308,7 @@ return {
                 history = {
                     opts = {
                         auto_generate_title = false,
-                        continue_last_chat = true,
+                        continue_last_chat = false,
                     },
                 },
             },
