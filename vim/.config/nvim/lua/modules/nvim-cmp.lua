@@ -124,20 +124,20 @@ return {
                 opts = {
                     mapping = cmp.mapping.preset.insert({
                         ['<C-u>'] = {
-                            i = function()
+                            i = function(fallback)
                                 if cmp.visible() then
                                     cmp.select_prev_item({ count = 12 })
                                 else
-                                    cmp.complete()
+                                    fallback()
                                 end
                             end,
                         },
                         ['<C-d>'] = {
-                            i = function()
+                            i = function(fallback)
                                 if cmp.visible() then
                                     cmp.select_next_item({ count = 12 })
                                 else
-                                    cmp.complete()
+                                    fallback()
                                 end
                             end,
                         },
