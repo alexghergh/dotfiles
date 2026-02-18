@@ -7,10 +7,11 @@
 -- see :h vim.lsp
 --
 
--- lsp servers (see specific opts below)
-local servers = {
+-- start servers (see specific opts below)
+-- these need to be vim.lsp.enable()'d
+local start_servers = {
+    -- lsp's
     'basedpyright',
-    'ruff',
     'jdtls',
     'lua_ls',
     'marksman',
@@ -19,6 +20,18 @@ local servers = {
     'clangd',
     'gopls',
     'rust_analyzer',
+
+    -- formatters / linters (these run in LSP mode, so accept e.g. textDocument/rangeFormatting methods)
+    'stylua',
+}
+
+-- reminder to install these on fresh neovim installs through :Mason
+local other_servers = {
+    'ruff',
+    'clang-format',
+    'markdown-lint',
+    'tex-fmt',
+    'google-java-format',
 }
 
 return {
@@ -39,9 +52,16 @@ return {
 
     -- literally here just to make sure that servers are auto-installed on new config
     {
+        -- TODO replace this with proper 'ensure installed' through :MasonInstall; this doesn't capture
+        -- linters, formatters etc.
         'mason-org/mason-lspconfig.nvim',
+        dependencies = {
+            'mason-org/mason.nvim',
+            'neovim/nvim-lspconfig',
+        },
         opts = {
-            ensure_installed = servers,
+            ensure_installed = start_servers,
+            automatic_enable = false,
         },
     },
 
@@ -127,16 +147,16 @@ return {
                     vim.keymap.set('n', '<C-k>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
                     vim.keymap.set('i', '<C-/>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
 
-                    -- TODO document_symbol + on_list to filter e.g. only functions
-                    -- that should be easier to navigate properly in the file
-
                     -- symbol rename
                     vim.keymap.set('n', '<Leader>rn', vlb.rename, { buffer = buf, desc = 'Rename symbol under cursor' })
 
                     -- formatting
-                    vim.keymap.set({ 'n', 'v' }, '<Leader>f', function()
-                        vlb.format({ async = true })
-                    end, { buffer = buf, desc = 'Format text' })
+                    if vim.fn.maparg('<Leader>f', 'n') == '' then
+                        vim.keymap.set({ 'n', 'v' }, '<Leader>f', function()
+                            vlb.format({ async = true })
+                        end, { buffer = buf, desc = 'Format text' })
+                    end
+
                     -- code actions
                     vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vlb.code_action, { buffer = buf, desc = 'Display code actions' })
 
@@ -184,7 +204,7 @@ return {
             })
 
             -- enable the lsp servers
-            for _, lsp in ipairs(servers) do
+            for _, lsp in ipairs(start_servers) do
                 vim.lsp.enable(lsp)
             end
         end,
