@@ -10,6 +10,10 @@ return {
         config = function()
             -- smart files picker/sorter
             require('telescope').load_extension('smart_open')
+
+            -- note that the plugin (recklessly) overrides <c-w>, so there's some
+            -- commmented bits in the plugin code to ignore that binding
+            -- see smart-open.nvim/lua/telescope/_extensions/smart_open/picker.lua:~L85
         end,
     },
 
