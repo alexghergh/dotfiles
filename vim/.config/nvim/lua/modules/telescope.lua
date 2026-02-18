@@ -34,8 +34,9 @@ return {
                 layout_config = {
                     horizontal = {
                         prompt_position = 'top',
-                        height = 0.4,
-                        width = 0.5,
+                        height = 0.5,
+                        width = 0.7,
+                        preview_width = 0.55,
                     },
                 },
             },
@@ -69,6 +70,7 @@ return {
 
             -- Help Pages/Man Pages (or Harry Potter) (or Get Help)
             vim.keymap.set('n', '<Leader>hp', builtin.help_tags, { desc = 'Help tags' })
+            vim.keymap.set('n', '<Leader>thp', builtin.help_tags, { desc = 'Help tags' })
             vim.keymap.set('n', '<Leader>gh', builtin.help_tags, { desc = 'Help tags' })
             vim.keymap.set('n', '<Leader>tmp', builtin.man_pages, { desc = 'Man pages' })
 
