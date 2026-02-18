@@ -32,7 +32,10 @@ set --path XDG_CONFIG_DIRS $XDG_CONFIG_DIRS
 fish_add_path --path --append "$HOME/.cargo/bin"
 
 # stylua (provided by mason.nvim)
-fish_add_path --path --append "$HOME/.local/share/nvim/mason/bin/"
+fish_add_path --path --append "$HOME/.local/share/nvim/mason/bin"
+
+# agent client protocol clients
+fish_add_path --path --append "$HOME/packages/acp"
 
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
