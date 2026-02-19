@@ -22,14 +22,17 @@ local start_servers = {
     'rust_analyzer',
 
     -- formatters / linters (these run in LSP mode, so accept e.g. textDocument/rangeFormatting methods)
-    'stylua',
+    'ruff', -- as linter, for formatting check lua/modules/format.lua
 }
 
 -- reminder to install these on fresh neovim installs through :Mason
+-- they are either formatters or linters
+-- see also lua/modules/format.lua and lua/modules/lint.lua
 local other_servers = {
-    'ruff',
+    'stylua',
     'clang-format',
-    'markdown-lint',
+    'mdformat',
+    'markdownlint-cli2',
     'tex-fmt',
     'google-java-format',
 }
@@ -111,7 +114,21 @@ return {
                             autoSearchPaths = true,
                             typeCheckingMode = 'standard',
                         },
+                        disableOrganizeImports = true,
                     },
+                },
+            })
+
+            vim.lsp.config('clangd', {
+                cmd = {
+                    'clangd',
+                    '--background-index',
+                    '--clang-tidy', -- also run clang-tidy linter; see also lua/modules/lint.lua
+                    '--cross-file-rename',
+                    '--all-scopes-completion',
+                    '--header-insertion=iwyu',
+                    '--header-insertion-decorators',
+                    '--suggest-missing-includes',
                 },
             })
 
