@@ -73,6 +73,33 @@ return {
         'p00f/clangd_extensions.nvim',
     },
 
+    -- jump to symbols in buffer
+    {
+        'bassamsdata/namu.nvim',
+        opts = {
+            namu_symbols = {
+                options = {
+                    custom_keymaps = {
+                        horizontal_split = {
+                            -- TODO seems broken in workspace mode
+                            keys = '<C-x>', -- open horizontal split (keep consistency with Telescope mappings)
+                        },
+                    },
+                },
+            },
+        },
+        config = function(_, opts)
+            require('namu').setup(opts)
+
+            -- telescope-style selector (mnemonics Functions and Workspace)
+            vim.keymap.set('n', '<Leader>tf', ':Namu symbols<cr>', { desc = 'Jump to buffer LSP symbols', silent = true })
+            vim.keymap.set('n', '<Leader>tw', ':Namu workspace<cr>', { desc = 'Jump to workspace LSP symbols', silent = true })
+
+            -- the plugin also requires disabling nvim-cmp in prompts;
+            -- see lua/modules/nvim-cmp.lua; enabled()
+        end,
+    },
+
     -- neovim dev off-spec lsp to assist with lua configs; sets up runtime deps
     -- for neovim
     --

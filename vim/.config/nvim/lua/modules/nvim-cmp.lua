@@ -247,6 +247,7 @@ return {
 
                         -- disable in prompts
                         enabled = enabled and not (vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt')
+                        enabled = enabled and not (vim.bo.filetype == 'namu_prompt')
 
                         -- disable in macros
                         enabled = enabled and not (vim.fn.reg_recording() ~= '')
