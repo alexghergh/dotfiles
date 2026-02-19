@@ -9,7 +9,7 @@
 
 -- start servers (see specific opts below)
 -- these need to be vim.lsp.enable()'d
-local start_servers = {
+local lsp_servers = {
     -- lsp's
     'basedpyright',
     'jdtls',
@@ -25,16 +25,21 @@ local start_servers = {
     'ruff', -- as linter, for formatting check lua/modules/format.lua
 }
 
--- reminder to install these on fresh neovim installs through :Mason
--- they are either formatters or linters
+-- formatters / linters installed through mason
 -- see also lua/modules/format.lua and lua/modules/lint.lua
-local other_servers = {
+local other_mason_tools = {
     'stylua',
     'clang-format',
     'mdformat',
     'markdownlint-cli2',
     'tex-fmt',
     'google-java-format',
+}
+
+-- these are installed by external means, either package manager or built manually
+-- you need to manually reinstall these each time
+local other_tools = {
+    'cppcheck', -- package manager
 }
 
 return {
@@ -53,18 +58,16 @@ return {
         },
     },
 
-    -- literally here just to make sure that servers are auto-installed on new config
+    -- auto-install lsp servers + formatters/linters on new setups
     {
-        -- TODO replace this with proper 'ensure installed' through :MasonInstall; this doesn't capture
-        -- linters, formatters etc.
-        'mason-org/mason-lspconfig.nvim',
+        'WhoIsSethDaniel/mason-tool-installer.nvim',
         dependencies = {
             'mason-org/mason.nvim',
-            'neovim/nvim-lspconfig',
+            'mason-org/mason-lspconfig.nvim', -- use tool names instead of lsp names
         },
         opts = {
-            ensure_installed = start_servers,
-            automatic_enable = false,
+            ensure_installed = vim.list_extend(vim.deepcopy(lsp_servers), other_mason_tools),
+            run_on_start = true, -- auto install on start
         },
     },
 
@@ -248,7 +251,7 @@ return {
             })
 
             -- enable the lsp servers
-            for _, lsp in ipairs(start_servers) do
+            for _, lsp in ipairs(lsp_servers) do
                 vim.lsp.enable(lsp)
             end
         end,
