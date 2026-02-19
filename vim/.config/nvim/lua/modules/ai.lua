@@ -261,6 +261,23 @@ return {
                             },
                         },
                     },
+                    opts = {
+                        -- remove default system prompt for codex
+                        system_prompt = function(ctx)
+                            if ctx.adapter and ctx.adapter.name == 'codex' then
+                                return ''
+                            end
+                            return ctx.default_system_prompt
+                        end,
+                    },
+                    tools = {
+                        opts = {
+                            -- remove default tools system prompt
+                            system_prompt = {
+                                enabled = false,
+                            },
+                        },
+                    },
                 },
                 inline = {
                     adapter = 'codex',
