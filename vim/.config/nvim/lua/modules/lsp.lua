@@ -184,7 +184,7 @@ return {
                     vim.keymap.set('n', '<Leader>gi', vlb.implementation, { buffer = buf, desc = 'Go to implementation' })
                     vim.keymap.set('n', '<Leader>gr', vlb.references, { buffer = buf, desc = 'Go to references' })
                     vim.keymap.set('n', '<Leader>td', vlb.type_definition, { buffer = buf, desc = 'Go to type definition' })
-                    vim.keymap.set('n', '<Leader>th', vlb.typehierarchy, { buffer = buf, desc = 'Go to type hierarchy' })
+                    vim.keymap.set('n', '<Leader>ti', vlb.typehierarchy, { buffer = buf, desc = 'Go to type hierarchy' })
 
                     -- signature help / hover
                     vim.keymap.set('n', 'K', vlb.hover, { buffer = buf, desc = 'Symbol hover information' })

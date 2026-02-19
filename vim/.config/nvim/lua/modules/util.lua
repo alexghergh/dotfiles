@@ -34,7 +34,7 @@ return {
             render = 'wrapped-compact',
             fps = 60,
             top_down = false,
-            max_width = vim.o.columns / 2,
+            max_width = math.ceil(vim.o.columns / 2),
         },
         config = function(_, opts)
             require('notify').setup(opts)
