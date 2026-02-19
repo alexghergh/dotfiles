@@ -84,7 +84,15 @@ return {
                 options = {
                     custom_keymaps = {
                         horizontal_split = {
-                            -- TODO seems broken in workspace mode
+                            keys = '<C-x>', -- open horizontal split (keep consistency with Telescope mappings)
+                        },
+                    },
+                },
+            },
+            workspace = {
+                options = {
+                    custom_keymaps = {
+                        horizontal_split = {
                             keys = '<C-x>', -- open horizontal split (keep consistency with Telescope mappings)
                         },
                     },
