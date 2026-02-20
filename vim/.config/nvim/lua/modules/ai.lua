@@ -348,11 +348,11 @@ return {
             -- set this to override _all_ open chat buffers with a specific llm
             -- vim.g.codecompanion_adapter = 'ollama'
 
+            local group = vim.api.nvim_create_augroup('CodeCompanion', {})
+
             -- visual statusline indication when the LLM is processing input
             local status, galaxyline = pcall(require, 'galaxyline')
             if status ~= false then
-                local group = vim.api.nvim_create_augroup('CodeCompanion', {})
-
                 vim.api.nvim_create_autocmd({ 'User' }, {
                     pattern = 'CodeCompanionRequest*',
                     group = group,
@@ -366,6 +366,37 @@ return {
                     end,
                 })
             end
+
+            -- for system toast messages, remember whether the current neovim instance
+            -- is focused or not; if it is focused, don't send a toast (see below)
+            vim.api.nvim_create_autocmd({ 'FocusGained', 'FocusLost' }, {
+                group = group,
+                callback = function(ev)
+                    -- global per neovim instance / process, across all windows
+                    vim.g.wezterm_pane_focused = (ev.event == 'FocusGained')
+                end,
+            })
+
+            -- show a system toast message upon API response completion
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = 'CodeCompanionRequestFinished',
+                group = group,
+                callback = function(req)
+                    -- if we're focused, don't send message, user sees chat already
+                    if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
+                        -- technically undocumented internal function
+                        local chat_messages = require('codecompanion').buf_get_chat(req.buf)['messages']
+
+                        if chat_messages ~= nil then
+                            local last_message = chat_messages[#chat_messages]['content']
+                            local body = last_message:sub(1, 100)
+
+                            -- use the system's notify-send to send a toast notification
+                            vim.system({ 'notify-send', '--app-name', 'Nvim AI response', '--expire-time', '2000', body }, { text = true })
+                        end
+                    end
+                end,
+            })
         end,
     },
 }
