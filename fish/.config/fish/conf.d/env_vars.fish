@@ -37,5 +37,8 @@ fish_add_path --path --append "$HOME/.local/share/nvim/mason/bin"
 # agent client protocol clients
 fish_add_path --path --append "$HOME/packages/acp"
 
+# npm global installs (also see https://developer.fedoraproject.org/tech/languages/nodejs/nodejs.html)
+fish_add_path --path --append "$HOME/.npm-global/bin"
+
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
