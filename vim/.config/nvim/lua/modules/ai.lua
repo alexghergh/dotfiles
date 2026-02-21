@@ -368,7 +368,7 @@ return {
             end
 
             -- for system toast messages, remember whether the current neovim instance
-            -- is focused or not; if it is focused, don't send a toast (see below)
+            -- is focused or not; if it is focused, don't send a toast (used below)
             vim.api.nvim_create_autocmd({ 'FocusGained', 'FocusLost' }, {
                 group = group,
                 callback = function(ev)
@@ -394,6 +394,24 @@ return {
                             -- use the system's notify-send to send a toast notification
                             vim.system({ 'notify-send', '--app-name', 'Nvim AI response', '--expire-time', '2000', body }, { text = true })
                         end
+                    end
+                end,
+            })
+
+            -- show a system toast message when tool use or web access is requested
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = 'CodeCompanionToolApprovalRequested',
+                group = group,
+                callback = function(req)
+                    -- if we're focused, don't send message, user sees chat already
+                    if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
+                        local body = string.format('Requested use for tool: %s', req.data.name)
+
+                        -- use the system's notify-send to send a toast notification
+                        vim.system(
+                            { 'notify-send', '--app-name', 'Nvim AI tool approval request', '--expire-time', '2000', body },
+                            { text = true }
+                        )
                     end
                 end,
             })
