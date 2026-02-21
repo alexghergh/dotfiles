@@ -503,6 +503,7 @@ return {
                         )
                         chat:add_message(
                             { role = config.constants.USER_ROLE, content = text },
+                            -- sylua: ignore
                             { _meta = { sent = true, replay = true } }
                         )
                     elseif update.sessionUpdate == 'agent_message_chunk' then
@@ -575,6 +576,63 @@ return {
             vim.api.nvim_create_user_command('CodeCompanionSessionLoad', function(session)
                 load_acp_session_in_current_chat(session.args)
             end, { nargs = 1 })
+
+            -- show tokens / model / mode in header line
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = 'CodeCompanionRequestFinished',
+                group = group,
+                callback = function(req)
+                    local bufnr = req.data.bufnr
+                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+                        return
+                    end
+
+                    local chat = require('codecompanion').buf_get_chat(bufnr)
+                    if not chat or not chat.acp_connection then -- doesn't make sense on non-ACP connections
+                        return
+                    end
+
+                    -- approximate token usage, as CodeCompanion doesn't yet update it,
+                    -- due to not being standardized by ACP; draft RFC open
+                    local token_utils = require('codecompanion.utils.tokens')
+                    local approx = 0
+                    for _, msg in ipairs(chat.messages or {}) do
+                        if msg.content and msg.content ~= '' then
+                            approx = approx + token_utils.calculate(msg.content)
+                        end
+                        local reasoning = msg.reasoning
+                        if reasoning and reasoning ~= '' then
+                            if type(reasoning) == 'string' then
+                                approx = approx + token_utils.calculate(reasoning)
+                            elseif type(reasoning) == 'table' and reasoning.content then
+                                approx = approx + token_utils.calculate(reasoning.content)
+                            end
+                        end
+                    end
+
+                    -- update token count in the UI
+                    if approx > 0 then
+                        chat.ui.tokens = approx
+                        chat:update_metadata()
+                        chat.ui:display_tokens(chat.chat_parser, chat.header_line)
+                    end
+
+                    -- add model and path information in the UI
+                    local meta = _G.codecompanion_chat_metadata[bufnr] or {}
+                    local model = meta.adapter and (meta.adapter.model or meta.adapter.name) or nil
+                    local mode_name = meta and meta.mode and meta.mode.name
+
+                    local label = string.format(' |  %s  |  %s  ', model, mode_name)
+
+                    local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
+                    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+                    vim.api.nvim_buf_set_extmark(bufnr, ns_id, chat.header_line - 1, 0, {
+                        virt_text = { { label, 'CodeCompanionChatTokens' } },
+                        virt_text_pos = 'eol',
+                        hl_mode = 'combine',
+                    })
+                end,
+            })
         end,
     },
 }
