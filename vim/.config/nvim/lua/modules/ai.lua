@@ -385,10 +385,10 @@ return {
                     -- if we're focused, don't send message, user sees chat already
                     if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
                         -- technically undocumented internal function
-                        local chat_messages = require('codecompanion').buf_get_chat(req.buf)['messages']
+                        local chat_messages = require('codecompanion').buf_get_chat(req.data.bufnr).messages
 
                         if chat_messages ~= nil then
-                            local last_message = chat_messages[#chat_messages]['content']
+                            local last_message = chat_messages[#chat_messages].content
                             local body = last_message:sub(1, 100)
 
                             -- use the system's notify-send to send a toast notification
@@ -487,6 +487,7 @@ return {
                     return nil
                 end
 
+                local replay_reasoning = ''
                 local function handle_replay(update)
                     if type(update) ~= 'table' then
                         return
@@ -500,16 +501,30 @@ return {
                             { role = config.constants.USER_ROLE, content = text },
                             { type = chat.MESSAGE_TYPES.USER_MESSAGE }
                         )
+                        chat:add_message(
+                            { role = config.constants.USER_ROLE, content = text },
+                            { _meta = { sent = true, replay = true } }
+                        )
                     elseif update.sessionUpdate == 'agent_message_chunk' then
                         chat:add_buf_message(
                             { role = config.constants.LLM_ROLE, content = text },
                             { type = chat.MESSAGE_TYPES.LLM_MESSAGE }
+                        )
+                        local reasoning = nil
+                        if replay_reasoning ~= '' then
+                            reasoning = replay_reasoning
+                            replay_reasoning = ''
+                        end
+                        chat:add_message(
+                            { role = config.constants.LLM_ROLE, content = text, reasoning = reasoning },
+                            { _meta = { replay = true } }
                         )
                     elseif update.sessionUpdate == 'agent_thought_chunk' then
                         chat:add_buf_message(
                             { role = config.constants.LLM_ROLE, content = text },
                             { type = chat.MESSAGE_TYPES.REASONING_MESSAGE }
                         )
+                        replay_reasoning = replay_reasoning .. text
                     end
                 end
 
