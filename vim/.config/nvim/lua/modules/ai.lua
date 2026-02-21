@@ -415,6 +415,151 @@ return {
                     end
                 end,
             })
+
+            -- quick hack to load old session using ACP's session/load
+            -- CodeCompanion doesn't have a proper way to load an old session,
+            -- and CodeCompanion history is also not properly updated for that either;
+            -- this restores visible history
+            local load_acp_session_in_current_chat = function(session_id)
+                local chat = require('codecompanion').last_chat()
+                if not chat or not chat.acp_connection then
+                    return vim.notify('No active CodeCompanion ACP chat', vim.log.levels.WARN)
+                end
+
+                -- obtain the active connection
+                local conn = chat.acp_connection
+                if not conn or not conn:is_connected() then
+                    return vim.notify('ACP connection not ready', vim.log.levels.WARN)
+                end
+
+                if conn._active_prompt then
+                    return vim.notify('ACP prompt already running; try again after it finishes', vim.log.levels.WARN)
+                end
+
+                local METHODS = require('codecompanion.acp.methods')
+                local config = require('codecompanion.config')
+
+                local function render_block(block)
+                    if type(block) ~= 'table' then
+                        return nil
+                    end
+                    if block.type == 'text' and type(block.text) == 'string' then
+                        return block.text
+                    end
+                    if block.type == 'resource_link' and type(block.uri) == 'string' then
+                        return ('[resource: %s]'):format(block.uri)
+                    end
+                    if block.type == 'resource' and block.resource then
+                        local r = block.resource
+                        if type(r.text) == 'string' then
+                            return r.text
+                        end
+                        if type(r.uri) == 'string' then
+                            return ('[resource: %s]'):format(r.uri)
+                        end
+                    end
+                    if block.type == 'image' then
+                        return '[image]'
+                    end
+                    if block.type == 'audio' then
+                        return '[audio]'
+                    end
+                    return nil
+                end
+
+                local function render_content(content)
+                    if type(content) == 'string' then
+                        return content
+                    end
+                    if type(content) == 'table' then
+                        if content.type then
+                            return render_block(content)
+                        end
+                        local parts = {}
+                        for _, item in ipairs(content) do
+                            local text = render_content(item)
+                            if text and text ~= '' then
+                                table.insert(parts, text)
+                            end
+                        end
+                        return table.concat(parts, '')
+                    end
+                    return nil
+                end
+
+                local function handle_replay(update)
+                    if type(update) ~= 'table' then
+                        return
+                    end
+                    local text = render_content(update.content)
+                    if not text or text == '' then
+                        return
+                    end
+                    if update.sessionUpdate == 'user_message_chunk' then
+                        chat:add_buf_message(
+                            { role = config.constants.USER_ROLE, content = text },
+                            { type = chat.MESSAGE_TYPES.USER_MESSAGE }
+                        )
+                    elseif update.sessionUpdate == 'agent_message_chunk' then
+                        chat:add_buf_message(
+                            { role = config.constants.LLM_ROLE, content = text },
+                            { type = chat.MESSAGE_TYPES.LLM_MESSAGE }
+                        )
+                    elseif update.sessionUpdate == 'agent_thought_chunk' then
+                        chat:add_buf_message(
+                            { role = config.constants.LLM_ROLE, content = text },
+                            { type = chat.MESSAGE_TYPES.REASONING_MESSAGE }
+                        )
+                    end
+                end
+
+                -- prepare the session/prompt handler to handle replayed messages during session/load request
+                local prev_prompt = conn._active_prompt
+                ---@diagnostic disable-next-line: missing-fields
+                conn._active_prompt = {
+                    handle_session_update = function(_, update)
+                        handle_replay(update)
+                    end,
+                    -- ignore other stuff during replay, just record user / agent messages
+                }
+
+                -- switch session id
+                conn.session_id = session_id
+                local ok = conn:send_rpc_request(METHODS.SESSION_LOAD, {
+                    sessionId = session_id,
+                    cwd = vim.fn.getcwd(),
+                    mcpServers = (chat.adapter.defaults and chat.adapter.defaults.mcpServers) or {},
+                })
+
+                conn._active_prompt = prev_prompt
+
+                if not ok then
+                    return vim.notify('session/load failed', vim.log.levels.ERROR)
+                end
+
+                -- re-link buffer to the new session id for ACP commands/completions
+                require('codecompanion.interactions.chat.acp.commands').link_buffer_to_session(chat.bufnr, session_id)
+                chat:update_metadata()
+
+                -- ensure a fresh user prompt header is available
+                -- adapted from interactions/chat/init.lua:ready_chat_buffer()
+                if chat._last_role ~= config.constants.USER_ROLE then
+                    chat.cycle = chat.cycle + 1
+                    chat:add_buf_message({ role = config.constants.USER_ROLE, content = '' })
+                    chat.header_line = vim.api.nvim_buf_line_count(chat.bufnr) - 2
+                    chat.ui:display_tokens(chat.chat_parser, chat.header_line)
+                    chat.context:render()
+                    chat:dispatch('on_ready')
+                end
+                chat:reset()
+
+                vim.notify('ACP session loaded: ' .. session_id, vim.log.levels.INFO)
+            end
+
+            -- user command to load a session with a specified id
+            vim.api.nvim_create_user_command('CodeCompanionSessionLoad', function(session)
+                load_acp_session_in_current_chat(session.args)
+            end, { nargs = 1 })
         end,
     },
 }
