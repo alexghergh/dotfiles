@@ -392,15 +392,19 @@ return {
                 callback = function(req)
                     -- if we're focused, don't send message, user sees chat already
                     if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
-                        -- technically undocumented internal function
                         local chat_messages = require('codecompanion').buf_get_chat(req.data.bufnr).messages
 
                         if chat_messages ~= nil then
                             local last_message = chat_messages[#chat_messages].content
                             local body = last_message:sub(1, 100)
 
+                            local output = string.format('✅ %s (%s)\n%s', req.data.adapter.formatted_name, req.data.status, body)
+
                             -- use the system's notify-send to send a toast notification
-                            vim.system({ 'notify-send', '--app-name', 'Nvim AI response', '--expire-time', '2000', body }, { text = true })
+                            vim.system(
+                                { 'notify-send', '--app-name', 'Neovim AI response', '--expire-time', '6000', output },
+                                { text = true }
+                            )
                         end
                     end
                 end,
