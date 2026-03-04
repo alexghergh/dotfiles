@@ -28,6 +28,13 @@ return {
                             },
                         })
                     end,
+                    claude_code = function()
+                        return require('codecompanion.adapters').extend('claude_code', {
+                            env = {
+                                CLAUDE_CODE_OAUTH_TOKEN = 'REDACTED',
+                            },
+                        })
+                    end,
                 },
                 http = {
                     opts = {
@@ -262,9 +269,10 @@ return {
                         },
                     },
                     opts = {
-                        -- remove default system prompt for codex
+                        -- remove default system prompt for acp agents (these usually come with their
+                        -- own, and modifying e.g. AGENTS.md is usually better than system prompt)
                         system_prompt = function(ctx)
-                            if ctx.adapter and ctx.adapter.name == 'codex' then
+                            if ctx.adapter and ctx.adapter.type == 'acp' then
                                 return ''
                             end
                             return ctx.default_system_prompt
@@ -308,7 +316,7 @@ return {
                     fold_context = true,
                     show_header_separator = true,
                     separator = ' ',
-                    debug_window = {
+                    floating_window = {
                         width = vim.o.columns - 30,
                         height = vim.o.lines - 12,
                         relative = 'editor',
@@ -626,11 +634,17 @@ return {
 
                     local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
                     vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-                    vim.api.nvim_buf_set_extmark(bufnr, ns_id, chat.header_line - 1, 0, {
+                    local ok, err = pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, chat.header_line - 1, 0, {
                         virt_text = { { label, 'CodeCompanionChatTokens' } },
                         virt_text_pos = 'eol',
                         hl_mode = 'combine',
                     })
+                    if not ok then
+                        vim.notify(
+                            string.format('CodeCompanion extmark error: %s, with header line: %d', tostring(err), chat.header_line),
+                            vim.log.levels.ERROR
+                        )
+                    end
                 end,
             })
         end,
