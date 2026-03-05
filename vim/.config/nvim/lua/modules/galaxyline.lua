@@ -180,20 +180,19 @@ return {
                                 "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
                             }
 
-                            if gl.llm_spinner_idx == nil then
-                                gl.llm_spinner_idx = 1
-                            else
-                                gl.llm_spinner_idx = (gl.llm_spinner_idx % #spinner_list) + 1
-                            end
-
-                            -- this asynchronously calls itself to update the
-                            -- status line symbol
+                            -- this asynchronously calls itself to update the status line symbol
                             if gl.llm_symbol_timer == nil then
                                 gl.llm_symbol_timer = vim.defer_fn(function()
-                                    gl.llm_symbol_timer = nil
+                                    if gl.llm_spinner_idx == nil then
+                                        gl.llm_spinner_idx = 1
+                                    else
+                                        gl.llm_spinner_idx = (gl.llm_spinner_idx % #spinner_list) + 1
+                                    end
                                     gl.load_galaxyline()
+                                    gl.llm_symbol_timer = nil
                                 end, 120)
                             end
+
                             return spinner_list[gl.llm_spinner_idx]
                         end,
                         highlight = 'StatusLineColor3',
