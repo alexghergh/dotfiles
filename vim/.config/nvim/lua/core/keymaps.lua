@@ -47,12 +47,6 @@ vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
 -- moving right "feature"
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
 
--- system yank/put
-vim.keymap.set({ 'n', 'v' }, '<Leader>y', '"+y', { desc = 'System clipboard yank' })
-vim.keymap.set({ 'n', 'v' }, '<Leader>Y', '"+Y', { desc = 'System clipboard yank' })
-vim.keymap.set({ 'n', 'v' }, '<Leader>p', '"+p', { desc = 'System clipboard put' })
-vim.keymap.set({ 'n', 'v' }, '<Leader>P', '"+P', { desc = 'System clipboard put' })
-
 -- make delete just... delete (:h "_)
 vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d', { desc = 'Delete without register' })
 vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D', { desc = 'Delete without register' })

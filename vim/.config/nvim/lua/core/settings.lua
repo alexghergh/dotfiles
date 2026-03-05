@@ -11,6 +11,8 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 
 vim.g.health = { style = 'float' }
 
+vim.opt.clipboard = 'unnamedplus'
+
 -- wrap line prefix
 vim.opt.showbreak = '↪ '
 
