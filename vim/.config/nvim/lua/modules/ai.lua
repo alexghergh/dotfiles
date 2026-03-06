@@ -869,6 +869,48 @@ return {
                 end,
             })
 
+            -- show the adapter used in the header line if chat is empty,
+            -- i.e. before submitting any messages; before submitting any requests,
+            -- CodeCompanion only has the user configuration for adapter info,
+            -- we only get model info after the first request finishes running
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = { 'CodeCompanionChatCreated', 'CodeCompanionChatOpened', 'CodeCompanionChatCleared', 'CodeCompanionChatAdapter' },
+                group = group,
+                callback = function(req)
+                    local bufnr = req.data.bufnr
+                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+                        return
+                    end
+
+                    local chat = require('codecompanion').buf_get_chat(bufnr)
+                    if not chat then
+                        return
+                    end
+
+                    -- if chat not empty, just return
+                    for _, msg in ipairs(chat.messages or {}) do
+                        if msg.role ~= require('codecompanion.config').constants.SYSTEM_ROLE then
+                            return
+                        end
+                    end
+
+                    local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
+                    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+
+                    local ok, err = pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, chat.header_line - 1, 0, {
+                        virt_text = { { chat.adapter.formatted_name, 'CodeCompanionChatTokens' } },
+                        virt_text_pos = 'eol',
+                        hl_mode = 'combine',
+                    })
+                    if not ok then
+                        vim.notify(
+                            string.format('CodeCompanion extmark error: %s, with header line: %d', tostring(err), chat.header_line),
+                            vim.log.levels.ERROR
+                        )
+                    end
+                end,
+            })
+
             -- show tokens / model / mode in header line
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = 'CodeCompanionRequestFinished',
@@ -920,40 +962,6 @@ return {
                     vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
                     local ok, err = pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, chat.header_line - 1, 0, {
                         virt_text = { { label, 'CodeCompanionChatTokens' } },
-                        virt_text_pos = 'eol',
-                        hl_mode = 'combine',
-                    })
-                    if not ok then
-                        vim.notify(
-                            string.format('CodeCompanion extmark error: %s, with header line: %d', tostring(err), chat.header_line),
-                            vim.log.levels.ERROR
-                        )
-                    end
-                end,
-            })
-
-            -- show the adapter used in the header line on chat creation
-            -- if the adapter changes, but the buffer is still empty (no LLM messages),
-            -- we need to show it as well (i.e. we need to update the shown model)
-            vim.api.nvim_create_autocmd({ 'User' }, {
-                pattern = { 'CodeCompanionChatCreated', 'CodeCompanionChatAdapter' },
-                group = group,
-                callback = function(req)
-                    local bufnr = req.data.bufnr
-                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
-                        return
-                    end
-
-                    local chat = require('codecompanion').buf_get_chat(bufnr)
-                    if not chat then
-                        return
-                    end
-
-                    local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
-                    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-
-                    local ok, err = pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, chat.header_line - 1, 0, {
-                        virt_text = { { chat.adapter.formatted_name, 'CodeCompanionChatTokens' } },
                         virt_text_pos = 'eol',
                         hl_mode = 'combine',
                     })
