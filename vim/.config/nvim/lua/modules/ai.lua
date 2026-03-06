@@ -98,7 +98,7 @@ end
 -- the conversation context is restored both visually (in the chat window) and as a
 -- message context buffer for CodeCompanion internals
 -- if session/load fails, we just close the new buffer and keep the current chat as-is
--- if session/load succeeds, we close the old chat and open the new one
+-- if session/load succeeds, we close / hide the old chat and open the new one
 local function load_acp_session_buffer(session_id)
     local cc = require('codecompanion')
     local config = require('codecompanion.config')
@@ -134,8 +134,8 @@ local function load_acp_session_buffer(session_id)
         return false
     end
 
-    -- create a new hidden chat first, so if session/load fails we can keep old chat
-    -- this chat inherits the old chat's adapter
+    -- create a new chat first, so if session/load fails we can keep old chat
+    -- this new chat inherits the old chat's adapter
     local new_chat = cc.chat({
         hidden = true,
         params = { adapter = old_adapter_name },
@@ -168,7 +168,7 @@ local function load_acp_session_buffer(session_id)
         -- ignore other stuff during replay, just record user / agent messages
     }
 
-    -- try to switch session id using ACP session/load
+    -- try to load session using session_id
     new_conn.session_id = session_id
     local ok = new_conn:send_rpc_request(METHODS.SESSION_LOAD, {
         sessionId = session_id,
@@ -202,8 +202,21 @@ local function load_acp_session_buffer(session_id)
 
     vim.notify('ACP session loaded: ' .. session_id, vim.log.levels.INFO)
 
-    -- on success close old chat and open new one
-    old_chat:close()
+    -- check if old chat is empty (only system message, no user interaction)
+    local old_chat_empty = true
+    for _, msg in ipairs(old_chat.messages or {}) do
+        if msg.role ~= config.constants.SYSTEM_ROLE then
+            old_chat_empty = false
+            break
+        end
+    end
+
+    -- if old chat was empty, destroy it; otherwise just hide it
+    if old_chat_empty then
+        old_chat:close()
+    else
+        old_chat.ui:hide()
+    end
     new_chat.ui:open()
     return true
 end
