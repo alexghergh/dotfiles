@@ -685,8 +685,12 @@ return {
                     show_header_separator = true,
                     separator = ' ',
                     floating_window = {
-                        width = vim.o.columns - 30,
-                        height = vim.o.lines - 12,
+                        width = function() -- dynamic detection based on window size
+                            return vim.o.columns - 30
+                        end,
+                        height = function()
+                            return vim.o.lines - 12
+                        end,
                         relative = 'editor',
                         opts = {
                             wrap = false,
