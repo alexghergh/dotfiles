@@ -40,6 +40,36 @@ return {
                     },
                 },
             },
+            pickers = {
+                buffers = {
+                    attach_mappings = function(_, map)
+                        map('i', '<A-a>', function(prompt_bufnr)
+                            -- add a new unlisted empty buffer and refresh picker (same as :enew)
+                            require('telescope.actions').close(prompt_bufnr)
+                            vim.api.nvim_create_buf(true, false)
+                            require('telescope.builtin').buffers()
+                        end, { desc = 'add_empty_buffer' })
+                        return true
+                    end,
+                },
+            },
+            extensions = {
+                smart_open = {
+                    mappings = {
+                        i = {
+                            ['<A-u>'] = function(prompt_bufnr)
+                                -- move up one directory in smart_open picker
+                                local action_state = require('telescope.actions.state')
+                                local picker = action_state.get_current_picker(prompt_bufnr)
+                                local cwd = tostring(picker.cwd or vim.fn.getcwd())
+
+                                require('telescope.actions').close(prompt_bufnr)
+                                require('telescope').extensions.smart_open.smart_open({ cwd = vim.fs.dirname(cwd) })
+                            end,
+                        },
+                    },
+                },
+            },
         },
         config = function(_, opts)
             local telescope = require('telescope')
