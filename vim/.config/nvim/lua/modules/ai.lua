@@ -823,7 +823,13 @@ return {
                         vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false
                         or vim.fn.getbufinfo(req.data.bufnr)[1].hidden == 1
                     then
-                        local output = string.format('⚠️ %s requested use for tool: %s', req.data.adapter.formatted_name, req.data.name)
+                        local chat = require('codecompanion').buf_get_chat(req.data.bufnr)
+                        local output = string.format(
+                            '⚠️ %s requested use for tool: %s\nArgs: %s',
+                            chat.adapter.formatted_name,
+                            req.data.name,
+                            req.data.args
+                        )
 
                         -- use the system's notify-send to send a toast notification
                         vim.system(
