@@ -638,6 +638,9 @@ return {
                             },
                         },
                     },
+                    keymaps = {
+                        copilot_stats = false, -- unbind copilot_stats keymap (default gS, interferes with jump)
+                    },
                 },
                 inline = {
                     adapter = 'llama_cpp',
