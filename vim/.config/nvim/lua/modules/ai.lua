@@ -640,7 +640,7 @@ return {
                     },
                 },
                 inline = {
-                    adapter = 'codex',
+                    adapter = 'llama_cpp',
                     keymaps = {
                         accept_change = {
                             -- diff yes
@@ -653,7 +653,7 @@ return {
                     },
                 },
                 cmd = {
-                    adapter = 'codex',
+                    adapter = 'llama_cpp',
                 },
             },
             display = {
@@ -678,6 +678,9 @@ return {
                             relativenumber = false,
                             signcolumn = 'no',
                         },
+                    },
+                    window = {
+                        buflisted = true,
                     },
                 },
             },
@@ -788,13 +791,17 @@ return {
                 pattern = 'CodeCompanionToolApprovalRequested',
                 group = group,
                 callback = function(req)
-                    -- if we're focused, don't send message, user sees chat already
-                    if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
-                        local body = string.format('Requested use for tool: %s', req.data.name)
+                    -- if the current neovim instance is not focused or the chat buffer is
+                    -- hidden, send message; otherwise, user sees chat already
+                    if
+                        vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false
+                        or vim.fn.getbufinfo(req.data.bufnr)[1].hidden == 1
+                    then
+                        local output = string.format('⚠️ %s requested use for tool: %s', req.data.adapter.formatted_name, req.data.name)
 
                         -- use the system's notify-send to send a toast notification
                         vim.system(
-                            { 'notify-send', '--app-name', 'Nvim AI tool approval request', '--expire-time', '2000', body },
+                            { 'notify-send', '--app-name', 'Nvim AI tool approval request', '--expire-time', '6000', output },
                             { text = true }
                         )
                     end
@@ -806,8 +813,12 @@ return {
                 pattern = 'CodeCompanionRequestFinished',
                 group = group,
                 callback = function(req)
-                    -- if we're focused, don't send message, user sees chat already
-                    if vim.g.wezterm_pane_focused ~= nil and not vim.g.wezterm_pane_focused then
+                    -- if the current neovim instance is not focused or the chat buffer is
+                    -- hidden, send message; otherwise, user sees chat already
+                    if
+                        vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false
+                        or vim.fn.getbufinfo(req.data.bufnr)[1].hidden == 1
+                    then
                         local chat_messages = require('codecompanion').buf_get_chat(req.data.bufnr).messages
 
                         if chat_messages ~= nil then
