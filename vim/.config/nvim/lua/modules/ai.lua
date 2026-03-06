@@ -687,6 +687,12 @@ return {
             extensions = {
                 history = {
                     opts = {
+                        -- don't auto-save chats; this is turned off since ACP connections have
+                        -- their own history, and saving them using history wouldn't work either;
+                        -- technically, this plugin only works for HTTP LLM connections
+                        auto_save = false,
+                        save_chat_keymap = '<Leader>sc',
+
                         auto_generate_title = false,
                         continue_last_chat = false,
                     },
