@@ -698,19 +698,77 @@ return {
 
             local group = vim.api.nvim_create_augroup('CodeCompanion', {})
 
-            -- visual statusline indication when the LLM is processing input
-            local status, galaxyline = pcall(require, 'galaxyline')
+            -- visual statusline indication when an LLM is processing input
+            -- we're actually sending a list of currently open chat buffers; this way
+            -- we can have a status indicator per LLM session; inline and cmd interactions
+            -- also get an indicator, but they're not directly associated with chat buffers,
+            -- they are instead bound to the current (non-CodeCompanion) open buffer
+            local status, gl = pcall(require, 'galaxyline')
             if status ~= false then
+                local function get_galaxyline_status_table()
+                    if gl.galaxyline_code_companion_buffer_status == nil then
+                        gl.galaxyline_code_companion_buffer_status = {
+                            chat = {},
+                            one_off = {},
+                        }
+                    end
+
+                    local status_table = gl.galaxyline_code_companion_buffer_status
+                    status_table.chat = status_table.chat or {}
+                    status_table.one_off = status_table.one_off or {}
+                    return status_table
+                end
+
+                -- on request started / finished, update the status
                 vim.api.nvim_create_autocmd({ 'User' }, {
                     pattern = 'CodeCompanionRequest*',
                     group = group,
                     callback = function(req)
+                        local bufnr = req.data.bufnr
+                        local interaction = req.data.interaction
+                        local status_table = get_galaxyline_status_table()
+
                         if req.match == 'CodeCompanionRequestStarted' then
-                            galaxyline.llm_processing = true
+                            if interaction == 'chat' then
+                                status_table.chat[bufnr] = 1
+                            else
+                                status_table.one_off[bufnr] = 1
+                            end
                         elseif req.match == 'CodeCompanionRequestFinished' then
-                            galaxyline.llm_processing = false
+                            if interaction == 'chat' then
+                                status_table.chat[bufnr] = 0
+                            else
+                                status_table.one_off[bufnr] = nil
+                            end
                         end
-                        galaxyline.load_galaxyline()
+
+                        gl.load_galaxyline()
+                    end,
+                })
+
+                -- on chat created, append a new buffer to status
+                vim.api.nvim_create_autocmd({ 'User' }, {
+                    pattern = 'CodeCompanionChatCreated',
+                    group = group,
+                    callback = function(req)
+                        local bufnr = req.data and req.data.bufnr
+                        if bufnr then
+                            get_galaxyline_status_table().chat[bufnr] = 0
+                        end
+                        gl.load_galaxyline()
+                    end,
+                })
+
+                -- on chat closed, delete the buffer from the status
+                vim.api.nvim_create_autocmd({ 'User' }, {
+                    pattern = 'CodeCompanionChatClosed',
+                    group = group,
+                    callback = function(req)
+                        local bufnr = req.data and req.data.bufnr
+                        if bufnr then
+                            get_galaxyline_status_table().chat[bufnr] = nil
+                        end
+                        gl.load_galaxyline()
                     end,
                 })
             end

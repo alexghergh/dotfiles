@@ -169,9 +169,8 @@ return {
                     CodeCompanion = {
                         provider = function()
                             -- see also lua/modules/ai.lua
-                            gl.llm_processing = gl.llm_processing or false
-
-                            if gl.llm_processing == false then
+                            local cc_status = gl.galaxyline_code_companion_buffer_status
+                            if type(cc_status) ~= 'table' then
                                 return ' '
                             end
 
@@ -180,20 +179,74 @@ return {
                                 "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
                             }
 
-                            -- this asynchronously calls itself to update the status line symbol
-                            if gl.llm_symbol_timer == nil then
+                            -- this needs to be global to preserve state across function calls
+                            gl.spinner_idxs = gl.spinner_idxs or {}
+
+                            -- keep track of active buffers
+                            local active_buffers = {}
+
+                            -- first, iterate the one off's; these are transient llm calls,
+                            -- like inline and cmd interactions
+                            local one_offs_spinners = {}
+                            for bufnr, val in pairs(cc_status.one_off or {}) do
+                                if val == 1 then
+                                    local idx = gl.spinner_idxs[bufnr] or 1
+                                    one_offs_spinners[#one_offs_spinners + 1] = spinner_list[idx]
+                                    active_buffers[bufnr] = true
+                                end
+                            end
+
+                            -- second, iterate the active open chats, for which we want
+                            -- to show whether the chat is user-ready or processing; this kind
+                            -- of chat is persistent until it gets closed by the user
+                            local open_chats_spinners = {}
+                            for bufnr, val in pairs(cc_status.chat or {}) do
+                                if val == 1 then
+                                    local idx = gl.spinner_idxs[bufnr] or 1
+                                    open_chats_spinners[#open_chats_spinners + 1] = spinner_list[idx]
+                                    active_buffers[bufnr] = true
+                                else
+                                    open_chats_spinners[#open_chats_spinners + 1] = ''
+                                end
+                            end
+
+                            -- delete old inactive spinners; important for transient stuff
+                            for bufnr, _ in pairs(gl.spinner_idxs) do
+                                if not active_buffers[bufnr] then
+                                    gl.spinner_idxs[bufnr] = nil
+                                end
+                            end
+
+                            -- this asynchronously calls itself to update the status line symbols;
+                            -- if there's no active spinners, or a timer is already running, skip
+                            if gl.llm_symbol_timer == nil and next(active_buffers) ~= nil then
                                 gl.llm_symbol_timer = vim.defer_fn(function()
-                                    if gl.llm_spinner_idx == nil then
-                                        gl.llm_spinner_idx = 1
-                                    else
-                                        gl.llm_spinner_idx = (gl.llm_spinner_idx % #spinner_list) + 1
+                                    local any_active = false
+                                    for bufnr, _ in pairs(active_buffers) do
+                                        any_active = true
+                                        local idx = gl.spinner_idxs[bufnr] or 1
+                                        gl.spinner_idxs[bufnr] = (idx % #spinner_list) + 1
                                     end
-                                    gl.load_galaxyline()
+                                    if any_active then
+                                        gl.load_galaxyline()
+                                    end
                                     gl.llm_symbol_timer = nil
                                 end, 120)
                             end
 
-                            return spinner_list[gl.llm_spinner_idx]
+                            -- finally, return the status line symbols
+                            local out = ''
+                            if #one_offs_spinners > 0 then
+                                out = table.concat(one_offs_spinners, ' ')
+                            end
+                            if #open_chats_spinners > 0 then
+                                if out ~= '' then
+                                    out = out .. ' | '
+                                end
+                                out = out .. table.concat(open_chats_spinners, ' ')
+                            end
+
+                            return out
                         end,
                         highlight = 'StatusLineColor3',
                     },
