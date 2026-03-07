@@ -42,13 +42,33 @@ return {
             },
             pickers = {
                 buffers = {
-                    attach_mappings = function(_, map)
-                        map('i', '<A-a>', function(prompt_bufnr)
-                            -- add a new unlisted empty buffer and refresh picker (same as :enew)
-                            require('telescope.actions').close(prompt_bufnr)
-                            vim.api.nvim_create_buf(true, false)
-                            require('telescope.builtin').buffers()
-                        end, { desc = 'add_empty_buffer' })
+                    attach_mappings = function(prompt_bufnr, map)
+                        local actions = require('telescope.actions')
+                        local action_set = require('telescope.actions.set')
+                        local action_state = require('telescope.actions.state')
+
+                        -- if no file selected in picker, <CR> with text in the edit line
+                        -- will now create a new buffer with that name (as if running :e)
+                        actions.select_default:replace(function()
+                            local selection = action_state.get_selected_entry()
+                            if selection then
+                                return action_set.select(prompt_bufnr, 'default')
+                            end
+
+                            local name = vim.trim(action_state.get_current_line())
+                            if name == '' then
+                                return
+                            end
+
+                            actions.close(prompt_bufnr)
+                            vim.cmd.edit(vim.fn.fnameescape(name))
+                        end)
+
+                        map('i', '<A-a>', function(pr_bufnr)
+                            -- close buffer picker and open a fresh unnamed buffer (same as :enew)
+                            actions.close(pr_bufnr)
+                            vim.cmd.enew()
+                        end, { desc = 'add_empty_buffer_and_close' })
                         return true
                     end,
                 },
