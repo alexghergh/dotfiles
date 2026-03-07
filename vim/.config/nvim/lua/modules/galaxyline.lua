@@ -237,13 +237,13 @@ return {
                             -- finally, return the status line symbols
                             local out = ''
                             if #one_offs_spinners > 0 then
-                                out = table.concat(one_offs_spinners, ' ')
+                                out = table.concat(one_offs_spinners, '  ')
                             end
                             if #open_chats_spinners > 0 then
                                 if out ~= '' then
                                     out = out .. ' | '
                                 end
-                                out = out .. table.concat(open_chats_spinners, ' ')
+                                out = out .. table.concat(open_chats_spinners, '  ')
                             end
 
                             return out
