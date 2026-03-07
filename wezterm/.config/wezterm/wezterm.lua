@@ -57,12 +57,12 @@ config.colors = {
     quick_select_match_fg = { Color = '#ffffff' },
 }
 
--- choose random background seeded by day of the year
-local now = os.date('*t', os.time())
-math.randomseed(tonumber(now.yday))
-config.background = {
-    table.unpack(background[math.random(1, #background)]),
-}
+-- choose a background based on the day of the year
+local enable_background = false
+if enable_background then
+    local day_of_year = os.date('*t').yday
+    config.background = background[((day_of_year - 1) % #background) + 1]
+end
 
 -- IME
 config.use_ime = true
