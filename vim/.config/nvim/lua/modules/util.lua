@@ -1,3 +1,76 @@
+-- wrap nvim-notify's built-in notification position to avoid the cursor,
+-- if the cursor position is under a notification (move the notification)
+local function notify_avoid_cursor_stages(top_down)
+    -- keep notify's stock stage implementation, such that open, wait, and close behavior stay unchanged
+    local stage_util = require('notify.stages.util')
+    local direction = top_down and stage_util.DIRECTION.TOP_DOWN or stage_util.DIRECTION.BOTTOM_UP
+    local stages = require('notify.stages.fade_in_slide_out')(direction)
+
+    -- convert the current editing cursor into the same screen-space row/col coordinates
+    -- that notify uses for its float placement, then shove the target row if needed
+    local function avoid(row, message)
+        local win = vim.api.nvim_get_current_win()
+
+        -- screenpos expects a 1-based column, but win_get_cursor returns a 0-based one
+        local cursor = vim.api.nvim_win_get_cursor(win)
+        local pos = vim.fn.screenpos(win, cursor[1], cursor[2] + 1)
+
+        -- bail out if neovim cannot map the cursor into a visible screen position
+        if not pos or pos.row == 0 or pos.col == 0 then
+            return row
+        end
+
+        -- notify anchors these floats on the top-right, so infer the left edge from
+        -- the editor width, message width, and the rounded border width
+        local left = math.max(0, vim.o.columns - message.width - 2)
+        -- screenpos is 1-based, notify rows are effectively 0-based
+        local top = pos.row - 1
+        -- include the border so the cursor check matches what you visually see
+        local bottom = row + message.height + 1
+
+        -- if the cursor is outside the rectangle, keep notify's original row target
+        if pos.col - 1 < left or top < row or top > bottom then
+            return row
+        end
+
+        -- mirror notify's own top boundary logic so the shove does not push the float
+        -- into the tabline or winbar area
+        local min_row = (vim.o.showtabline == 2 or (vim.o.showtabline == 1 and vim.fn.tabpagenr('$') > 1)) and 1 or 0
+        if vim.wo.winbar ~= '' then
+            min_row = min_row + 1
+        end
+
+        -- mirror notify's bottom boundary logic so the float stays inside the editor
+        local max_row = vim.o.lines - (vim.o.cmdheight + (vim.o.laststatus > 0 and 1 or 0) + 1) - message.height - 1
+        -- move away from the cursor in the same vertical direction the stack already uses
+        local shift = top_down and 10 or -10
+        return math.min(math.max(row + shift, min_row), math.max(min_row, max_row))
+    end
+
+    -- wrap every stock stage function and only patch the row target before handing it
+    -- back to notify's animator
+    return vim.tbl_map(function(stage)
+        return function(state, win)
+            local result = stage(state, win)
+
+            -- some stages can return nil when no placement is possible
+            if not result or result.row == nil then
+                return result
+            end
+
+            -- opening stages can use a plain row value, while animated stages use a
+            -- spring goal table whose first item is the target row
+            if type(result.row) == 'table' then
+                result.row[1] = avoid(result.row[1], state.message)
+            else
+                result.row = avoid(result.row, state.message)
+            end
+
+            return result
+        end
+    end, stages)
+end
+
 return {
 
     -- goodies and other utilities for rainy days
@@ -34,9 +107,15 @@ return {
             render = 'wrapped-compact',
             fps = 60,
             top_down = false,
-            max_width = math.ceil(vim.o.columns / 2),
+            max_width = function() -- dynamically calculate max width
+                return math.ceil(vim.o.columns / 2)
+            end,
         },
         config = function(_, opts)
+            -- if the cursor is under the notification window, compute the animation
+            -- as to avoid the mouse cursor; this requires high fps to work smoothly
+            opts.stages = notify_avoid_cursor_stages(opts.top_down)
+
             require('notify').setup(opts)
 
             -- open past notifications in telescope
