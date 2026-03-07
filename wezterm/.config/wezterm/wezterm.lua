@@ -15,7 +15,7 @@ config.font = wezterm.font_with_fallback({
     'Fira Code',
     'Hack',
 }, { weight = 'DemiLight' })
-config.font_size = 13
+config.font_size = 11
 config.adjust_window_size_when_changing_font_size = false
 config.initial_rows = 37
 config.initial_cols = 150
