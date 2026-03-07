@@ -27,6 +27,8 @@ return {
     -- move to autopairs on multi-line as well, from insert mode
     {
         'alexghergh/pairs-jump.nvim',
-        opts = {},
+        opts = {
+            respect_scrolloff = false,
+        },
     },
 }
