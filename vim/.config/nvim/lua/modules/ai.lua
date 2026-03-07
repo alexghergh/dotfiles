@@ -912,7 +912,7 @@ return {
                 end,
             })
 
-            -- show tokens / model / mode in header line
+            -- show tokens / model / other info in user header line
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = 'CodeCompanionChatDone', -- we only get model info upon request finish
                 group = group,
@@ -933,15 +933,18 @@ return {
                     if chat.acp_connection then
                         local token_utils = require('codecompanion.utils.tokens')
                         for _, msg in ipairs(chat.messages or {}) do
-                            if msg.content and msg.content ~= '' then
-                                approx_tokens = approx_tokens + token_utils.calculate(msg.content)
-                            end
-                            local reasoning = msg.reasoning
-                            if reasoning and reasoning ~= '' then
-                                if type(reasoning) == 'string' then
-                                    approx_tokens = approx_tokens + token_utils.calculate(reasoning)
-                                elseif type(reasoning) == 'table' and reasoning.content then
-                                    approx_tokens = approx_tokens + token_utils.calculate(reasoning.content)
+                            -- skip non-text content (images, files, audio, etc.)
+                            if not msg._meta or not msg._meta.tag or msg._meta.tag == 'text' then
+                                if msg.content and msg.content ~= '' and type(msg.content) == 'string' then
+                                    approx_tokens = approx_tokens + token_utils.calculate(msg.content)
+                                end
+                                local reasoning = msg.reasoning
+                                if reasoning and reasoning ~= '' then
+                                    if type(reasoning) == 'string' then
+                                        approx_tokens = approx_tokens + token_utils.calculate(reasoning)
+                                    elseif type(reasoning) == 'table' and reasoning.content then
+                                        approx_tokens = approx_tokens + token_utils.calculate(reasoning.content)
+                                    end
                                 end
                             end
                         end
