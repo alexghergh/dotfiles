@@ -135,7 +135,7 @@ local function load_acp_session_buffer(session_id)
     end
 
     -- create a new chat first, so if session/load fails we can keep old chat
-    -- this new chat inherits the old chat's adapter
+    -- this new chat inherits the old chat's adapter (and model, set later)
     local new_chat = cc.chat({
         hidden = true,
         params = { adapter = old_adapter_name },
@@ -154,6 +154,12 @@ local function load_acp_session_buffer(session_id)
         new_chat:close()
         vim.notify('ACP connection not ready in new chat', vim.log.levels.ERROR)
         return false
+    end
+
+    -- preserve the model from the old chat
+    local old_model = old_conn._models and old_conn._models.currentModelId
+    if old_model then
+        new_chat:change_model({ model = old_model })
     end
 
     -- prepare the session/prompt handler to handle replayed messages during session/load request
