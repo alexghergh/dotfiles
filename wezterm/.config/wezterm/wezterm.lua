@@ -484,7 +484,13 @@ config.key_tables = {
         { key = 'j', mods = 'CTRL', action = act.ScrollToPrompt(1) },
 
         -- enter search_mode (see key table below)
-        { key = '/', action = act.Search('CurrentSelectionOrEmptyString') },
+        {
+            key = '/',
+            action = act.Multiple({
+                act.PopKeyTable,
+                act.Search('CurrentSelectionOrEmptyString'),
+            }),
+        },
 
         -- entering search mode can also be done by searching for some of the
         -- frequent patterns below
@@ -493,22 +499,69 @@ config.key_tables = {
         {
             key = 'g',
             mods = 'SHIFT|CTRL',
-            action = act.Search({ Regex = '[a-f0-9]{6,}' }),
+            action = act.Multiple({
+                act.PopKeyTable,
+                act.Search({ Regex = '[a-f0-9]{6,}' }),
+            }),
         },
 
-        -- path-like objects (needs to have / inside, whitespace around)
+        -- path-like objects (broad slash-containing matcher)
         --
-        -- the regex below tries to match a path in 3 parts:
-        -- beginning: match /, ~/, ./, ../, or "directory/"
-        -- middle: match as many "directory/", ".directory/" or "../" as possible
-        -- end: match "directory", ".directory" or "file.extension"
+        -- this intentionally matches unprefixed relative paths such as
+        -- "some/path" and "dir/file.txt", not just /, ~/, ./ and ../ forms.
+        -- because of that, slash-containing tokens like "copy/paste" and
+        -- "user/project" are unavoidable false positives.
+        --
+        -- surrounding punctuation is allowed; bare filenames like "file.txt"
+        -- are intentionally excluded from this pattern.
         {
             key = 'p',
             mods = 'SHIFT|CTRL',
-            action = act.Search({
-                Regex = '[ ]((?:(?:\\.){1,2}|~|\\w+)?/(?:(?:\\.?\\w+|(?:\\.){1,2})/)*(?:(?:\\w+)\\.(?:\\w+)|(?:\\.)?\\w+|))[ ]',
+            action = act.Multiple({
+                act.PopKeyTable,
+                act.Search({
+                    Regex = [[(?<![\w./~-])(?:/|~/|\./|\.\./|[\w.-]+/)(?:[\w.-]+/|\.\./)*(?:[\w.-]+)?/?(?![\w./-])]],
+                }),
             }),
         },
+
+        -- examples matched for the above pattern:
+        -- /
+        -- ~/
+        -- ./
+        -- ../
+        -- some/
+        -- /home/path
+        -- /some/path/.config/
+        -- /some/path/.config
+        -- /some/path/.config/fil.txt
+        -- some/path/.config/fil.txt
+        -- ./some/path/.config/fil.txt
+        -- ../some/path/.config/fil.txt
+        -- /file.txt
+        -- /root/file.txt
+        -- ../../
+        -- ~/something.file
+        -- some/file/along/the/way.txt
+        -- ./some/sub/dir
+        -- ./path/file.txt
+        -- ../path/file.txt
+        -- /home1/2path
+        -- /
+        -- /root/f3ile.txt
+        -- ../../
+        -- ~/somet4hing.file
+        -- some/fi6le/a7long/the/way.tx9t
+        -- ./some/sub/di8r
+        -- ./path/fil10e.txt
+        -- ../pat11h/fi12le.txt
+        --
+        -- intentionally not matched:
+        -- file.txt
+        --
+        -- known false positives:
+        -- copy/paste
+        -- user/project
 
         { key = 'Escape', action = act.PopKeyTable },
     },
