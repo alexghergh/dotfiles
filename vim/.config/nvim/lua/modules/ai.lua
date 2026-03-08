@@ -912,7 +912,55 @@ return {
                 end,
             })
 
-            -- show tokens / model / other info in user header line
+            -- since token session updates are not standardized by ACP, CodeCompanion doesn't
+            -- yet implement those; for now, simply parse those manually and update chat tokens;
+            -- since the callback handler we hook into is cleared and re-built for every request,
+            -- we hook into RequestStarted
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = 'CodeCompanionRequestStarted',
+                group = group,
+                callback = function(req)
+                    local bufnr = req.data and req.data.bufnr
+                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+                        return
+                    end
+
+                    -- acp connections only
+                    local chat = require('codecompanion').buf_get_chat(bufnr)
+                    if not chat or not chat.adapter or chat.adapter.type ~= 'acp' or not chat.acp_connection then
+                        return
+                    end
+
+                    -- get the active callback handler
+                    local prompt = chat.acp_connection._active_prompt
+                    if not prompt then
+                        return
+                    end
+
+                    -- wrap the original handle_session_update, if any
+                    local original_handle_session_update = prompt.handle_session_update
+                    if type(original_handle_session_update) ~= 'function' then
+                        return
+                    end
+
+                    prompt.handle_session_update = function(prompt_self, update)
+                        -- wrapped call
+                        original_handle_session_update(prompt_self, update)
+
+                        if type(update) ~= 'table' or update.sessionUpdate ~= 'usage_update' then
+                            return
+                        end
+                        if type(update.used) ~= 'number' then
+                            return
+                        end
+
+                        chat.ui.tokens = update.used
+                        chat:update_metadata()
+                    end
+                end,
+            })
+
+            -- show model / other info in user header line
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = 'CodeCompanionChatDone', -- we only get model info upon request finish
                 group = group,
@@ -925,36 +973,6 @@ return {
                     local chat = require('codecompanion').buf_get_chat(bufnr)
                     if not chat then
                         return
-                    end
-
-                    -- for acp connections, approximate token usage, as CodeCompanion
-                    -- doesn't yet update it (not standardized by ACP; draft RFC open)
-                    local approx_tokens = 0
-                    if chat.acp_connection then
-                        local token_utils = require('codecompanion.utils.tokens')
-                        for _, msg in ipairs(chat.messages or {}) do
-                            -- skip non-text content (images, files, audio, etc.)
-                            if not msg._meta or not msg._meta.tag or msg._meta.tag == 'text' then
-                                if msg.content and msg.content ~= '' and type(msg.content) == 'string' then
-                                    approx_tokens = approx_tokens + token_utils.calculate(msg.content)
-                                end
-                                local reasoning = msg.reasoning
-                                if reasoning and reasoning ~= '' then
-                                    if type(reasoning) == 'string' then
-                                        approx_tokens = approx_tokens + token_utils.calculate(reasoning)
-                                    elseif type(reasoning) == 'table' and reasoning.content then
-                                        approx_tokens = approx_tokens + token_utils.calculate(reasoning.content)
-                                    end
-                                end
-                            end
-                        end
-                    end
-
-                    -- update token count in the UI
-                    if approx_tokens > 0 and (chat.ui.tokens == nil or chat.ui.tokens == 0) then
-                        chat.ui.tokens = approx_tokens
-                        chat:update_metadata()
-                        chat.ui:display_tokens(chat.chat_parser, chat.header_line)
                     end
 
                     -- add model information (and mode for ACP) in the UI
