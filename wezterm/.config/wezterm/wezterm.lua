@@ -582,7 +582,14 @@ config.key_tables = {
         { key = 'n', mods = 'CTRL', action = act.CopyMode('NextMatch') },
         { key = 'DownArrow', action = act.CopyMode('NextMatch') },
 
-        { key = 'Escape', action = act.CopyMode('Close') },
+        -- clear search pattern on exit
+        {
+            key = 'Escape',
+            action = act.Multiple({
+                act.CopyMode('ClearPattern'),
+                act.CopyMode('Close'),
+            }),
+        },
     },
 }
 
