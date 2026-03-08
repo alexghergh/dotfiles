@@ -442,6 +442,12 @@ config.key_tables = {
 
         { key = 'Escape', action = act.PopKeyTable },
     },
+    -- copy_mode = {
+    --     -- this overrides the default copy_mode key table
+    --
+    --     { key = 'c', action = act.ActivateCopyMode },
+    --     { key = 'Escape', action = act.CopyMode('Close') },
+    -- },
     scrollback_key_table = {
         -- kill scrollback buffer (what's above screen)
         {
