@@ -3,44 +3,14 @@
 --
 -- includes setting up lsp configs, the auto-completion engine managed by
 -- nvim-cmp, and any other off-spec lsp servers
+-- server definitions are under lua/shared/tooling.lua
 --
 -- see :h vim.lsp
 --
 
--- start servers (see specific opts below)
--- these need to be vim.lsp.enable()'d
-local lsp_servers = {
-    -- lsp's
-    'basedpyright',
-    'jdtls',
-    'lua_ls',
-    'marksman',
-    'yamlls',
-    'texlab',
-    'clangd',
-    'gopls',
-    'rust_analyzer',
-
-    -- formatters / linters (these run in LSP mode, so accept e.g. textDocument/rangeFormatting methods)
-    'ruff', -- as linter, for formatting check lua/modules/format.lua
-}
-
--- formatters / linters installed through mason
--- see also lua/modules/format.lua and lua/modules/lint.lua
-local other_mason_tools = {
-    'stylua',
-    'clang-format',
-    'mdformat',
-    'markdownlint-cli2',
-    'tex-fmt',
-    'google-java-format',
-}
-
--- these are installed by external means, either package manager or built manually
--- you need to manually reinstall these each time
-local other_tools = {
-    'cppcheck', -- package manager
-}
+local tooling = require('shared.tooling')
+local lsp_servers = tooling.lsp_servers()
+local mason_packages = tooling.ensure_installed()
 
 return {
 
@@ -66,7 +36,7 @@ return {
             'mason-org/mason-lspconfig.nvim', -- use tool names instead of lsp names
         },
         opts = {
-            ensure_installed = vim.list_extend(vim.deepcopy(lsp_servers), other_mason_tools),
+            ensure_installed = mason_packages,
             run_on_start = true, -- auto install on start
         },
     },
