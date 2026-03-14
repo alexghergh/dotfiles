@@ -131,9 +131,6 @@ vim.api.nvim_create_autocmd('ColorScheme', {
             for hi, opts in pairs(spec) do
                 vim.api.nvim_set_hl(0, hi, opts)
             end
-            vim.schedule(function()
-                vim.notify("Set colorscheme to '" .. match .. "'", vim.log.levels.INFO)
-            end)
         else
             vim.schedule(function()
                 vim.notify("Colorscheme '" .. match .. "' is not correctly configured (see 'colorschemes.lua').", vim.log.levels.ERROR)
