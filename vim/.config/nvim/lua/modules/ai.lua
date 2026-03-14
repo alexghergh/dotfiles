@@ -659,7 +659,9 @@ return {
                         },
                     },
                     keymaps = {
-                        copilot_stats = false, -- unbind copilot_stats keymap (default gS, interferes with jump)
+                        copilot_stats = false, -- interferes with gS jump
+                        clear_approvals = false, -- interferes with gt tab movement
+                        yolo_mode = false, -- interferes with gt tab movement
                     },
                 },
                 inline = {
