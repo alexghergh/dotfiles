@@ -5,7 +5,7 @@ description: Create a git worktree for parallel development on a new branch.
 
 # Create Worktree
 
-Create a git worktree to work on a separate branch in parallel without switching the current checkout.
+Create a git worktree to work on a separate branch in parallel without switching the current checkout. Present the user with the git worktree command before running and ask for confirmation. Upon completion of changes, prompt the user on whether to remove the worktree. Do not automatically do that.
 
 ## Prerequisites
 
