@@ -1,6 +1,6 @@
 ## Intent
 
-Prefer the smallest correct change that fits the existing codebase.
+Prefer the smallest correct change that fits the existing codebase while implementing the user's intent.
 
 Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reuse existing utility modules when they already fit the problem, and only extract helpers when the logic is clearly reusable across multiple code paths or meaningfully improves clarity.
 
