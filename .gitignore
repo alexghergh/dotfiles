@@ -6,7 +6,7 @@
 
 # note: parent dir must be visible first so sub-files can be tracked
 
-# codex: keep these tracked (AGENTS.md, settings, rules, user skills)
+# codex: keep these tracked (AGENTS.md, settings, rules, user skills); ignore system skills
 !/codex/.codex/AGENTS.md
 !/codex/.codex/config.toml
 !/codex/.codex/rules/
@@ -21,5 +21,10 @@
 !/claude/.claude/commands/
 !/claude/.claude/commands/**
 !/claude/.claude/hooks.json
-!/claude/.claude/skills/
-!/claude/.claude/skills/**
+!/claude/.claude/skills
+
+# agents: shared agent config (AGENTS.md, skills)
+/agents/.agents/**
+!/agents/.agents/AGENTS.md
+!/agents/.agents/skills/
+!/agents/.agents/skills/**
