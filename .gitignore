@@ -1,1 +1,25 @@
 .luarc.json
+
+# codex and claude: ignore everything unless explicitly allowed, since there's a bunch of logs, DBs etc.
+/codex/.codex/**
+/claude/.claude/**
+
+# note: parent dir must be visible first so sub-files can be tracked
+
+# codex: keep these tracked (AGENTS.md, settings, rules, user skills)
+!/codex/.codex/AGENTS.md
+!/codex/.codex/config.toml
+!/codex/.codex/rules/
+!/codex/.codex/rules/default.rules
+!/codex/.codex/skills/
+!/codex/.codex/skills/**
+/codex/.codex/skills/.system/
+
+# claude: keep these tracked (CLAUDE.md, settings, skills, commands, hooks)
+!/claude/.claude/CLAUDE.md
+!/claude/.claude/settings.json
+!/claude/.claude/commands/
+!/claude/.claude/commands/**
+!/claude/.claude/hooks.json
+!/claude/.claude/skills/
+!/claude/.claude/skills/**
