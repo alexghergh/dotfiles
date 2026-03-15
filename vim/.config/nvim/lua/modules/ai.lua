@@ -701,6 +701,10 @@ return {
             display = {
                 action_palette = {
                     provider = 'telescope',
+                    opts = {
+                        show_preset_prompts = false,
+                        show_prompt_library_builtins = false,
+                    },
                 },
                 chat = {
                     auto_scroll = true,
