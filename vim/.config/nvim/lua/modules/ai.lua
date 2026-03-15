@@ -662,6 +662,7 @@ return {
                         copilot_stats = false, -- interferes with gS jump
                         clear_approvals = false, -- interferes with gt tab movement
                         yolo_mode = false, -- interferes with gt tab movement
+                        fold_code = false, -- interferes with gf goto file
                     },
                 },
                 inline = {
@@ -679,6 +680,22 @@ return {
                 },
                 cmd = {
                     adapter = 'llama_cpp',
+                },
+            },
+            prompt_library = {
+                markdown = {
+                    dirs = {
+                        vim.fs.joinpath(vim.fn.stdpath('config'), 'lua', 'prompts'),
+                    },
+                },
+            },
+            rules = {
+                opts = {
+                    chat = {
+                        -- do not autoload stuff like CLAUDE.md or AGENTS.md, since acp agents read
+                        -- those by themselves anyway
+                        autoload = false,
+                    },
                 },
             },
             display = {
