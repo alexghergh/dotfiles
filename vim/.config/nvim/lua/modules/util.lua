@@ -1,6 +1,6 @@
 -- wrap nvim-notify's built-in notification position to avoid the cursor,
--- if the cursor position is under a notification (move the notification)
-local function notify_avoid_cursor_stages(top_down)
+-- if the cursor position is under or near a notification (move the notification)
+local function notify_avoid_cursor_stages(top_down, proximity, movement)
     -- keep notify's stock stage implementation, such that open, wait, and close behavior stay unchanged
     local stage_util = require('notify.stages.util')
     local direction = top_down and stage_util.DIRECTION.TOP_DOWN or stage_util.DIRECTION.BOTTOM_UP
@@ -28,8 +28,14 @@ local function notify_avoid_cursor_stages(top_down)
         -- include the border so the cursor check matches what you visually see
         local bottom = row + message.height + 1
 
-        -- if the cursor is outside the rectangle, keep notify's original row target
-        if pos.col - 1 < left or top < row or top > bottom then
+        -- treat a small margin around the notification as occupied as well, so
+        -- the float gets out of the way before the cursor is directly underneath it
+        local safe_left = math.max(0, left - proximity)
+        local safe_top = math.max(0, row - proximity)
+        local safe_bottom = bottom + proximity
+
+        -- if the cursor is outside the expanded rectangle, keep notify's original row target
+        if pos.col - 1 < safe_left or top < safe_top or top > safe_bottom then
             return row
         end
 
@@ -43,7 +49,7 @@ local function notify_avoid_cursor_stages(top_down)
         -- mirror notify's bottom boundary logic so the float stays inside the editor
         local max_row = vim.o.lines - (vim.o.cmdheight + (vim.o.laststatus > 0 and 1 or 0) + 1) - message.height - 1
         -- move away from the cursor in the same vertical direction the stack already uses
-        local shift = top_down and 10 or -10
+        local shift = top_down and movement or -movement
         return math.min(math.max(row + shift, min_row), math.max(min_row, max_row))
     end
 
@@ -112,9 +118,9 @@ return {
             end,
         },
         config = function(_, opts)
-            -- if the cursor is under the notification window, compute the animation
-            -- as to avoid the mouse cursor; this requires high fps to work smoothly
-            opts.stages = notify_avoid_cursor_stages(opts.top_down)
+            -- if the cursor is under or near the notification window, compute the
+            -- animation to avoid the cursor; this requires high fps to work smoothly
+            opts.stages = notify_avoid_cursor_stages(opts.top_down, 10, 15)
 
             require('notify').setup(opts)
 
