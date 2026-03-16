@@ -19,6 +19,39 @@
 vim.keymap.set({ 'n', 'x' }, 'j', "v:count ? 'j' : 'gj'", { expr = true })
 vim.keymap.set({ 'n', 'x' }, 'k', "v:count ? 'k' : 'gk'", { expr = true })
 
+-- make <C-w> and <C-u> undo-friendly (see :h i_CTRL-G_u)
+vim.keymap.set('i', '<C-w>', '<C-g>u<C-w>')
+vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
+
+-- add undo break points after common separators and delimiters while typing
+for _, key in ipairs({ ',', '.', ';', ':', '?', '!', '(', ')', '[', ']', '{', '}' }) do
+    vim.keymap.set('i', key, '<C-g>u' .. key)
+end
+
+-- since we remapped <Leader> to Space, just unmap Space, to avoid the cursor
+-- moving right "feature"
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
+
+-- make delete just... delete (:h "_)
+vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d', { desc = 'Delete without register' })
+vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D', { desc = 'Delete without register' })
+
+--
+-- navigation/code-flow/code movement keymaps
+--
+
+-- switch to last file
+vim.keymap.set('n', '<Leader>o', '<C-^>', { desc = 'Switch to last file' })
+
+-- navigate tags (mnemonic Switch Tag)
+vim.keymap.set('n', '<Leader>st', '<C-]>', { desc = 'Navigate to tag' })
+
+-- this remaps the tags navigation of [t and ]t to tab navigation
+-- tab navigation can also be achieved through gt and gT
+-- you can still access tag navigation through :tnext and :tprevious
+vim.keymap.set('n', ']t', '<Cmd>tabnext<CR>', { desc = 'Next tab' })
+vim.keymap.set('n', '[t', '<Cmd>tabprevious<CR>', { desc = 'Previous tab' })
+
 -- in insert mode, move cursor left/right
 vim.keymap.set('i', '<A-h>', '<Left>', { desc = 'Move cursor left in insert mode' })
 vim.keymap.set('i', '<A-l>', '<Right>', { desc = 'Move cursor right in insert mode' })
@@ -41,6 +74,7 @@ vim.keymap.set('i', '<A-j>', function()
     vim.api.nvim_buf_set_lines(0, row - 1, row + 1, true, { lines[2], lines[1] })
     vim.api.nvim_win_set_cursor(0, { row + 1, math.min(col, #lines[1]) })
 end, { desc = 'Move current line down in insert mode' })
+
 vim.keymap.set('i', '<A-k>', function()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     -- stylua: ignore
@@ -58,17 +92,91 @@ vim.keymap.set('i', '<A-k>', function()
     vim.api.nvim_win_set_cursor(0, { row - 1, math.min(col, #lines[2]) })
 end, { desc = 'Move current line up in insert mode' })
 
--- make <C-w> and <C-u> undo-friendly (see :h i_CTRL-G_u)
-vim.keymap.set('i', '<C-w>', '<C-g>u<C-w>')
-vim.keymap.set('i', '<C-u>', '<C-g>u<C-u>')
+--
+-- window keymaps
+--
+vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>', { desc = 'Resize window height (-10)' })
+vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>', { desc = 'Resize window height (+10)' })
+vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>', { desc = 'Resize window width (-10)' })
+vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>', { desc = 'Resize window width (+10)' })
+vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>', { desc = 'Make windows equal' })
+vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>', { desc = 'Split and edit alternate file' })
 
--- since we remapped <Leader> to Space, just unmap Space, to avoid the cursor
--- moving right "feature"
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>')
+--
+-- diagnostics/quickfix/location lists keymaps
+-- see lua/core/diagnostics.lua for other diagnostics settings
+-- see :h vim.diagnostic
+--
 
--- make delete just... delete (:h "_)
-vim.keymap.set({ 'n', 'v' }, '<Leader>d', '"_d', { desc = 'Delete without register' })
-vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D', { desc = 'Delete without register' })
+-- show diagnostics in a floating window (mnemonic Diagnostics Show)
+vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float, { desc = 'Open diagnostic window' })
+
+-- quick fix list and location list open / close; although location list is per-window,
+-- we're just trying to toggle an existing one, without trying too hard to find all open windows
+vim.keymap.set('n', '<leader>lq', function()
+    local qf = vim.fn.getqflist({ size = 0, winid = 0 })
+
+    -- close the existing quickfix window if it is already visible
+    if qf.winid ~= 0 then
+        local ok, err = pcall(vim.cmd.cclose)
+        if not ok and err then
+            vim.notify(err, vim.log.levels.ERROR)
+        end
+        return
+    end
+
+    -- avoid opening an empty quickfix pane
+    if qf.size == 0 then
+        vim.notify('quickfix list is empty', vim.log.levels.INFO)
+        return
+    end
+
+    -- :copen moves the cursor into quickfix, so move the cursor back; since
+    -- quickfix items movement can be done by ]q and [q, there should be no
+    -- need to actually _be_ in the quickfix window with the cursor
+    local current_win = vim.api.nvim_get_current_win()
+    local ok, err = pcall(vim.cmd.copen)
+    if not ok and err then
+        vim.notify(err, vim.log.levels.ERROR)
+        return
+    end
+
+    if vim.api.nvim_win_is_valid(current_win) then
+        vim.api.nvim_set_current_win(current_win)
+    end
+end, { desc = 'Open / close quickfix list' })
+
+vim.keymap.set('n', '<leader>ll', function()
+    -- location lists are per-window, so this only toggles the current window's list
+    local ll = vim.fn.getloclist(0, { size = 0, winid = 0 })
+
+    -- close the current window's location list if it is already visible
+    if ll.winid ~= 0 then
+        local ok, err = pcall(vim.cmd.lclose)
+        if not ok and err then
+            vim.notify(err, vim.log.levels.ERROR)
+        end
+        return
+    end
+
+    -- avoid opening an empty location list pane
+    if ll.size == 0 then
+        vim.notify('location list is empty', vim.log.levels.INFO)
+        return
+    end
+
+    -- lopen moves the cursor into the location list, so restore the previous window
+    local current_win = vim.api.nvim_get_current_win()
+    local ok, err = pcall(vim.cmd.lopen)
+    if not ok and err then
+        vim.notify(err, vim.log.levels.ERROR)
+        return
+    end
+
+    if vim.api.nvim_win_is_valid(current_win) then
+        vim.api.nvim_set_current_win(current_win)
+    end
+end, { desc = 'Open / close location list (per window)' })
 
 --
 -- command-line keymaps
@@ -81,30 +189,8 @@ vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 vim.keymap.set('c', '%%', "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'", { expr = true })
 
 --
--- navigation/code-flow keymaps
+-- terminal keymaps
 --
 
--- switch to last file
-vim.keymap.set('n', '<Leader>o', '<C-^>', { desc = 'Switch to last file' })
-
--- navigate tags (mnemonic Switch Tag)
-vim.keymap.set('n', '<Leader>st', '<C-]>', { desc = 'Navigate to tag' })
-
---
--- window keymaps
---
-vim.keymap.set('n', '<Leader>wk', '<Cmd>resize -10<CR>', { desc = 'Resize window height (-10)' })
-vim.keymap.set('n', '<Leader>wj', '<Cmd>resize +10<CR>', { desc = 'Resize window height (+10)' })
-vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>', { desc = 'Resize window width (-10)' })
-vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>', { desc = 'Resize window width (+10)' })
-vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>', { desc = 'Make windows equal' })
-vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>', { desc = 'Split and edit alternate file' })
-
---
--- diagnostics keymaps
--- see lua/core/diagnostics.lua for other diagnostics settings
--- see :h vim.diagnostic
---
-
--- show diagnostics in a floating window (mnemonic Diagnostics Show)
-vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float, { desc = 'Open diagnostic window' })
+-- escape insert mode in terminal windows
+vim.keymap.set('t', '<esc><esc>', '<c-\\><c-n>', { desc = 'Exit terminal insert mode' })
