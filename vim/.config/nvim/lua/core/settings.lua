@@ -1,15 +1,19 @@
 --
--- neovim settings
+-- neovim core editor settings
 --
 
 --
--- global
+-- global variables
 --
 
 -- python3 program, allows neovim to work in virtual environments
 vim.g.python3_host_prog = '/usr/bin/python3'
 
 vim.g.health = { style = 'float' }
+
+--
+-- options
+--
 
 vim.opt.clipboard = 'unnamedplus'
 
@@ -90,8 +94,10 @@ vim.opt.winborder = 'rounded'
 
 -- display unprintable characters as hex numbers
 -- show characters for line too long at the bottom of the screen
+-- scrolling should work with screen lines; better scrolling for long lines
 vim.opt.display = { 'lastline', 'uhex' }
 vim.opt.fillchars = { ['lastline'] = '>' }
+vim.opt.smoothscroll = true
 
 -- make statusline global
 vim.opt.laststatus = 3
@@ -130,9 +136,8 @@ vim.opt.foldnestmax = 10
 -- display cursorline
 vim.opt.cursorline = true
 
---
--- buffer specific
---
+-- jumps should clean unloaded buffers and restore the window view
+vim.opt.jumpoptions = 'clean,view'
 
 -- keep the same indentation level from previous line
 vim.opt.autoindent = true

@@ -1,5 +1,3 @@
-.luarc.json
-
 # codex and claude: ignore everything unless explicitly allowed, since there's a bunch of logs, DBs etc.
 /codex/.codex/**
 /claude/.claude/**
