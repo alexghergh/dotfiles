@@ -40,7 +40,20 @@ return {
     config = function(_, opts)
         require('neo-tree').setup(opts)
 
-        -- default keymap
-        vim.keymap.set('n', '<Leader>nt', '<Cmd>Neotree source=last toggle=true reveal=true<CR>', { desc = 'Open Neotree' })
+        -- toggle neotree
+        vim.keymap.set(
+            'n',
+            '<Leader>nt',
+            '<Cmd>Neotree source=last position=right toggle=true reveal=true<CR>',
+            { desc = 'Toggle Neotree window' }
+        )
+
+        -- focus a neotree window
+        vim.keymap.set(
+            'n',
+            '<Leader>nf',
+            '<Cmd>Neotree source=last position=right action=focus reveal=true<CR>',
+            { desc = 'Focus an open Neotree window' }
+        )
     end,
 }
