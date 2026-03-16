@@ -76,7 +76,7 @@ local languages = {
         filetypes = { 'markdown' },
         lsp = { 'marksman' },
         formatters = { 'mdformat' },
-        linters = { 'markdownlint-cli2' },
+        linters = {},
     },
     yaml = {
         filetypes = { 'yaml' },
