@@ -358,9 +358,15 @@ return {
             cmp.setup.cmdline({ '/', '?' }, opts['opts_cmd_search'])
             cmp.setup.cmdline(':', opts['opts_cmd_command'])
 
-            -- autopairs on function / method insert
+            -- autopairs on function / method insert (skip codecompanion slash commands, which are also Function item kind)
             local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
+            local on_confirm_done = cmp_autopairs.on_confirm_done()
+            cmp.event:on('confirm_done', function(evt)
+                if evt.entry.source.name == 'codecompanion_acp_commands' or evt.entry.source.name == 'codecompanion_slash_commands' then
+                    return
+                end
+                on_confirm_done(evt)
+            end)
         end,
     },
 }
