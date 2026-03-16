@@ -193,7 +193,19 @@ return {
                         { name = 'lazydev', group_index = 0 }, -- skip LuaLS completions
                         { name = 'nvim_lsp' },
                         { name = 'luasnip' },
-                        { name = 'path' },
+                        {
+                            name = 'path',
+                            entry_filter = function(_, ctx)
+                                local token = ctx.cursor_before_line:match('%S+$') or ''
+                                local is_path = token:match('^/')
+                                    or token:match('^%./')
+                                    or token:match('^%.%./')
+                                    or token:match('^~/')
+                                    or token:match('^%$[%a_][%w_]*/')
+                                    or token:match('^[^%s]+/')
+                                return is_path ~= nil
+                            end,
+                        },
                         {
                             name = 'buffer',
                             option = {
@@ -228,7 +240,7 @@ return {
                             cmp.config.compare.locality,
                             -- copied from lukas-reineke/cmp-under-comparator
                             cmp_under_comparator,
-                            -- cmp.config.compare.kind, -- see custom kind comparator
+                            -- cmp.config.compare.kind, -- see custom kind comparator below
                             cmp_lspkind,
                             cmp.config.compare.sort_text,
                             cmp.config.compare.length,
@@ -335,7 +347,10 @@ return {
                         },
                         ['<CR>'] = {
                             c = function(fallback)
-                                cmp.mapping.confirm()
+                                -- since we get a completion window shown, and <C-n> and <C-p> fill the
+                                -- command line with the command anyway, pressing enter should just
+                                -- trigger the filled-in command; otherwise, you'd have to press <CR>
+                                -- twice (once to accept the cmp entry, one to actually execute it)
                                 fallback()
                             end,
                         },
