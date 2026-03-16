@@ -1,6 +1,6 @@
 ## Intent
 
-Prefer the smallest correct change that fits the existing codebase while implementing the user's intent.
+Prefer the smallest correct code change that fits the existing codebase while implementing the user's intent. When uncertain, ask rather than guess.
 
 Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reuse existing utility modules when they already fit the problem, and only extract helpers when the logic is clearly reusable across multiple code paths or meaningfully improves clarity.
 
@@ -8,21 +8,20 @@ Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reu
 
 Read before editing. Explore before planning. Plan before implementing.
 
-Before making changes:
+Before planning the changes:
 - read the relevant code paths first
 - read the documentation relevant to the area you are changing, including `README.md`, `ARCHITECTURE.md`, and local `AGENTS.md` files when present
-- ask questions for any non-obvious product or implementation choice until you are at least 95% confident the intended change matches the user's expectation
+- ask questions for any non-obvious product or implementation choice until material ambiguities are resolved and the intended change is clear
 
-Before implementing, preview the intended approach briefly:
-- say what you plan to change
-- call out important trade-offs or risks
+Before implementing or making any file edits:
+- present a short spec covering the requirements being satisfied, the intended approach, the files you expect to touch, and any notable risks or trade-offs
+- include architecture and data model details where relevant
 - recommend one path with reasoning instead of presenting a large menu of options
+- explicitly ask the user to confirm the path forward
+- if the change would expand beyond the current scope or affect code paths outside the user's apparent target area, flag it and ask before proceeding
+- flag nearby issues separately rather than bundling them in
 
-For new features, produce a spec first: requirements, architecture, and data model before writing code.
-
-If the change would expand beyond the current scope, affect code paths outside the user's apparent target area, or require invasive refactors, ask for approval before proceeding. If you notice nearby issues worth fixing, flag them separately rather than bundling them in.
-
-When uncertain, ask rather than guess.
+Do not modify any files until user approval is received.
 
 ## Code Style
 
@@ -33,7 +32,7 @@ Do not run CLI formatting or linting tools unless prompted.
 Keep implementations simple and direct:
 - avoid duplicate logic
 - avoid defensive code for unrealistic failure modes just to appear safe
-- do not introduce bugs, security issues, or unnecessary complexity
+- do not introduce obvious bugs, security issues, race conditions or unnecessary complexity
 
 ## Documentation
 
