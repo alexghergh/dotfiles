@@ -84,6 +84,18 @@ local languages = {
         formatters = { 'yamlfmt' },
         linters = { 'yamllint' },
     },
+    json = {
+        filetypes = { 'json' },
+        lsp = {},
+        formatters = { 'fixjson' },
+        linters = {},
+    },
+    fish = {
+        filetypes = { 'fish' },
+        lsp = { 'fish-lsp' },
+        formatters = { name = 'fish_indent', install = 'ignore' }, -- installed by fish itself
+        linters = {},
+    },
 }
 
 -- get a tool's config name
