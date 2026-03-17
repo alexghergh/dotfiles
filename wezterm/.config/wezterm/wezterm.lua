@@ -14,6 +14,10 @@ config.font = wezterm.font_with_fallback({
     'JetBrains Mono',
     'Fira Code',
     'Hack',
+
+    -- this is a manually patched font that contains only the colored Neovim logo; find it under
+    -- ~/.local/share/fonts/NeovimIcon.ttf; code point for the icon UxFF000
+    'Neovim Icon',
 }, { weight = 'DemiLight' })
 config.font_size = 11
 config.adjust_window_size_when_changing_font_size = false
