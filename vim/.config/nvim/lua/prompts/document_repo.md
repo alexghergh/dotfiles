@@ -1,7 +1,7 @@
 ---
 name: Document Repository
 interaction: chat
-description: Update or create README.md, ARCHITECTURE.md, and AGENTS.md.
+description: Plan or update repository-level documentation using the repo-docs skill.
 opts:
   alias: document-repo
   auto_submit: false
@@ -11,4 +11,11 @@ opts:
 
 ## user
 
-Update or create repository-level documentation. Review the current state of README.md, ARCHITECTURE.md, and AGENTS.md. Update them to accurately reflect the codebase. If a file is missing and the project clearly needs it, create it. If a file is already accurate, leave it alone.
+Use the `repo-docs` skill to plan or update repository-level documentation.
+
+Start by clarifying documentation scope with me before editing anything:
+- default to high-level and mid-level repository docs, not low-level function documentation
+- ask which files are in scope and whether each should be created, modified, or left alone
+- if `README.md`, `ARCHITECTURE.md`, or `AGENTS.md` is missing, mention it and ask whether I want it
+- ask whether to preserve the current style and structure of existing docs or whether a larger rewrite is allowed
+- if the repo shape suggests other important docs such as `CONTRIBUTING.md`, `SECURITY.md`, `DEPLOYMENT.md`, or `SUPPORT.md`, ask whether they should be included too
