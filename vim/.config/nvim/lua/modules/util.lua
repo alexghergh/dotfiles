@@ -1,6 +1,6 @@
 -- wrap nvim-notify's built-in notification position to avoid the cursor,
 -- if the cursor position is under or near a notification (move the notification)
-local function notify_avoid_cursor_stages(top_down, proximity, movement)
+local function notify_avoid_cursor_stages(top_down, proximity_cols, proximity_rows, movement)
     -- keep notify's stock stage implementation, such that open, wait, and close behavior stay unchanged
     local stage_util = require('notify.stages.util')
     local direction = top_down and stage_util.DIRECTION.TOP_DOWN or stage_util.DIRECTION.BOTTOM_UP
@@ -30,9 +30,9 @@ local function notify_avoid_cursor_stages(top_down, proximity, movement)
 
         -- treat a small margin around the notification as occupied as well, so
         -- the float gets out of the way before the cursor is directly underneath it
-        local safe_left = math.max(0, left - proximity)
-        local safe_top = math.max(0, row - proximity)
-        local safe_bottom = bottom + proximity
+        local safe_left = math.max(0, left - proximity_cols)
+        local safe_top = math.max(0, row - proximity_rows)
+        local safe_bottom = bottom + proximity_rows
 
         -- if the cursor is outside the expanded rectangle, keep notify's original row target
         if pos.col - 1 < safe_left or top < safe_top or top > safe_bottom then
@@ -120,7 +120,7 @@ return {
         config = function(_, opts)
             -- if the cursor is under or near the notification window, compute the
             -- animation to avoid the cursor; this requires high fps to work smoothly
-            opts.stages = notify_avoid_cursor_stages(opts.top_down, 10, 15)
+            opts.stages = notify_avoid_cursor_stages(opts.top_down, 10, 2, 15)
 
             require('notify').setup(opts)
 
