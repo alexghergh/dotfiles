@@ -6,22 +6,27 @@ Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reu
 
 ## Workflow
 
-Read before editing. Explore before planning. Plan before implementing.
+Read before editing. Explore before planning. Plan before implementing. Scale the process to the change.
 
-Before planning the changes:
+A change is trivial when it is clearly scoped, low risk, and localized, for example: editing text in one file, a small obvious adjustment to a function without changing interfaces or external behavior, or renaming/comment updates with no behavioral change.
+
+For trivial changes:
+- read the target file and directly touched context
+- make the edit directly when the user is clearly asking for that change; treat that request as approval
+- if the change turns out to be less trivial than expected, stop and switch to the full workflow below
+
+For non-trivial changes, before planning:
 - read the relevant code paths first
-- read the documentation relevant to the area you are changing, including `README.md`, `ARCHITECTURE.md`, and local `AGENTS.md` files when present
+- read the documentation relevant to the area you are changing, read local documentation files when present
 - ask questions for any non-obvious product or implementation choice until material ambiguities are resolved and the intended change is clear
 
-Before implementing or making any file edits:
-- present a short spec covering the requirements being satisfied, the intended approach, the files you expect to touch, and any notable risks or trade-offs
+Before implementing non-trivial changes:
+- present a short spec covering the requirements being satisfied, the intended approach, the files you expect to touch, and if present any notable risks or trade-offs
 - include architecture and data model details where relevant
 - recommend one path with reasoning instead of presenting a large menu of options
 - explicitly ask the user to confirm the path forward
 - if the change would expand beyond the current scope or affect code paths outside the user's apparent target area, flag it and ask before proceeding
 - flag nearby issues separately rather than bundling them in
-
-Do not modify any files until user approval is received.
 
 ## Code Style
 
