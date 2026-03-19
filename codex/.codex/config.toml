@@ -17,9 +17,13 @@
 #
 # codex can ask to edit files or run destructive commands even in read-only
 # mode, but it needs explicit user approval for this (via sandbox_mode:
-# require_escalated); this is not required for per-project stuff in
-# workspace-write mode; if it doesn't pass escalation permissions, it gets
-# auto-denied by the sandbox
+# require_escalated), and it also needs to be in the specific workspace; even if
+# codex is in read-only mode and asks for escalated permissions, unless it is in
+# the correct directory (the directory with the file to be edited or a parent of
+# it, i.e. the workspace) it gets denied; it may still ask to modify random
+# files outside the workspace through CLI commands, though; this is not required
+# for per-project stuff in workspace-write mode; if it doesn't pass escalation
+# permissions, it gets auto-denied by the sandbox
 #
 # network access is denied by default, so commands like curl, wget etc. need to
 # also pass through user permission; web fetch is a separate server side tool
