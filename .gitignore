@@ -21,8 +21,9 @@
 !/claude/.claude/hooks.json
 !/claude/.claude/skills
 
-# agents: shared agent config (AGENTS.md, skills)
+# agents: keep shared agent config (AGENTS.md, skills, session handoffs)
 /agents/.agents/**
+/agents/.agents/handoffs/
 !/agents/.agents/AGENTS.md
 !/agents/.agents/skills/
 !/agents/.agents/skills/**

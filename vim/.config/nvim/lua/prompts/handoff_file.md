@@ -21,7 +21,7 @@ Do not mention "we", "our conversation", "this chat", "as discussed", "above", "
 
 Present the result as a clean working brief, not as a recap or summary of a conversation.
 
-Output only markdown. Include exactly these sections, in this order:
+The brief content must be markdown. Mark section titles between * only, no heading markers. Include exactly these sections, in this order:
 
 1. **Goal** — what is being built, changed, or fixed, and why, in 1–2 sentences
 2. **Current state** — what is done, what is in progress, and what is not started
@@ -38,4 +38,6 @@ Requirements:
 - if a section has nothing to report, write `none`
 - include no preamble and no closing commentary
 
-Write the brief to `handoff-YYYY-MM-DD-<short-title>.md` in the project root.
+Write the brief to `~/.agents/handoffs/handoff-YYYY-MM-DD-<short-title>.md`.
+Do not write the brief into the project root.
+After writing the file, output only the handoff file path and nothing else.
