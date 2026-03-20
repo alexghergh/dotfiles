@@ -15,9 +15,9 @@ config.font = wezterm.font_with_fallback({
     'Fira Code',
     'Hack',
 
-    -- this is a manually patched font that contains only the colored Neovim logo; find it under
-    -- ~/.local/share/fonts/NeovimIcon.ttf; code point for the icon UxFF000
-    'Neovim Icon',
+    -- this is a manually patched font that contains colored emojis for various logos;
+    -- find it under ~/.local/share/fonts/CustomIconFonts.ttf
+    'Custom Icon Fonts',
 }, { weight = 'DemiLight' })
 config.font_size = 11
 config.adjust_window_size_when_changing_font_size = false
