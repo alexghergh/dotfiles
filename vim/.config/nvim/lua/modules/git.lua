@@ -45,4 +45,14 @@ return {
             })
         end,
     },
+
+    -- git inside vim
+    -- see :h fugitive
+    {
+        'tpope/vim-fugitive',
+        lazy = false,
+        config = function()
+        end,
+    }
 }
+
