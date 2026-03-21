@@ -370,6 +370,54 @@ local function list_acp_sessions()
         :find()
 end
 
+-- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
+local function toast_notify(app_name, summary)
+    local pane_id = vim.env.WEZTERM_PANE or ''
+    local notify_cmd = {
+        'notify-send',
+        '--app-name',
+        app_name,
+        '--expire-time',
+        '6000',
+        -- always expose a button; we only handle the callback for some configured terminals, see more below
+        '--action',
+        'open=Go to conversation',
+        summary,
+    }
+
+    -- upon callback, extract whether the button was pressed; if yes, switch
+    -- focus back to the conversation when the current terminal supports it
+    vim.system(notify_cmd, { text = true }, function(result)
+        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or pane_id == '' then
+            return
+        end
+
+        vim.system({ 'wezterm', 'cli', 'activate-pane', '--pane-id', pane_id }, { text = true }, function(activate_result)
+            if activate_result.code ~= 0 then
+                return
+            end
+
+            -- only needed on KDE Plasma Wayland as a workaround to focus the Wezterm instance;
+            -- X11 / other compositors like sway etc. support this natively
+            vim.schedule(function()
+                -- the mechanism looks at the wezterm Unix socket, extracts the PID, and
+                -- launches kdotool to focus that specific window in the wayland compositor
+                local gui_pid = (vim.env.WEZTERM_UNIX_SOCKET or ''):match('gui%-sock%-(%d+)$')
+                if
+                    not gui_pid
+                    or vim.env.XDG_SESSION_TYPE ~= 'wayland'
+                    or (vim.env.XDG_CURRENT_DESKTOP or ''):upper():match('KDE') == nil
+                    or vim.fn.executable('kdotool') ~= 1
+                then
+                    return
+                end
+
+                vim.system({ 'kdotool', 'search', '--all', '--pid', gui_pid, '.*', 'windowactivate' }, { text = true })
+            end)
+        end)
+    end)
+end
+
 return {
 
     -- LLM session history (see settings in 'extensions' config below)
@@ -861,11 +909,7 @@ return {
                             req.data.args
                         )
 
-                        -- use the system's notify-send to send a toast notification
-                        vim.system(
-                            { 'notify-send', '--app-name', 'Nvim AI tool approval request', '--expire-time', '6000', output },
-                            { text = true }
-                        )
+                        toast_notify('Nvim AI tool approval request', output)
                     end
                 end,
             })
@@ -889,11 +933,7 @@ return {
 
                             local output = string.format('✅ %s (%s)\n%s', req.data.adapter.formatted_name, req.data.status, body)
 
-                            -- use the system's notify-send to send a toast notification
-                            vim.system(
-                                { 'notify-send', '--app-name', 'Neovim AI response', '--expire-time', '6000', output },
-                                { text = true }
-                            )
+                            toast_notify('Neovim AI response', output)
                         end
                     end
                 end,
