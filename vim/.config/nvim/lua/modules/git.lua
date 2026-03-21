@@ -52,7 +52,14 @@ return {
         'tpope/vim-fugitive',
         lazy = false,
         config = function()
+            -- TODO top-5 things to learn:
+            -- :Gdiff to stage current file changes
+            -- :G to open the window for staged / unstaged changes; from there:
+            --   - use '-' to stage / unstage whole files
+            --   - use I on individual files as git add -p
+            --   - 'cc' to commit, 'dv' to diff, 'o' to open
+            -- alternatively, directly use :Gwrite to add a whole file at once
+            -- :Git log
         end,
-    }
+    },
 }
-
