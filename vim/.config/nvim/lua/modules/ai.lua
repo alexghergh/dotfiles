@@ -443,6 +443,7 @@ return {
                     },
                     codex = function()
                         return require('codecompanion.adapters').extend('codex', {
+                            formatted_name = '\u{ff001}  Codex',
                             defaults = {
                                 auth_method = 'chatgpt', -- 'openai-api-key'|'codex-api-key'|'chatgpt'
                             },
@@ -450,6 +451,7 @@ return {
                     end,
                     claude_code = function()
                         return require('codecompanion.adapters').extend('claude_code', {
+                            formatted_name = '\u{ff002}  Claude Code',
                             env = {
                                 CLAUDE_CODE_OAUTH_TOKEN = 'REDACTED',
                             },
