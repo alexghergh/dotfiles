@@ -1,0 +1,11 @@
+# repo copy of the system mustang access rule
+# install on a new system with:
+#   sudo install -Dm644 system/etc/udev/rules.d/50-mustang-uaccess.rules /etc/udev/rules.d/50-mustang-uaccess.rules
+#   sudo udevadm control --reload
+#   reconnect the amp, or run:
+#   sudo udevadm trigger --subsystem-match=usb --attr-match=idVendor=1ed8 --attr-match=idProduct=0014
+#
+# @alex: Rules used for accessing the Fender Mustang I v2 Amp by Plug from the current user without sudo;
+# see ~/packages for the installed plug package (https://github.com/offa/plug)
+# an asahi, you need `sudo dnf install qt6-qtbase-devel gmock-devel gtest-devel libusb1-devel`
+ATTRS{idVendor}=="1ed8", ATTRS{idProduct}=="0014", TAG+="uaccess"

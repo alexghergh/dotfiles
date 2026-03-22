@@ -1,0 +1,21 @@
+[Desktop Entry]
+Name=Obsidian
+Comment=A note-taking application
+GenericName=Obsidian
+# setup note: adjust OPENAI_BASE_URL here for either llama.cpp or remote APIs
+# js flags to avoid an issue on Asahi Linux
+Exec=env OPENAI_BASE_URL='http://localhost:11435' /home/alex/packages/obsidian/Obsidian-1.8.10-arm64.AppImage --no-sandbox --js-flags="--nodecommit_pooled_pages" %U
+TryExec=/home/alex/packages/obsidian/Obsidian-1.8.10-arm64.AppImage
+Icon=obsidian
+Categories=Education;Office;
+Terminal=false
+Type=Application
+Version=1.0
+MimeType=x-scheme-handler/obsidian;
+#should be removed eventually as it was upstreamed as to be an XDG specification called SingleMainWindow
+X-GNOME-SingleWindow=true
+SingleMainWindow=true
+StartupWMClass=anki
+X-Desktop-File-Install-Version=0.26
+X-AppImage-Version=1.8.10
+StartupWMClass=obsidian
