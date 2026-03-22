@@ -1,0 +1,13 @@
+# filename -> private-use codepoint mapping for CustomIconFonts
+
+[[icons]]
+filename = "neovim.svg"
+codepoint = "FF000"
+
+[[icons]]
+filename = "codex.svg"
+codepoint = "FF001"
+
+[[icons]]
+filename = "claude.svg"
+codepoint = "FF002"
