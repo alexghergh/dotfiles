@@ -453,7 +453,8 @@ return {
                         return require('codecompanion.adapters').extend('claude_code', {
                             formatted_name = '\u{ff002}  Claude Code',
                             env = {
-                                CLAUDE_CODE_OAUTH_TOKEN = 'REDACTED',
+                                -- this requires kwallet on kde
+                                CLAUDE_CODE_OAUTH_TOKEN = 'cmd:kwallet-query -r claude_code_oauth -f codecompanion kdewallet',
                             },
                         })
                     end,
@@ -521,14 +522,16 @@ return {
                     riolab_openai = function()
                         return require('codecompanion.adapters').extend('openai_responses', {
                             env = {
-                                api_key = 'REDACTED',
+                                -- this requires kwallet on kde
+                                api_key = 'cmd:kwallet-query -r riolab_openai_api_key -f codecompanion kdewallet',
                             },
                         })
                     end,
                     riolab_anthropic = function()
                         return require('codecompanion.adapters').extend('anthropic', {
                             env = {
-                                api_key = 'REDACTED',
+                                -- this requires kwallet on kde
+                                api_key = 'cmd:kwallet-query -r riolab_anthropic_api_key -f codecompanion kdewallet',
                             },
                         })
                     end,
