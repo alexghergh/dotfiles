@@ -47,7 +47,7 @@ Document functions, modules, and public interfaces in the style the project alre
 
 Prefer concise comments that explain intent, assumptions, invariants, or non-obvious transformations. Do not comment obvious mechanics or add boilerplate comments. If separate blocks within a function act in distinct phases, add a brief section comment at the start of each phase. Use line-by-line commentary only when it materially improves clarity.
 
-After any code change, update `README.md`, `ARCHITECTURE.md`, local `AGENTS.md` files, and nearby developer-facing docs if the behavior, workflow, or architecture changed.
+After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md` files should be updated, as well as any nearby developer-facing docs. If the behavior, workflow, or architecture changed, and you think changes to the docs are warranted, then present the intended changes and ask the user about them. Apply the documentation edits separately from the code edits.
 
 ## Tests
 
