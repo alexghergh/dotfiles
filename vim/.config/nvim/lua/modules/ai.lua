@@ -101,6 +101,7 @@ end
 -- if session/load succeeds, we close / hide the old chat and open the new one
 local function load_acp_session_buffer(session_id)
     local cc = require('codecompanion')
+    local chat_mod = require('codecompanion.interactions.chat')
     local config = require('codecompanion.config')
     local METHODS = require('codecompanion.acp.methods')
 
@@ -217,13 +218,16 @@ local function load_acp_session_buffer(session_id)
         end
     end
 
-    -- if old chat was empty, destroy it; otherwise just hide it
+    -- if old chat was empty, destroy it; otherwise just hide it (this code uses the manual
+    -- additions under codecompanion's codebase, which preserve window size on window switching)
+    local window_opts = old_chat.ui.window_opts or { default = true }
+    chat_mod.switch_to(new_chat, {
+        window_opts = window_opts,
+    }, old_chat)
+
     if old_chat_empty then
         old_chat:close()
-    else
-        old_chat.ui:hide()
     end
-    new_chat.ui:open()
     require('codecompanion.utils').fire('ChatDone', { bufnr = new_chat.bufnr, id = new_chat.id })
     return true
 end
