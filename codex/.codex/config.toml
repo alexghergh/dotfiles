@@ -55,6 +55,8 @@ sandbox_mode = "read-only"
 model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
 [sandbox_workspace_write]
 # this option is different from web_search; web_search itself is a server-side
 # tool that allows the model to look up information; on the other hand,
@@ -71,6 +73,3 @@ multi_agent = true
 [agents]
 max_threads = 6
 max_depth = 2
-
-[projects."/home/alex/projects/dotfiles/vim/.config/nvim"]
-trust_level = "trusted"
