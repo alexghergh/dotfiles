@@ -120,7 +120,7 @@ return {
         config = function(_, opts)
             -- if the cursor is under or near the notification window, compute the
             -- animation to avoid the cursor; this requires high fps to work smoothly
-            opts.stages = notify_avoid_cursor_stages(opts.top_down, 10, 2, 10)
+            opts.stages = notify_avoid_cursor_stages(opts.top_down, 10, 2, 6)
 
             require('notify').setup(opts)
 
