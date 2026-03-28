@@ -125,14 +125,13 @@ local function load_acp_session_by_resume()
 
     -- execute the built-in resume command
     resume
+        ---@diagnostic disable-next-line: missing-fields
         .new({
             Chat = chat,
             config = config.interactions.chat.slash_commands['resume'],
         })
         :execute()
 
-    -- TODO chatresume event once in core
-    require('codecompanion.utils').fire('ChatDone', { bufnr = chat.bufnr, id = chat.id })
     return true
 end
 
@@ -187,8 +186,10 @@ local function load_acp_session_by_id(session_id)
 
     vim.notify('ACP session loaded: ' .. session_id, vim.log.levels.INFO)
 
-    -- TODO chatresume event once in core
-    require('codecompanion.utils').fire('ChatDone', { bufnr = chat.bufnr, id = chat.id })
+    require('codecompanion.utils').fire(
+        'ACPChatRestored',
+        { bufnr = chat.bufnr, id = chat.id, session_id = conn.session_id, title = chat.title }
+    )
     return true
 end
 
@@ -594,6 +595,7 @@ return {
                     'CodeCompanionChatModel',
                     'CodeCompanionChatDone',
                     'CodeCompanionChatACPModeChanged',
+                    'CodeCompanionACPChatRestored',
                 },
                 group = group,
                 callback = function(req)
