@@ -21,7 +21,7 @@ Do not mention "we", "our conversation", "this chat", "as discussed", "above", "
 
 Present the result as a clean working brief, not as a recap or summary of a conversation.
 
-Output only markdown. Include exactly these sections, in this order:
+The brief content must be markdown, guarded by ```md ... ``` tags. Include exactly these sections, in this order:
 
 1. **Goal** — what is being built, changed, or fixed, and why, in 1–2 sentences
 2. **Current state** — what is done, what is in progress, and what is not started
@@ -37,4 +37,5 @@ Requirements:
 - if something is uncertain, label it `unverified`
 - if a section has nothing to report, write `none`
 - include no preamble and no closing commentary
-- output the brief in chat only
+
+Output the brief in chat only.

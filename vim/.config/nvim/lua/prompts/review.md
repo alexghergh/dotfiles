@@ -13,6 +13,6 @@ opts:
 
 Use the `review` skill to review the current changes.
 
-Determine the review scope first: current diff, staged changes, current branch, or files I provide. If the target is unclear, ask before reviewing.
+Determine the review scope first: untracked changes, current diff, staged changes, current branch, or files I provide. If the target is unclear, ask before reviewing.
 
-Focus on correctness, regressions, maintainability, architecture, and missing tests. Return findings first, ordered by severity, with file references. If no findings are discovered, say so explicitly, then list any open questions or assumptions, followed by a brief summary. Do not implement fixes unless I explicitly ask.
+Focus on correctness, regressions, maintainability, architecture and tests (if there are any). Return findings first, ordered by severity, with file references. If no findings are discovered, say so explicitly, then list any open questions or assumptions, followed by a brief summary. Do not implement fixes unless I explicitly ask.
