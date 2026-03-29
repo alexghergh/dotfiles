@@ -581,10 +581,10 @@ return {
                 })
             end
 
-            -- show adapter / model / mode info on the currently visible chat header line:
-            -- - chat creation / open / clear reset the visible header line
-            -- - submit / done move the visible header line between user and llm headers
-            -- - adapter / model / acp mode changes update the metadata shown there
+            -- show adapter / model / mode info on the currently visible chat header line when:
+            --   - chat creation / open / clear / stop reset the visible header line
+            --   - submit / done move the visible header line between user and llm headers
+            --   - adapter / model / acp mode changes update the metadata shown there
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = {
                     'CodeCompanionChatCreated',
@@ -594,6 +594,7 @@ return {
                     'CodeCompanionChatAdapter',
                     'CodeCompanionChatModel',
                     'CodeCompanionChatDone',
+                    'CodeCompanionChatStopped',
                     'CodeCompanionChatACPModeChanged',
                     'CodeCompanionACPChatRestored',
                 },
@@ -605,7 +606,7 @@ return {
                     end
 
                     local chat = require('codecompanion').buf_get_chat(bufnr)
-                    if not chat or type(chat.header_line) ~= 'number' or chat.header_line < 1 then
+                    if not chat or not chat.chat_parser then
                         return
                     end
 
@@ -651,11 +652,17 @@ return {
                     local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
                     vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
 
+                    -- parse the actual visible header line, don't rely on chat.header_line which is unreliable
+                    local ok, header_row = pcall(require('codecompanion.interactions.chat.parser').headers, chat)
+                    if not ok or type(header_row) ~= 'number' then
+                        return
+                    end
+
                     if type(label) ~= 'string' or label == '' then
                         return
                     end
 
-                    pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, chat.header_line - 1, 0, {
+                    pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, header_row, 0, {
                         virt_text = { { label, 'CodeCompanionChatTokens' } },
                         virt_text_pos = 'eol',
                         hl_mode = 'combine',
