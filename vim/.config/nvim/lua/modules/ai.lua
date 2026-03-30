@@ -284,7 +284,7 @@ return {
                     },
                     codex = function()
                         return require('codecompanion.adapters').extend('codex', {
-                            formatted_name = '\u{ff001}  Codex',
+                            formatted_name = '\u{E4C6}  Codex',
                             defaults = {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
                                 auth_method = 'chatgpt', -- 'openai-api-key'|'codex-api-key'|'chatgpt'
@@ -293,7 +293,7 @@ return {
                     end,
                     claude_code = function()
                         return require('codecompanion.adapters').extend('claude_code', {
-                            formatted_name = '\u{ff002}  Claude Code',
+                            formatted_name = '\u{E4C7}  Claude Code',
                             defaults = {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
                             },

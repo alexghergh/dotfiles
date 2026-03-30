@@ -14,7 +14,9 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - fallback for older python
     import tomli as tomllib
 
-START_CODEPOINT = 0xFF000
+BMP_PUA_START = 0xE000
+BMP_PUA_END = 0xF8FF
+OWN_FAMILY = "Custom Icon Fonts"
 SAFE_FILENAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*\.svg$")
 CHARSET_TOKEN_RE = re.compile(r"^[0-9A-Fa-f]+(?:-[0-9A-Fa-f]+)?$")
 CONFIG_TEMPLATE_PATH = (
@@ -85,8 +87,9 @@ def parse_codepoint(value: object) -> int:
     if not text or any(ch not in "0123456789ABCDEF" for ch in text):
         die(f"invalid codepoint value: {value!r}")
     codepoint = int(text, 16)
-    if codepoint < START_CODEPOINT:
-        die(f"codepoint U+{codepoint:X} is below the expected private-use range")
+    if not (BMP_PUA_START <= codepoint <= BMP_PUA_END):
+        die(f"codepoint U+{codepoint:X} is outside the BMP PUA range "
+            f"(U+{BMP_PUA_START:X}–U+{BMP_PUA_END:X})")
     return codepoint
 
 
@@ -196,10 +199,10 @@ def inspect_font(output_ttf: Path, fc_query: Path) -> tuple[set[int], int | None
             start = int(token, 16)
             end = start
 
-        if end < START_CODEPOINT:
+        if end < BMP_PUA_START:
             continue
 
-        start = max(start, START_CODEPOINT)
+        start = max(start, BMP_PUA_START)
         codepoints.update(range(start, end + 1))
         if max_codepoint is None or end > max_codepoint:
             max_codepoint = end
@@ -207,15 +210,45 @@ def inspect_font(output_ttf: Path, fc_query: Path) -> tuple[set[int], int | None
     return codepoints, max_codepoint
 
 
-def next_codepoint(entries: list[tuple[str, int]], installed_max: int | None) -> int:
+def check_codepoint_collision(codepoint: int, fc_list: Path) -> list[str]:
+    """Return foreign font families that already claim this codepoint."""
+    result = subprocess.run(
+        [str(fc_list), f":charset={codepoint:04X}", "family"],
+        capture_output=True,
+        text=True,
+    )
+    families = [
+        line.strip().rstrip(",")
+        for line in result.stdout.strip().splitlines()
+        if line.strip()
+    ]
+    return [f for f in families if f != OWN_FAMILY]
+
+
+def next_codepoint(
+    entries: list[tuple[str, int]], installed_max: int | None, fc_list: Path,
+) -> int:
     mapped_max = max((codepoint for _, codepoint in entries), default=None)
     current_max = max(
         (codepoint for codepoint in (installed_max, mapped_max) if codepoint is not None),
         default=None,
     )
     if current_max is None:
-        return START_CODEPOINT
-    return current_max + 1
+        die("icon-map.toml is empty; add a first entry with an explicit codepoint")
+    candidate = current_max + 1
+    if candidate > BMP_PUA_END:
+        die(
+            f"codepoint U+{candidate:X} exceeds the BMP PUA range "
+            f"(U+{BMP_PUA_START:X}–U+{BMP_PUA_END:X}); "
+            f"run check_codepoints.py to find a new free range"
+        )
+    collisions = check_codepoint_collision(candidate, fc_list)
+    if collisions:
+        die(
+            f"codepoint U+{candidate:X} is already claimed by: {', '.join(collisions)}; "
+            f"run check_codepoints.py to scan for collisions and find a free range"
+        )
+    return candidate
 
 
 def plan_import(
@@ -225,6 +258,7 @@ def plan_import(
     map_path: Path,
     entries: list[tuple[str, int]],
     installed_max: int | None,
+    fc_list: Path,
 ) -> tuple[list[tuple[str, int]], tuple[Path, str]]:
     source_path = Path(svg_arg).expanduser().resolve()
     if not source_path.is_file():
@@ -242,7 +276,7 @@ def plan_import(
     if target_path.exists() or target_path.is_symlink():
         die(f"refusing to overwrite existing path: {target_path}")
 
-    codepoint = next_codepoint(entries, installed_max)
+    codepoint = next_codepoint(entries, installed_max, fc_list)
     updated_entries = sorted(entries + [(filename, codepoint)], key=lambda entry: entry[1])
     return updated_entries, (source_path, filename)
 
@@ -330,6 +364,7 @@ def main() -> None:
     args = parse_args()
     nanoemoji = require_tool("nanoemoji")
     fc_cache = require_tool("fc-cache")
+    fc_list = require_tool("fc-list")
     fc_query = require_tool("fc-query")
     require_file(CONFIG_TEMPLATE_PATH, "nanoemoji config template")
 
@@ -350,6 +385,7 @@ def main() -> None:
             map_path,
             entries,
             installed_max,
+            fc_list,
         )
         new_entry = entries[-1]
     elif not map_path.exists():

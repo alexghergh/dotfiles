@@ -1,13 +1,21 @@
-# filename -> private-use codepoint mapping for CustomIconFonts
+# filename -> private-use codepoint mapping for CustomIconFonts; there are 534
+# codepoints available as a free range in the current system configuration,
+# ready to allocate as PUA (private-use area) codepoints; however, future
+# versions of e.g. PUA-use fonts such as Nerd Fonts or Font Awesome might
+# override these; other codepoints outside the BMP (Basic Multilingual Plane)
+# area seem to not be correctly picked up by Qt applications, so mapping to
+# those ranges won't correctly show the icons in applications
+# see also ~/.config/fontconfig/fonts.conf for how this custom font is used
+# system-wide
 
 [[icons]]
 filename = "neovim.svg"
-codepoint = "FF000"
+codepoint = "E4C5"
 
 [[icons]]
 filename = "codex.svg"
-codepoint = "FF001"
+codepoint = "E4C6"
 
 [[icons]]
 filename = "claude.svg"
-codepoint = "FF002"
+codepoint = "E4C7"
