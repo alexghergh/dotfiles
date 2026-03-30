@@ -8,6 +8,8 @@ Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reu
 
 Read before editing. Explore before planning. Plan before implementing. Scale the process to the change.
 
+Edit one file at a time. If a task requires multiple files, prepare and send each file's edits sequentially rather than in a single batch.
+
 A change is trivial when it is clearly scoped, low risk, and localized, for example: editing text in one file, a small obvious adjustment to a function without changing interfaces or external behavior, or renaming/comment updates with no behavioral change.
 
 For trivial changes:
