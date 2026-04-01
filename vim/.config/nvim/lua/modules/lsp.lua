@@ -162,18 +162,14 @@ return {
                     -- goto * (see also lua/modules/telescope.lua)
                     vim.keymap.set('n', 'gD', vlb.declaration, { buffer = buf, desc = 'Go to declaration' })
                     vim.keymap.set('n', 'gd', vlb.definition, { buffer = buf, desc = 'Go to definition' })
-                    vim.keymap.set('n', '<Leader>gi', vlb.implementation, { buffer = buf, desc = 'Go to implementation' })
-                    vim.keymap.set('n', '<Leader>gr', vlb.references, { buffer = buf, desc = 'Go to references' })
-                    vim.keymap.set('n', '<Leader>td', vlb.type_definition, { buffer = buf, desc = 'Go to type definition' })
+                    vim.keymap.set('n', '<Leader>gi', vlb.implementation, { buffer = buf, desc = 'Go to implementation' }) -- gri
+                    vim.keymap.set('n', '<Leader>td', vlb.type_definition, { buffer = buf, desc = 'Go to type definition' }) -- grt
                     vim.keymap.set('n', '<Leader>ti', vlb.typehierarchy, { buffer = buf, desc = 'Go to type hierarchy' })
 
                     -- signature help / hover
                     vim.keymap.set('n', 'K', vlb.hover, { buffer = buf, desc = 'Symbol hover information' })
                     vim.keymap.set('n', '<C-k>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
                     vim.keymap.set('i', '<C-/>', vlb.signature_help, { buffer = buf, desc = 'Display signature help' })
-
-                    -- symbol rename
-                    vim.keymap.set('n', '<Leader>rn', vlb.rename, { buffer = buf, desc = 'Rename symbol under cursor' })
 
                     -- formatting
                     if vim.fn.maparg('<Leader>f', 'n') == '' then
