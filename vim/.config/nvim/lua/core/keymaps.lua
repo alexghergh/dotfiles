@@ -58,7 +58,7 @@ vim.keymap.set('i', '<A-l>', '<Right>', { desc = 'Move cursor right in insert mo
 
 -- in insert mode, move line up/down (similar to unimpaired's [e and ]e in normal mode)
 vim.keymap.set('i', '<A-j>', function()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
     local last = vim.api.nvim_buf_line_count(0)
     -- stylua: ignore
     if row >= last then return end
@@ -76,7 +76,7 @@ vim.keymap.set('i', '<A-j>', function()
 end, { desc = 'Move current line down in insert mode' })
 
 vim.keymap.set('i', '<A-k>', function()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
     -- stylua: ignore
     if row == 1 then return end
 
@@ -185,8 +185,29 @@ end, { desc = 'Open / close location list (per window)' })
 -- for when you REALLY want to save that buffer
 vim.keymap.set('c', 'w!!', 'w !sudo tee % > /dev/null')
 
--- expand into the current file's working directory
-vim.keymap.set('c', '%%', "getcmdtype() == ':' ? expand('%:h') . '/' : '%%'", { expr = true })
+-- expand file and working-directory paths directly while typing in insert or command modes (Dir / File / Pwd)
+-- this inserts undo-blocks in order to allow easy deletion of the whole path element inserted
+-- stylua: ignore
+local path_maps = {
+    { lhs = '%%d', get_path = function() return vim.fn.expand('%:h') .. '/' end, desc = "Insert current file's absolute path" },
+    { lhs = '%%f', get_path = function() return vim.fn.expand('%:t') end, desc = 'Insert current file name' },
+    { lhs = '%%p', get_path = function() return vim.fn.getcwd() .. '/' end, desc = 'Insert current working directory' },
+}
+for _, path in ipairs(path_maps) do
+    vim.keymap.set('i', path.lhs, function()
+        local text = path.get_path()
+        return '<C-g>u' .. text .. '<C-g>u'
+    end, { expr = true, replace_keycodes = true, desc = path.desc })
+
+    vim.keymap.set('c', path.lhs, function()
+        if vim.fn.getcmdtype() ~= ':' then
+            return path.lhs
+        end
+
+        local text = path.get_path()
+        return text
+    end, { expr = true, desc = path.desc })
+end
 
 --
 -- terminal keymaps
