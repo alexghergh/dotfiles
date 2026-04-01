@@ -213,7 +213,38 @@ end
 
 -- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
 local function toast_notify(title, body)
-    local pane_id = vim.env.WEZTERM_PANE or ''
+    -- get the wezterm tab id (unfortunately this is more complicated than a simple translation of pane id -> tab id)
+    local pane_num = tonumber(vim.env.WEZTERM_PANE)
+    if pane_num then
+        local list_result = vim.system({ 'wezterm', 'cli', 'list', '--format', 'json' }, { text = true }):wait()
+
+        -- if wezterm is installed, we have to iterate on the list of results; this is a list of _panes_,
+        -- each with a window id, tab id, and pane id; we have to skip other windows, and we have to count
+        -- the tab number in the current window
+        if list_result.code == 0 then
+            local panes = vim.json.decode(list_result.stdout)
+            local tab_number = 1
+            local last_window_id
+            local last_tab_id
+
+            for _, pane in ipairs(panes) do
+                if pane.window_id ~= last_window_id then
+                    last_window_id = pane.window_id
+                    last_tab_id = pane.tab_id
+                    tab_number = 1
+                elseif pane.tab_id ~= last_tab_id then
+                    last_tab_id = pane.tab_id
+                    tab_number = tab_number + 1
+                end
+
+                if pane.pane_id == pane_num then
+                    title = string.format('%s (tab %d)', title, tab_number)
+                    break
+                end
+            end
+        end
+    end
+
     local notify_cmd = {
         'notify-send',
         '--app-name',
@@ -229,11 +260,11 @@ local function toast_notify(title, body)
     -- upon callback, extract whether the button was pressed; if yes, switch
     -- focus back to the conversation when the current terminal supports it
     vim.system(notify_cmd, { text = true }, function(result)
-        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or pane_id == '' then
+        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or not pane_num then
             return
         end
 
-        vim.system({ 'wezterm', 'cli', 'activate-pane', '--pane-id', pane_id }, { text = true }, function(activate_result)
+        vim.system({ 'wezterm', 'cli', 'activate-pane', '--pane-id', tostring(pane_num) }, { text = true }, function(activate_result)
             if activate_result.code ~= 0 then
                 return
             end
