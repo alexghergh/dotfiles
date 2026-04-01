@@ -139,7 +139,6 @@ return {
 
             -- Git Commits
             vim.keymap.set('n', '<Leader>gg', builtin.git_status, { desc = 'List diffs in current repo' })
-            vim.keymap.set('n', '<Leader>gf', builtin.git_files, { desc = 'List all git files under workspace' })
             vim.keymap.set('n', '<Leader>gc', builtin.git_commits, { desc = 'Git commits' })
 
             -- Lsp (see also lua/modules/lsp.lua)
