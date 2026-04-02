@@ -1,65 +1,84 @@
 return {
 
-    -- code diffs
-    -- see :h signify
+    -- buffer integration for git (inline diffs, hunks, text object)
+    -- see :h gitsigns.txt
     {
-        'mhinz/vim-signify',
-        config = function()
-            -- toggle line highlighting (mnemonic Hunk/Highlight Toggle)
-            vim.keymap.set('n', '<Leader>ht', '<Cmd>SignifyToggleHighlight<CR>', { desc = 'Toggle diff highlight' })
+        'lewis6991/gitsigns.nvim',
+        opts = {
+            sign_priority = 60,
+            update_debounce = 50,
+            attach_to_untracked = true,
+        },
+        config = function(_, opts)
+            local gs = require('gitsigns')
+            gs.setup(opts)
 
-            -- open new tab in diff-mode (mnemonic Hunk Diff)
-            vim.keymap.set('n', '<Leader>hd', '<Cmd>SignifyDiff<CR>', { desc = 'Open new tab in diff mode' })
+            -- populate quickfix list with hunks (per file and per project)
+            vim.keymap.set('n', '<Leader>hq', gs.setqflist, { desc = 'Populate quickfix list with file hunks' })
+            vim.keymap.set('n', '<Leader>hQ', function()
+                gs.setqflist('all')
+            end, { desc = 'Populate quickfix list with project hunks' })
 
-            -- open new tab only with changes unfolded (mnemonic Hunk Fold)
-            vim.keymap.set('n', '<Leader>hf', '<Cmd>SignifyFold<CR>', { desc = 'Open new tab in diff mode (non-diffs folded)' })
+            -- show commit info (TODO move to lazygit)
+            vim.keymap.set('n', '<Leader>hc', function()
+                vim.ui.input({ prompt = 'Commit: ', default = 'HEAD' }, function(input)
+                    if input == nil then
+                        return
+                    end
+                    input = vim.trim(input)
+                    gs.show_commit(input ~= '' and input or nil)
+                end)
+            end, { desc = "Show vim.ui.input()'ed commit info in split" })
 
-            -- show diff in floating window (mnemonic Hunk Show)
-            vim.keymap.set('n', '<Leader>hs', '<Cmd>SignifyHunkDiff<CR>', { desc = 'Show diff under cursor' })
+            -- show file at given revision (TODO move to codediff)
+            vim.keymap.set('n', '<Leader>hf', function()
+                vim.ui.input({ prompt = 'Base: ', default = 'HEAD' }, function(input)
+                    if input == nil then
+                        return
+                    end
+                    input = vim.trim(input)
+                    gs.show(input ~= '' and input or nil)
+                end)
+            end, { desc = "Show file at vim.ui.input()'ed revision" })
 
-            -- undo the diff change on the line (mnemonic Hunk Undo)
-            vim.keymap.set('n', '<Leader>hu', '<Cmd>SignifyHunkUndo<CR>', { desc = 'Undo diff under cursor' })
+            -- open file diff in split (TODO move this to codediff)
+            vim.keymap.set('n', '<Leader>hd', gs.diffthis, { desc = 'Open file diff' })
+
+            -- show file git blame ('s' on a blame line to show full commit info)
+            vim.keymap.set('n', '<Leader>hb', gs.blame, { desc = 'Git blame the file' })
 
             -- hunk text objects
-            vim.keymap.set('o', 'ih', '<Plug>(signify-motion-inner-pending)', { desc = 'Diff inner' })
-            vim.keymap.set('x', 'ih', '<Plug>(signify-motion-inner-visual)', { desc = 'Diff inner' })
-            vim.keymap.set('o', 'ah', '<Plug>(signify-motion-outer-pending)', { desc = 'Diff outer' })
-            vim.keymap.set('x', 'ah', '<Plug>(signify-motion-outer-visual)', { desc = 'Diff outer' })
+            vim.keymap.set({ 'o', 'x' }, 'ih', gs.select_hunk, { desc = 'Diff inner text object' })
+
+            -- show diff in floating window
+            vim.keymap.set('n', '<Leader>hs', gs.preview_hunk, { desc = 'Show diff under cursor' })
+            vim.keymap.set('n', '<Leader>hi', gs.preview_hunk_inline, { desc = 'Show inlined diff under cursor' })
 
             -- hunk navigation
-            vim.keymap.set('n', ']h', '<Plug>(signify-next-hunk)', { desc = 'Move to next diff' })
-            vim.keymap.set('n', '[h', '<Plug>(signify-prev-hunk)', { desc = 'Move to previous diff' })
-            vim.keymap.set('n', ']H', '9999]h', { remap = true, desc = 'Move to last diff' })
-            vim.keymap.set('n', '[H', '9999[h', { remap = true, desc = 'Move to first diff' })
+            -- stylua: ignore start
+            vim.keymap.set('n', ']h', function() gs.nav_hunk('next', { navigation_message = true }) end, { desc = 'Move to next diff' })
+            vim.keymap.set('n', '[h', function() gs.nav_hunk('prev', { navigation_message = true }) end, { desc = 'Move to previous diff' })
+            vim.keymap.set('n', ']H', function() gs.nav_hunk('last', { navigation_message = true }) end, { desc = 'Move to last diff' })
+            vim.keymap.set('n', '[H', function() gs.nav_hunk('first', { navigation_message = true }) end, { desc = 'Move to first diff' })
+            -- stylua: ignore end
 
-            -- show the current hunk number out of the total when jumping
-            vim.api.nvim_create_autocmd('User', {
-                pattern = 'SignifyHunk',
-                callback = function(_)
-                    local h = vim.fn['sy#util#get_hunk_stats']()
-                    if h ~= nil then
-                        print(vim.fn.printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks))
-                    end
-                end,
-                group = vim.api.nvim_create_augroup('_user_group', { clear = false }),
-            })
-        end,
-    },
+            -- stage / reset hunk
+            vim.keymap.set('n', '<Leader>ha', gs.stage_hunk, { desc = 'Stage hunk under cursor' })
+            vim.keymap.set('n', '<Leader>hA', gs.stage_buffer, { desc = 'Stage whole buffer' })
+            vim.keymap.set('n', '<Leader>hr', gs.reset_hunk, { desc = 'Reset hunk under cursor' })
+            vim.keymap.set('v', '<Leader>ha', function()
+                gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end, { desc = 'Stage hunk visual selection' })
+            vim.keymap.set('v', '<Leader>hr', function()
+                gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end, { desc = 'Reset hunk visual selection' })
 
-    -- git inside vim
-    -- see :h fugitive
-    {
-        'tpope/vim-fugitive',
-        lazy = false,
-        config = function()
-            -- TODO top-5 things to learn:
-            -- :Gdiff to stage current file changes
-            -- :G to open the window for staged / unstaged changes; from there:
-            --   - use '-' to stage / unstage whole files
-            --   - use I on individual files as git add -p
-            --   - 'cc' to commit, 'dv' to diff, 'o' to open
-            -- alternatively, directly use :Gwrite to add a whole file at once
-            -- :Git log
+            -- toggle line, number and word diff highlighting
+            vim.keymap.set('n', '<Leader>ht', function()
+                gs.toggle_linehl()
+                gs.toggle_numhl()
+                gs.toggle_word_diff()
+            end, { desc = 'Toggle diff line highlight' })
         end,
     },
 }
