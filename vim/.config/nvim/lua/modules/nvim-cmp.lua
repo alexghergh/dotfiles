@@ -121,7 +121,7 @@ return {
 
             -- opts are unpacked in config()
             return {
-                opts = {
+                insert = {
                     mapping = cmp.mapping.preset.insert({
                         ['<C-u>'] = {
                             i = function(fallback)
@@ -251,26 +251,26 @@ return {
                         ghost_text = true,
                     },
                     enabled = function()
-                        local enabled = true
-
-                        -- disable in comments
                         local context = require('cmp.config.context')
-                        enabled = enabled and not context.in_treesitter_capture('comment') and not context.in_syntax_group('Comment')
 
-                        -- disable in prompts
-                        enabled = enabled and not (vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt')
-                        enabled = enabled and not (vim.bo.filetype == 'namu_prompt')
+                        -- stylua: ignore
+                        return
+                            -- disable in comments
+                            not context.in_treesitter_capture('comment')
+                            and not context.in_syntax_group('Comment')
 
-                        -- disable in macros
-                        enabled = enabled and not (vim.fn.reg_recording() ~= '')
-                        enabled = enabled and not (vim.fn.reg_executing() ~= '')
+                            -- disable in prompts
+                            and vim.api.nvim_get_option_value('buftype', { buf = 0 }) ~= 'prompt'
+                            and vim.bo.filetype ~= 'namu_prompt'
 
-                        return enabled
+                            -- disable in macros
+                            and vim.fn.reg_recording() == ''
+                            and vim.fn.reg_executing() == ''
                     end,
                 },
 
                 -- search (/, ?)
-                opts_cmd_search = {
+                search = {
                     mapping = {
                         ['<C-n>'] = {
                             c = function(fallback)
@@ -298,7 +298,7 @@ return {
                 },
 
                 -- command line (:)
-                opts_cmd_command = {
+                command = {
                     mapping = {
                         ['<Tab>'] = {
                             c = function()
@@ -367,11 +367,11 @@ return {
             local cmp = require('cmp')
 
             -- setup general auto-completion
-            cmp.setup(opts['opts'])
+            cmp.setup(opts.insert)
 
             -- setup cmdline auto-completion
-            cmp.setup.cmdline({ '/', '?' }, opts['opts_cmd_search'])
-            cmp.setup.cmdline(':', opts['opts_cmd_command'])
+            cmp.setup.cmdline({ '/', '?' }, opts.search)
+            cmp.setup.cmdline(':', opts.command)
 
             -- autopairs on function / method insert (skip codecompanion slash commands, which are also Function item kind)
             local cmp_autopairs = require('nvim-autopairs.completion.cmp')

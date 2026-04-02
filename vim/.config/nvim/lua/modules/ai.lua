@@ -769,13 +769,13 @@ return {
                 },
                 group = group,
                 callback = function(req)
+                    local bufnr = (req.data and req.data.bufnr) or req.buf
+                    local bufinfo = vim.fn.getbufinfo(bufnr)[1] or {}
+
                     -- if the current neovim instance is not focused or the chat buffer is
                     -- hidden, send message; otherwise, user sees chat already
-                    if
-                        vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false
-                        or vim.fn.getbufinfo(req.data.bufnr)[1].hidden == 1
-                    then
-                        local chat = require('codecompanion').buf_get_chat(req.data.bufnr)
+                    if vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false or bufinfo.hidden == 1 then
+                        local chat = require('codecompanion').buf_get_chat(bufnr)
                         if not chat then
                             return
                         end

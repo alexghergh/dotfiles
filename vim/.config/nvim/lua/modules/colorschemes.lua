@@ -58,7 +58,7 @@ local function melange()
         ['CmpItemAbbrDeprecated'] = { fg = '#808080', bg = 'None', strikethrough = true },
         -- blue
         ['CmpItemAbbrMatch'] = { fg = '#569CD6', bg = 'None' },
-        ['CmpItemAbbrMatchFuzzy'] = { link = 'CmpIntemAbbrMatch' },
+        ['CmpItemAbbrMatchFuzzy'] = { link = 'CmpItemAbbrMatch' },
         -- light blue
         ['CmpItemKindVariable'] = { fg = '#9CDCFE', bg = 'None' },
         ['CmpItemKindInterface'] = { link = 'CmpItemKindVariable' },

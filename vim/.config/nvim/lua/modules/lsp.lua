@@ -182,7 +182,7 @@ return {
                     vim.keymap.set({ 'n', 'v' }, '<Leader>ca', vlb.code_action, { buffer = buf, desc = 'Display code actions' })
 
                     -- omnifunc / tagfunc completion
-                    if Client:supports_method('completionItem/resolve') then
+                    if Client:supports_method('textDocument/completion') then
                         vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
                     end
                     if Client:supports_method('textDocument/definition') then
