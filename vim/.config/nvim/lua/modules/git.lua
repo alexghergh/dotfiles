@@ -28,21 +28,18 @@ return {
                     input = vim.trim(input)
                     gs.show_commit(input ~= '' and input or nil)
                 end)
-            end, { desc = "Show vim.ui.input()'ed commit info in split" })
+            end, { desc = 'Show commit info in split' })
 
-            -- show file at given revision (TODO move to codediff)
+            -- show current file at a given revision
             vim.keymap.set('n', '<Leader>hf', function()
-                vim.ui.input({ prompt = 'Base: ', default = 'HEAD' }, function(input)
+                vim.ui.input({ prompt = 'Revision: ', default = 'HEAD' }, function(input)
                     if input == nil then
                         return
                     end
                     input = vim.trim(input)
                     gs.show(input ~= '' and input or nil)
                 end)
-            end, { desc = "Show file at vim.ui.input()'ed revision" })
-
-            -- open file diff in split (TODO move this to codediff)
-            vim.keymap.set('n', '<Leader>hd', gs.diffthis, { desc = 'Open file diff' })
+            end, { desc = 'Show current file at revision' })
 
             -- show file git blame ('s' on a blame line to show full commit info)
             vim.keymap.set('n', '<Leader>hb', gs.blame, { desc = 'Git blame the file' })
@@ -79,6 +76,76 @@ return {
                 gs.toggle_numhl()
                 gs.toggle_word_diff()
             end, { desc = 'Toggle diff line highlight' })
+        end,
+    },
+
+    -- better code diffs
+    {
+        'esmuellert/codediff.nvim',
+        opts = {
+            diff = {
+                original_position = 'right', -- position of HEAD / index
+                conflict_ours_position = 'left', -- position of current changes
+                compute_moves = true,
+            },
+            explorer = {
+                initial_focus = 'modified',
+            },
+            keymaps = {
+                view = {
+                    -- these are the same mappings as the above gitsigns; keep them synced
+                    next_hunk = ']h',
+                    prev_hunk = '[h',
+                    toggle_stage = '<Leader>hA',
+                    stage_hunk = '<Leader>ha',
+                    unstage_hunk = '<Leader>hu',
+                    discard_hunk = '<Leader>hr',
+                    hunk_textobject = 'ih',
+                },
+            },
+        },
+        config = function(_, opts)
+            require('codediff').setup(opts)
+
+            -- open project diff
+            vim.keymap.set('n', '<Leader>hd', '<Cmd>CodeDiff<CR>', { desc = 'Open git diff explorer' })
+
+            -- show project git history
+            vim.keymap.set('n', '<Leader>hy', function()
+                vim.ui.input({ prompt = 'Range: ' }, function(input)
+                    if input == nil then
+                        return
+                    end
+                    input = vim.trim(input)
+                    vim.cmd({ cmd = 'CodeDiff', args = input ~= '' and { 'history', input } or { 'history' } })
+                end)
+            end, { desc = 'Open project git history' })
+
+            -- show file git history
+            vim.keymap.set('n', '<Leader>hF', function()
+                vim.ui.input({ prompt = 'Range: ' }, function(input)
+                    if input == nil then
+                        return
+                    end
+                    input = vim.trim(input)
+                    vim.cmd({ cmd = 'CodeDiff', args = input ~= '' and { 'history', input, '%' } or { 'history', '%' } })
+                end)
+            end, { desc = 'Open current file git history' })
+
+            -- show visual selection history per file
+            vim.keymap.set('x', '<Leader>hF', function()
+                vim.ui.input({ prompt = 'Range: ' }, function(input)
+                    if input == nil then
+                        return
+                    end
+                    input = vim.trim(input)
+                    vim.cmd({
+                        cmd = 'CodeDiff',
+                        args = input ~= '' and { 'history', input } or { 'history' },
+                        range = { vim.fn.line("'<"), vim.fn.line("'>") },
+                    })
+                end)
+            end, { desc = 'Open selected-line git history' })
         end,
     },
 }

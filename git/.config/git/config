@@ -16,11 +16,19 @@
     smtpserverport = 587
     smtpencryption = tls
 [merge]
-    tool = vimdiff
+	tool = codediff
 [mergetool]
-    prompt = false
+	prompt = false
 [mergetool "vimdiff"]
     cmd = nvim -d "$LOCAL" "$REMOTE"
+[mergetool "codediff"]
+	cmd = nvim \"$MERGED\" -c \"CodeDiff merge \\\"$MERGED\\\"\"
+[diff]
+	tool = codediff
+[difftool]
+	prompt = false
+[difftool "codediff"]
+	cmd = nvim \"$LOCAL\" \"$REMOTE\" +\"CodeDiff file $LOCAL $REMOTE\"
 [init]
     defaultBranch = main
 [filter "lfs"]
