@@ -1,6 +1,6 @@
 -- Helper Methods
 -- generic helpers for CodeCompanion
--- implement missing ACP functionality, like session load by id, token usage updates etc.
+-- implement missing ACP functionality, like session load by id, token usage updates etc., and other generic stuff (keymaps etc.)
 -- these methods do use internal functionality, so expect breakage on updates
 
 -- determine whether the current chat buffer is "dirty", i.e. has an unsubmitted user text draft
@@ -290,6 +290,44 @@ local function toast_notify(title, body)
     end)
 end
 
+-- goto file action using gf in codecompanion chat buffers; this looks at whether there exists a
+-- window on the left of the chat, and if yes reuses that, otherwise opens new split on the left
+local function goto_file_action(path)
+    local current_win = vim.api.nvim_get_current_win()
+    vim.cmd.wincmd('h')
+    if vim.api.nvim_get_current_win() == current_win then
+        vim.cmd('leftabove vertical split')
+    end
+    vim.cmd.edit(vim.fn.fnameescape(path))
+end
+
+-- file path parser for codecompanion chat buffers; prefer markdown links under cursor,
+-- but otherwise fall back to regular <cfile> parsing
+local function parse_markdown_file_path()
+    local line = vim.api.nvim_get_current_line()
+    local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+
+    -- match file paths on the line
+    for s, target, e in line:gmatch('()%[[^%]]-%]%(([^)]+)%)()') do
+        -- check if cursor on the pattern; cursor can also be on the [text] part
+        if col >= s and col < e then
+            -- parse markdown link targets like path, path#L32, and path#L32-L48
+            local parts = vim.fn.matchlist(target, [[^\(.\{-}\)\%(\#L\(\d\+\)\%(-L\d\+\)\?\)\?$]])
+            if parts[2] ~= '' then
+                -- handle ~ paths
+                return vim.fs.normalize(vim.fn.fnamemodify(vim.fn.expand(parts[2]), ':p')), tonumber(parts[3]) or nil
+            end
+            return nil
+        end
+    end
+
+    -- this parses any file under cursor that's not a markdown link
+    local cfile = vim.fn.expand('<cfile>')
+    if type(cfile) == 'string' and cfile ~= '' then
+        return vim.fs.normalize(vim.fn.fnamemodify(vim.fn.expand(cfile), ':p')), nil
+    end
+end
+
 return {
 
     -- LLM session history (see settings in 'extensions' config below)
@@ -424,6 +462,9 @@ return {
                         },
                     },
                     opts = {
+                        -- go to file action (mapped to gf below); this is just the file path opener method
+                        goto_file_action = goto_file_action,
+
                         -- remove default system prompt for acp agents (these usually come with their
                         -- own, and modifying e.g. AGENTS.md is usually better than system prompt)
                         system_prompt = function(ctx)
@@ -446,6 +487,24 @@ return {
                         clear_approvals = false, -- interferes with gt tab movement
                         yolo_mode = false, -- interferes with gt tab movement
                         fold_code = false, -- interferes with gf goto file
+                        goto_file_under_cursor = {
+                            modes = { n = { 'gf' } }, -- neovim gf, overrides codecompanion's gR
+                            description = 'Open file under cursor, with markdown line awareness',
+                            -- overwrite gf to accept markdown github-style file + line number paths
+                            -- e.g. [file.lua](path/to/file.lua#L32)
+                            callback = function()
+                                local path, lnum = parse_markdown_file_path()
+                                if not path then
+                                    return
+                                end
+
+                                -- use the above overwritten goto_file_action callback
+                                require('codecompanion.config').interactions.chat.opts.goto_file_action(path)
+
+                                -- move to correct line in file, if any
+                                vim.api.nvim_win_set_cursor(0, { math.min(lnum or 1, vim.api.nvim_buf_line_count(0)), 0 })
+                            end,
+                        },
                     },
                 },
                 inline = {
