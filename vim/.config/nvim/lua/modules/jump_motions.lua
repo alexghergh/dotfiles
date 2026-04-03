@@ -1,7 +1,6 @@
 return {
 
     -- better jump-around movements
-
     {
         -- highlights on f, F, t, T movement
         'jinh0/eyeliner.nvim',
@@ -10,8 +9,9 @@ return {
             dim = true,
         },
     },
+
+    -- super-powered window jumps
     {
-        -- super-powered window jumps
         'ggandor/leap.nvim',
         config = function(_, _)
             -- define equivalence classes for brackets and quotes, in addition

@@ -93,13 +93,6 @@ end)({
 
 return {
 
-    -- sources for nvim-cmp
-    { 'hrsh7th/cmp-nvim-lsp' },
-    { 'hrsh7th/cmp-buffer' },
-    { 'hrsh7th/cmp-cmdline' },
-    { 'hrsh7th/cmp-path' },
-    { 'saadparwaiz1/cmp_luasnip' },
-
     -- auto-completion using nvim-cmp
     -- this plugin sets up the skeleton for accepting multiple sources, and the
     -- UI; sources need to be separately installed and set up
@@ -108,6 +101,7 @@ return {
     {
         'hrsh7th/nvim-cmp',
         dependencies = {
+            -- sources for nvim-cmp
             'hrsh7th/cmp-nvim-lsp',
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-cmdline',
