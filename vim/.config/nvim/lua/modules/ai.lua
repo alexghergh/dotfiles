@@ -329,15 +329,9 @@ local function parse_markdown_file_path()
 end
 
 return {
-
-    -- LLM session history (see settings in 'extensions' config below)
-    {
-        'ravitemer/codecompanion-history.nvim',
-    },
-
     -- LLM code-assistant
     --
-    -- also see lua/modules/galaxyline.lua for statusline component
+    -- also see lua/modules/statusline.lua for statusline component
     {
         'olimorris/codecompanion.nvim',
         dependencies = {
@@ -570,20 +564,6 @@ return {
                     },
                     window = {
                         buflisted = true,
-                    },
-                },
-            },
-            extensions = {
-                history = {
-                    opts = {
-                        -- don't auto-save chats; this is turned off since ACP connections have
-                        -- their own history, and saving them using history wouldn't work either;
-                        -- technically, this plugin only works for HTTP LLM connections
-                        auto_save = false,
-                        save_chat_keymap = '<Leader>sc',
-
-                        auto_generate_title = false,
-                        continue_last_chat = false,
                     },
                 },
             },
