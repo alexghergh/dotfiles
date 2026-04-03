@@ -51,6 +51,30 @@ Prefer concise comments that explain intent, assumptions, invariants, or non-obv
 
 After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md` files should be updated, as well as any nearby developer-facing docs. If the behavior, workflow, or architecture changed, and you think changes to the docs are warranted, then present the intended changes and ask the user about them. Apply the documentation edits separately from the code edits.
 
+## Chat Output
+
+When referencing files in chat, use markdown links.
+
+For file references:
+- use an absolute filesystem path as the link target
+- when citing a specific line, use a GitHub-style line anchor in the target: `#L<line>`
+- when citing a specific line, include the line number in the visible link text as `path/to/file.lua:<line>`
+- when referencing a file as a whole, omit the line number in both the link target and the visible link text
+- in the visible link text, prefer the shortest sensible disambiguating path, not a bare filename
+- for files in this repo, prefer repo-relative paths in the visible link text
+- for external modules, projects or dependency files, prefer a stable module-relative base in the visible link text that helps distinguish similar filenames
+
+Examples:
+- `[src/editor/actions/goto.lua](/home/user/projects/example-app/src/editor/actions/goto.lua)`
+- `[src/editor/actions/goto.lua:34](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
+- `[lib/ui/keymaps.lua:88](/home/user/projects/example-app/lib/ui/keymaps.lua#L88)`
+
+When useful and easy to determine, include the enclosing function, method, or local context inline in the visible link text.
+
+Preferred:
+- `[src/editor/actions/goto.lua:34, goto_file_action()](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
+- `[lib/ui/keymaps.lua:88, normal_mode_mapping()](/home/user/projects/example-app/lib/ui/keymaps.lua#L88)`
+
 ## Tests
 
 Do not add new tests unless the project already has them or the user explicitly asks. If the area you are changing already has tests, follow the existing testing pattern rather than introducing a new one.
