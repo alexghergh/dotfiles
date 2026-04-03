@@ -5,7 +5,7 @@ return {
     {
         'lewis6991/gitsigns.nvim',
         opts = {
-            sign_priority = 60,
+            sign_priority = 5000,
             update_debounce = 50,
             attach_to_untracked = true,
         },
