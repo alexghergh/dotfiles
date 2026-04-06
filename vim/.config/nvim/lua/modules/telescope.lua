@@ -39,6 +39,7 @@ return {
                         preview_width = 0.55,
                     },
                 },
+                dynamic_preview_title = true,
             },
             pickers = {
                 buffers = {
