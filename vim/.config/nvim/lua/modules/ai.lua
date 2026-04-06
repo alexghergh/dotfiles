@@ -503,16 +503,6 @@ return {
                 },
                 inline = {
                     adapter = 'llama_cpp',
-                    keymaps = {
-                        accept_change = {
-                            -- diff yes
-                            modes = { n = '<Leader>gdy' },
-                        },
-                        reject_change = {
-                            -- diff no
-                            modes = { n = '<Leader>gdn' },
-                        },
-                    },
                 },
                 cmd = {
                     adapter = 'llama_cpp',
@@ -566,6 +556,9 @@ return {
                         buflisted = true,
                     },
                 },
+                diff = {
+                    threshold_for_chat = 0, -- never show diffs in chat buffer
+                }
             },
         },
         config = function(_, opts)
@@ -667,6 +660,7 @@ return {
                     'CodeCompanionChatStopped',
                     'CodeCompanionChatACPModeChanged',
                     'CodeCompanionACPChatRestored',
+                    'CodeCompanionACPConnected',
                 },
                 group = group,
                 callback = function(req)
