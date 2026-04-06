@@ -13,6 +13,8 @@ return {
         config = function()
             -- ensure the following are installed
             local languages = {
+                'query',
+                'vimdoc',
                 'c',
                 'cpp',
                 'java',
@@ -21,7 +23,6 @@ return {
                 'python',
                 'go',
                 'rust',
-                'query',
                 'vim',
                 'cmake',
                 'make',
@@ -29,8 +30,8 @@ return {
                 'yaml',
                 'bibtex',
                 'fish',
+                'bash',
                 'html',
-                'vimdoc',
             }
 
             -- install languages (this runs async)
