@@ -558,7 +558,7 @@ return {
                 },
                 diff = {
                     threshold_for_chat = 0, -- never show diffs in chat buffer
-                }
+                },
             },
         },
         config = function(_, opts)
