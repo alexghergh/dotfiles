@@ -1,38 +1,74 @@
 ---
 name: review-worktrees
-description: Comparative review across multiple git worktrees, grading each worktree per dimension and picking a winner.
+description: Compare multiple git worktrees from a maintainer perspective using paired first-pass reviewers, fresh deeper passes, and priority-based winner selection.
 ---
 
 # Comparative Worktree Review
 
-Compare competing implementations across multiple git worktrees. Spawn one sub-agent per quality dimension; each sub-agent evaluates ALL worktrees for its dimension and compares them.
+Compare competing implementations as the maintainer of the codebase, not as the author of any candidate.
+Do not choose a winner by average score.
+Pick the safest, most apt implementation for this repository.
 
 ## Workflow
 
-1. Run `git worktree list` to discover worktrees. Identify the main worktree (base) and feature worktrees (targets).
-2. Assign stable labels such as `A`, `B`, `C` to the candidate worktrees in a fixed order. Show the mapping once near the top of the output and use those labels consistently afterward.
-3. For each dimension file in `references/`, spawn a sub-agent:
-   - The sub-agent reads its dimension file for criteria and rubric.
-   - The sub-agent reviews every candidate worktree's diff against the base.
-   - The sub-agent grades each labeled worktree (1-5) with evidence.
-   - The sub-agent notes only differences that are genuinely useful for choosing a winner or improving one later. Prefer concise relative comparisons such as `A is better than B because ...` when they help the user decide. Do not force commentary if the grades and evidence already tell the story.
-4. Collect all sub-agent results.
-5. Produce a per-dimension comparison in list form, using the stable labels.
-6. Pick a winner using both the dimension scores and the concrete findings. Do not choose by average score alone when one worktree has a blocking issue, obvious regression, or materially weaker mergeability.
-7. Extract actionable findings from the non-winning worktrees that should be applied to the winner. Only carry over changes that fit the winner's current structure and do not reintroduce the losers' weaknesses.
-8. Convert the best compatible improvements from the non-winning worktrees into a copy-pastable prompt addressed to the winning worktree.
+1. Run `git worktree list` to discover worktrees. Identify the base worktree and the candidate worktrees.
+2. Assign stable labels such as `A`, `B`, `C` to the candidates in a fixed order. Show the mapping once near the top of the output and use those labels consistently afterward.
+3. Spawn two first-pass sub-agents in parallel:
+   - `precision reviewer`
+     - inspect each candidate's diff against the base
+     - surface concrete correctness bugs, regressions, stale or missing docs or comments, direct test gaps, and obvious integration mistakes
+     - stay close to the changed code and produce a quick triage view of each candidate
+   - `explorer reviewer`
+     - inspect surrounding modules, extension points, similar implementations elsewhere in the repo, and local architecture docs when present
+     - judge which candidates fit the repo best and whether any are solving the problem at the wrong seam or layer
+     - review from a third-person maintainer perspective
+4. Collect both first-pass summaries and produce a quick overview.
+5. If the first pass already surfaces clear blockers or a clear winner, surface that promptly instead of spending time on unnecessary deeper review.
+6. If deeper review is warranted, spawn fresh focused sub-agents. Do not continue with the original sub-agents.
+7. Choose deeper reviewers based on the open questions from the first pass. Common follow-up reviewers:
+   - `correctness reviewer`
+   - `tests reviewer`
+   - `documentation reviewer`
+   - `system-fit reviewer`
+   - `repo-consistency reviewer`
+8. Do not run a dedicated performance review unless the user explicitly asks for one.
+9. If an obvious catastrophic performance regression appears during another pass, report it as a finding, but do not branch into a full performance comparison unless requested.
 
-## Dimensions
+## Decision Priorities
 
-Each file in `references/` defines one review axis: what to look for, examples of good and bad code, and a grading rubric from 1 (critical issues) to 5 (exemplary).
+Use these priorities in order when choosing a winner:
 
-Available dimensions:
-- [security.md](references/security.md) — vulnerabilities, input validation, secrets handling
-- [maintainability.md](references/maintainability.md) — readability, modularity, coupling
-- [performance.md](references/performance.md) — algorithmic efficiency, resource usage, scaling
-- [documentation.md](references/documentation.md) — comments, docstrings, README accuracy
-- [clean-code.md](references/clean-code.md) — naming, formatting, DRY, single responsibility
-- [architecture.md](references/architecture.md) — separation of concerns, dependency direction, extensibility
+1. correctness, regressions, and security-sensitive mistakes
+2. system fit, mergeability, and consistency with repo patterns
+3. tests, documentation, and comments for non-obvious logic
+4. performance, only when explicitly requested
+
+Use the following severity examples to keep labels consistent:
+- high: guaranteed merge blockers, user-visible breakage, or immediate correctness/security regressions
+- medium: likely regressions or integration risks that are fixable but should be addressed before merge
+- low: localized maintainability, consistency, or clarity issues that improve quality but do not block merge
+
+Use this grading convention internally when judging review quality from sub-agents, but don't expose this to the user:
+- **5**: no meaningful regressions found and the change is behaviorally sound for the stated scope
+- **4**: mostly good; only minor edge follow-ups or low-risk concerns
+- **3**: important issues remain and the change should be improved before full trust
+- **2**: significant regressions or high-risk problems are likely
+- **1**: blocking issue; do not merge as written
+
+Reject or demote candidates with higher-priority failures even if they look cleaner or faster elsewhere.
+
+## References
+
+Use the reference files selectively. Not every comparison needs every reference.
+
+- [correctness.md](references/correctness.md) — bugs, regressions, wrong assumptions, broken behavior
+- [architecture.md](references/architecture.md) — system fit, layering, extension points, repo patterns
+- [tests.md](references/tests.md) — coverage of changed behavior, test quality, avoiding test theater
+- [documentation.md](references/documentation.md) — stale or missing docs, misleading comments, public interface docs
+- [security.md](references/security.md) — vulnerabilities, boundary validation, secrets handling
+- [maintainability.md](references/maintainability.md) — changeability, coupling, structural friction
+- [clean-code.md](references/clean-code.md) — naming, duplication, dead code, local readability
+- [performance.md](references/performance.md) — opt-in performance review only
 
 ## Output Format
 
@@ -45,45 +81,45 @@ Prefer list output over tables. The result should be easy to scan in a terminal.
 - `B` — second candidate worktree
 - `C` — third candidate worktree
 
-### Per-Dimension Comparison (from each sub-agent)
+### Quick Overview
+
+Start with the two first-pass summaries:
 
 ```text
-maintainability:
-A, grade: 4
-B, grade: 3
-
-- best: A
-- A is better than B because parsing and validation stay separated instead of leaking into CLI code
-- adopt into A: B has a small helper extraction in `src/foo.py` worth porting
+quick overview:
+- precision reviewer: one or two concrete candidate issues or "no immediate blockers found"
+- explorer reviewer: one or two system-fit comparisons or "no broader fit issues found"
 ```
 
-If the grades already make the result obvious, omit the extra bullets. Do not force `pro:` / `con:` lines or pairwise comparisons just to fill space.
+### Findings
 
-### Aggregated Summary (from root agent)
+Report findings in this order:
 
 ```text
-overall:
-A, overall: 4.1
-B, overall: 3.6
+blocking issues:
+1. high — `A` — `path/to/file.py:42` — concrete bug, regression, or wrong integration point
 
-- winner candidate: A
-- A is the safer choice because it has no blocking regressions
+merge-readiness issues:
+1. medium — `B` — `path/to/file.py:87` — missing or misleading tests, docs, comments, or maintainability issue that should be fixed
+
+consistency and architecture concerns:
+1. medium — `C` — `path/to/file.py:12` — inconsistent repo pattern or wrong layer for the behavior
+
+performance:
+- not reviewed
 ```
-
-Keep this section concise. Only add short notes that help justify the final decision.
 
 ### Final Recommendation
 
-- `winner`: which worktree to use and why
-- `why others lost`: blocking issues, regressions, or important trade-offs that kept them from winning
-- `adopt from others`: specific improvements from non-winning worktrees to apply to the winner, with file references and a short note on why each change is compatible with the winner
-- `prompt for winner`: a copy-pastable user message addressed to the winning worktree. Write it as a fenced `text` block in imperative user voice, for example "consider improving your implementation by ...". Keep it concrete, grounded in the reviewed code, and focused only on changes that should strengthen the winner without importing the losers' regressions. If there are no compatible improvements worth porting, say so explicitly instead of forcing a prompt.
-- `remaining issues`: actionable findings that exist in all worktrees or still exist in the winner
+- `winner`: the worktree to use and why
+- `why others lost`: the highest-priority reasons they should not win
+- `adopt from others`: only compatible improvements that strengthen the winner without importing higher-priority weaknesses
+- `prompt for winner`: a copy-pastable user message addressed to the winner with only those compatible improvements
+- `remaining issues`: findings that still exist in the winner or across all candidates
 
-## Grading Scale
+If performance was requested, then append the list with the actual findings.
 
-- **5** — Exemplary: exceeds expectations, no issues found
-- **4** — Good: minor suggestions only, no real concerns
-- **3** — Acceptable: some issues worth addressing before merge
-- **2** — Needs work: significant issues that should be fixed
-- **1** — Critical: blocking issues, do not merge
+## Review Limits
+
+If the candidate set is large, keep the first pass broad and use deeper reviewers only where the first pass identified real uncertainty.
+Do not spend time on low-priority polish when higher-priority winner-selection issues are still unresolved.

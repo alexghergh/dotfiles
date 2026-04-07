@@ -1,38 +1,40 @@
 # Architecture
 
-Evaluate separation of concerns, dependency direction, and extensibility.
+Evaluate whether each candidate fits the surrounding system.
 
 ## What to look for
 
-- Clear module separation (e.g., core logic, I/O, configuration, CLI entry points)
-- Dependencies point inward (core modules do not import from CLI or I/O layers)
-- Proper package/dependency management (requirements.txt, pyproject.toml, Cargo.toml, go.mod — pinned versions, no unused deps)
-- Separation of utilities/helpers from application logic
-- Configuration separated from code (loaded at startup, injected or passed explicitly)
-- New features can be added without modifying core abstractions
-- No hidden global mutable state that complicates reasoning or testing
-- Appropriate use of patterns for the language (traits in Rust, interfaces in Go, protocols in Python — not forced, not missing where needed)
+- whether the behavior lives at the correct layer
+- whether the code uses the repo's existing seams, abstractions, and extension points
+- whether similar code elsewhere in the repo follows a different pattern that should be reused here
+- whether the change solves the underlying problem instead of patching a local symptom
+- whether responsibilities are split in a way that matches the rest of the codebase
+- whether the implementation will be easy to merge, extend, and maintain within this repository
+- whether repo-level docs, configuration shape, or dependency boundaries are now out of sync with the implementation
+
+## Reviewer stance
+
+- review from a third-person maintainer perspective
+- do not defend a candidate because it is coherent in isolation
+- ask whether it is the apt implementation for this repository
+- compare candidates on system fit before discussing local polish
 
 ## Examples
 
-Good (4-5):
-- Core logic is a library with no knowledge of how it's invoked (CLI, HTTP, tests all use the same API)
-- Adding a new output format requires implementing one interface/trait, no changes to existing code
-- Dependencies pinned in a lock file; no unused packages in the manifest
-- Utility functions live in a dedicated module, not scattered across scripts
-- Configuration loaded once at startup and threaded through as a struct/dict
+Good:
+- a candidate adds the behavior through the existing extension point instead of bypassing it in a local shortcut
+- a fix is applied where the bad state originates, not at the final rendering layer
+- code follows the same pattern that parallel features already use in the repo
 
-Bad (1-2):
-- A single script mixes argument parsing, business logic, file I/O, and output formatting
-- Adding a simple feature requires modifying abstract base classes or core traits
-- Global mutable state shared across modules without clear ownership
-- No dependency manifest; imports resolved implicitly or vendored ad-hoc
-- Utils duplicated across multiple scripts instead of shared from one module
+Bad:
+- a CLI, transport, or UI layer absorbs business logic that already has a better home elsewhere
+- a candidate copies a nearby legacy pattern while the modern repo pattern lives in another module
+- a local patch silences a symptom while the root contract mismatch remains in the system
 
 ## Grading
 
-- **5**: Clean architecture; easy to extend, test, and reason about
-- **4**: Mostly well-structured; minor layering violations
-- **3**: Architecture works but has areas that resist change
-- **2**: Significant architectural issues that make the system fragile
-- **1**: No discernible architecture; everything depends on everything
+- **5**: the candidate fits the repo cleanly and uses the right seams and layers
+- **4**: mostly good fit with only minor integration questions
+- **3**: workable but there are notable fit or layering concerns
+- **2**: significant system-fit problems make the candidate hard to merge safely
+- **1**: the candidate is fundamentally implemented at the wrong seam or layer

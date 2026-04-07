@@ -1,35 +1,39 @@
 # Performance
 
-Evaluate algorithmic efficiency, resource usage, and scalability.
+Use this reference only when the user explicitly asks for performance review, or when another pass has already uncovered an obviously severe performance regression.
 
 ## What to look for
 
-- Algorithmic complexity (unnecessary O(n²) or worse)
-- Redundant computation or repeated I/O
-- Memory allocation patterns (leaks, unnecessary copies, unbounded growth)
-- Database query efficiency (N+1 queries, missing indexes, full table scans)
-- Caching where appropriate
-- Concurrency issues (blocking operations on hot paths, lock contention)
-- Resource cleanup (open file handles, connections, goroutines, threads)
+- algorithmic complexity that is clearly mismatched to expected scale
+- repeated expensive work or unnecessary I/O in hot paths
+- unbounded memory growth, unnecessary copies, or large retained objects
+- query or fetch patterns that obviously multiply work
+- blocking operations, lock contention, or resource handling problems in performance-sensitive paths
+- opportunities to reuse existing repo patterns for efficient behavior
+
+## Review stance
+
+- performance is secondary to correctness and system fit unless the regression is severe
+- do not choose a candidate for speculative micro-optimizations
+- tie findings to expected usage, hot paths, or concrete scale risks
+- prefer explaining why the current shape is costly over suggesting generic optimizations
 
 ## Examples
 
-Good (4-5):
-- Batch database queries instead of per-item lookups
-- Lazy evaluation for expensive computations that may not be needed
-- Appropriate data structures for the access pattern
-- Resources released via context managers, defer, or RAII
+Good:
+- the review points out an obvious N+1 query on a path that already processes collections
+- a candidate streams data where another buffers the full dataset
+- a hot-path operation reuses an existing cache or batching layer already present in the repo
 
-Bad (1-2):
-- Nested loop over two large collections when a hash join would work
-- Loading entire dataset into memory when streaming would suffice
-- N+1 database queries in a loop
-- File handles or connections opened but never closed on error paths
+Bad:
+- the review rewards a candidate for generic caching without identifying a real repeated cost
+- the review spends time on optimization work before correctness or mergeability is settled
+- the review flags tiny constant-factor issues in cold code paths
 
 ## Grading
 
-- **5**: Efficient algorithms, no wasted resources, scales well
-- **4**: Generally efficient; minor optimization opportunities
-- **3**: Some inefficiencies that matter at moderate scale
-- **2**: Significant performance issues likely under normal load
-- **1**: Will not function acceptably at expected scale
+- **5**: no meaningful performance concerns found for the requested comparison scope
+- **4**: generally sound with only minor optimization opportunities
+- **3**: some issues may matter under realistic usage
+- **2**: clear performance problems should be addressed
+- **1**: severe performance regression or scalability failure
