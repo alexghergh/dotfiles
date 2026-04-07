@@ -661,6 +661,7 @@ return {
                     'CodeCompanionChatACPModeChanged',
                     'CodeCompanionACPChatRestored',
                     'CodeCompanionACPConnected',
+                    'CodeCompanionACPSessionPost', -- after an async session creation is finished
                 },
                 group = group,
                 callback = function(req)
