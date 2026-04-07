@@ -4,37 +4,44 @@ Evaluate code for security vulnerabilities and defensive practices.
 
 ## What to look for
 
-- Input validation and sanitization at system boundaries
-- Authentication and authorization checks
-- Secrets and credentials handling (no hardcoded secrets, proper env usage)
-- Injection vectors: SQL injection, command injection, path traversal, format string attacks
-- Unsafe deserialization of untrusted data (pickle, yaml.load, serde from untrusted sources)
-- Memory safety issues: buffer overflows, use-after-free, unchecked pointer dereference
-- Race conditions and TOCTOU vulnerabilities in concurrent code
-- Subprocess and shell invocation with unsanitized arguments
-- Error messages that leak internal details or stack traces
-- Proper use of cryptographic primitives (no deprecated algorithms, no custom crypto)
-- File permission handling and temporary file creation
-- Dependency vulnerabilities (known CVEs in imports)
+- input validation and sanitization at system boundaries
+- authentication and authorization checks
+- secrets and credentials handling (no hardcoded secrets, proper env usage)
+- injection vectors: SQL injection, command injection, path traversal, format string attacks
+- unsafe deserialization of untrusted data (for example Python `pickle`, YAML loaders, Rust `serde`, etc. using language-appropriate safe APIs)
+- memory safety issues (buffer overflows, use-after-free, unchecked pointer dereference) in unsafe code paths, FFI layers, or native extensions
+- race conditions and TOCTOU vulnerabilities in concurrent code
+- subprocess and shell invocation with unsanitized arguments
+- error messages that leak internal details or stack traces
+- proper use of cryptographic primitives (no deprecated algorithms, no custom crypto)
+- file permission handling and temporary file creation
+- dependency vulnerabilities (known CVEs in imports)
+
+## Reviewer stance
+
+- prioritize concrete vulnerabilities and realistic exploitability over theoretical or stylistic issues
+- require boundary validation, safe parsing, and least-privilege defaults before praising behavior
+- flag risky security assumptions even when they are “internal only” until evidence proves they’re isolated
+- ask for verification of fixes where confidentiality, integrity, or authentication boundaries are implicated
 
 ## Examples
 
-Good (4-5):
-- User input validated at the boundary before reaching business logic
-- Secrets loaded from environment variables or a vault, never in source
-- Parameterized queries used consistently
-- Subprocess calls use argument lists, never shell=True with interpolated strings
-- Temporary files created with restricted permissions via proper stdlib APIs
-- Concurrent access to shared state protected by locks or channels
+Good:
+- user input validated at the boundary before reaching business logic
+- secrets loaded from environment variables or a vault, never in source
+- parameterized queries used consistently
+- subprocess calls use argument lists, avoid shell-based string interpolation
+- temporary files created with restricted permissions via proper stdlib APIs
+- concurrent access to shared state protected by locks or channels
 
-Bad (1-2):
-- String concatenation or f-string formatting for SQL queries with user input
+Bad:
+- string concatenation or f-string formatting for SQL queries with user input
 - API key hardcoded in source file
-- `os.system()` or `subprocess.run(shell=True)` with user-controlled arguments
-- `pickle.loads()` / `yaml.load()` on untrusted input without safe loader
-- File path accepted from user without canonicalization or chroot
-- Cryptographic operations using MD5 or SHA1 for security purposes
-- Race condition between checking a file and using it
+- shell string invocation with user-controlled arguments
+- unsafe deserialization on untrusted input without safe decoding mode
+- file path accepted from user without canonicalization or chroot
+- cryptographic operations using MD5 or SHA1 for security purposes
+- race condition between checking a file and using it
 
 ## Grading
 

@@ -4,24 +4,31 @@ Evaluate how easy the code is to understand, modify, and extend.
 
 ## What to look for
 
-- Module boundaries and coupling between components
-- Depth of nesting and control flow complexity
-- Consistent error handling patterns
-- Testability (can components be tested in isolation?)
-- Changeability (can one feature be modified without ripple effects?)
-- Appropriate use of abstractions (not too early, not too late)
+- module boundaries and coupling between components
+- depth of nesting and control flow complexity
+- consistent error handling patterns
+- testability (can components be tested in isolation?)
+- changeability (can one feature be modified without ripple effects?)
+- appropriate use of abstractions (not too early, not too late)
+
+## Reviewer stance
+
+- prioritize simple structure changes before broad refactors
+- avoid proposing rewrites where a localized change fixes the concrete risk
+- prefer changes that reduce coupling and preserve straightforward local reasoning
+- call out maintainability risks that can predictably make future changes more expensive or error-prone
 
 ## Examples
 
-Good (4-5):
-- Clear module boundaries with narrow interfaces
-- Functions that do one thing and are easy to follow
-- Changes to one feature stay localized to a few files
+Good:
+- clear module boundaries with narrow interfaces
+- functions that do one thing and are easy to follow
+- changes to one feature stay localized to a few files
 
-Bad (1-2):
-- God class or function that handles multiple unrelated concerns
-- Circular dependencies between modules
-- Modifying a simple feature requires changes in 10+ files
+Bad:
+- god class or function that handles multiple unrelated concerns
+- circular dependencies between modules
+- modifying a simple feature requires changes in 10+ files
 
 ## Grading
 
