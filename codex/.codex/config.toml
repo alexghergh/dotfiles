@@ -55,10 +55,6 @@ sandbox_mode = "read-only"
 model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 
-# 1 million token context window support
-model_context_window = 1000000
-model_auto_compact_token_limit = 900000 
-
 project_doc_fallback_filenames = ["CLAUDE.md"]
 
 [sandbox_workspace_write]
