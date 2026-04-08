@@ -52,12 +52,18 @@ return {
             vim.keymap.set('n', '<Leader>hi', gs.preview_hunk_inline, { desc = 'Show inlined diff under cursor' })
 
             -- hunk navigation
-            -- stylua: ignore start
-            vim.keymap.set('n', ']h', function() gs.nav_hunk('next', { navigation_message = true }) end, { desc = 'Move to next diff' })
-            vim.keymap.set('n', '[h', function() gs.nav_hunk('prev', { navigation_message = true }) end, { desc = 'Move to previous diff' })
-            vim.keymap.set('n', ']H', function() gs.nav_hunk('last', { navigation_message = true }) end, { desc = 'Move to last diff' })
-            vim.keymap.set('n', '[H', function() gs.nav_hunk('first', { navigation_message = true }) end, { desc = 'Move to first diff' })
-            -- stylua: ignore end
+            vim.keymap.set('n', ']h', function()
+                gs.nav_hunk('next', { navigation_message = true, wrap = false })
+            end, { desc = 'Move to next diff' })
+            vim.keymap.set('n', '[h', function()
+                gs.nav_hunk('prev', { navigation_message = true, wrap = false })
+            end, { desc = 'Move to previous diff' })
+            vim.keymap.set('n', ']H', function()
+                gs.nav_hunk('last', { navigation_message = true, wrap = false })
+            end, { desc = 'Move to last diff' })
+            vim.keymap.set('n', '[H', function()
+                gs.nav_hunk('first', { navigation_message = true, wrap = false })
+            end, { desc = 'Move to first diff' })
 
             -- stage / reset hunk
             vim.keymap.set('n', '<Leader>ha', gs.stage_hunk, { desc = 'Stage hunk under cursor' })
