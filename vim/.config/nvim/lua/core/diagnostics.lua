@@ -6,8 +6,30 @@
 -- see lua/core/keymaps.lua - diagnostic keymaps
 --
 
--- diagnostics configuration
+-- diagnostic gutter signs and line number highlight, virtual text and floating window
 vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '󰅚 ',
+            [vim.diagnostic.severity.WARN] = '󰀪 ',
+            [vim.diagnostic.severity.HINT] = '󰌶 ',
+            [vim.diagnostic.severity.INFO] = ' ',
+        },
+        texthl = {
+            -- see lua/modules/colorschemes.lua
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+        },
+        numhl = {
+            -- see lua/modules/colorschemes.lua
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticLineNrError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticLineNrWarn',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticLineNrHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticLineNrInfo',
+        },
+    },
     virtual_text = {
         source = 'if_many',
         prefix = '● ',
@@ -18,6 +40,7 @@ vim.diagnostic.config({
         border = 'rounded',
         source = 'if_many',
     },
+    update_in_insert = true,
     severity_sort = true,
 })
 
@@ -65,32 +88,3 @@ vim.diagnostic.handlers.signs = {
         orig_signs_handler.hide(ns, bufnr)
     end,
 }
-
--- diagnostic gutter signs and line number highlight
-vim.diagnostic.config({
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = '󰅚 ',
-            [vim.diagnostic.severity.WARN] = '󰀪 ',
-            [vim.diagnostic.severity.HINT] = '󰌶 ',
-            [vim.diagnostic.severity.INFO] = ' ',
-        },
-        texthl = {
-            -- see lua/modules/colorschemes.lua
-            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
-            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarm',
-            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
-            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
-        },
-        numhl = {
-            -- see lua/modules/colorschemes.lua
-            [vim.diagnostic.severity.ERROR] = 'DiagnosticLineNrError',
-            [vim.diagnostic.severity.WARN] = 'DiagnosticLineNrWarm',
-            [vim.diagnostic.severity.HINT] = 'DiagnosticLineNrHint',
-            [vim.diagnostic.severity.INFO] = 'DiagnosticLineNrInfo',
-        },
-    },
-    virtual_text = true,
-    update_in_insert = true,
-    severity_sort = true,
-})

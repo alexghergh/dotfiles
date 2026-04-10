@@ -93,7 +93,9 @@ local languages = {
     fish = {
         filetypes = { 'fish' },
         lsp = { 'fish-lsp' },
-        formatters = { name = 'fish_indent', install = 'ignore' }, -- installed by fish itself
+        formatters = {
+            { name = 'fish_indent', install = 'ignore' }, -- installed by fish itself
+        },
         linters = {},
     },
 }

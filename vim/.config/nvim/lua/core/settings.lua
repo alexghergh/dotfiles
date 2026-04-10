@@ -6,9 +6,6 @@
 -- global variables
 --
 
--- python3 program, allows neovim to work in virtual environments
-vim.g.python3_host_prog = '/usr/bin/python3'
-
 vim.g.health = { style = 'float' }
 
 --

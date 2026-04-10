@@ -93,6 +93,7 @@ return {
                 original_position = 'right', -- position of HEAD / index
                 conflict_ours_position = 'left', -- position of current changes
                 compute_moves = true,
+                cycle_next_hunk = false,
             },
             explorer = {
                 initial_focus = 'modified',

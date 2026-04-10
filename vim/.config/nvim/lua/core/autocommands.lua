@@ -17,27 +17,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- open files to last known position (:h last-position-jump)
 vim.api.nvim_create_autocmd('BufReadPost', {
-    callback = function()
-        -- register only on filetype detection
-        vim.api.nvim_create_autocmd('FileType', {
-            callback = function()
-                -- filetype regex patterns to match against
-                local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
+    callback = function(ev)
+        -- filetypes to ignore
+        local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
+        local filetype = vim.bo[ev.buf].filetype
 
-                -- position of the "last-position" mark in the file (:h '")
-                local mark_pos = vim.fn.line([['"]])
+        -- check filetype
+        if regex:match_str(filetype) ~= nil then
+            return
+        end
 
-                -- check filetype
-                if regex:match_str(vim.bo.filetype) == nil then
-                    -- check valid position (file could've been modified outside vim)
-                    -- stylua: ignore
-                    if mark_pos > 1 and mark_pos <= vim.fn.line("$") then
-                        vim.cmd([[ exe 'normal! g`"' ]])
-                    end
-                end
-            end,
-            group = user_group,
-        })
+        -- position of the "last-position" mark in the file (:h '")
+        local mark_pos = vim.api.nvim_buf_get_mark(ev.buf, '"')[1]
+
+        -- check valid position (file could've been modified outside vim)
+        if mark_pos > 1 and mark_pos <= vim.api.nvim_buf_line_count(ev.buf) then
+            vim.cmd([[ exe 'normal! g`"' ]])
+        end
     end,
     group = user_group,
 })
@@ -67,21 +63,17 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 })
 
 -- add 2 blank lines at the beginning of a commit file when opened
-vim.api.nvim_create_autocmd('BufReadPost', {
-    callback = function()
-        -- register only on filetype detection
-        vim.api.nvim_create_autocmd('FileType', {
-            callback = function()
-                -- check filetype
-                if vim.bo.filetype:match('commit') ~= nil then
-                    -- check if file is a commit ammend (doesn't start with #)
-                    if vim.fn.strpart(vim.fn.getline(1), 0, 1) == '#' then
-                        vim.cmd([[ exe 'normal OO' ]])
-                    end
-                end
-            end,
-            group = user_group,
-        })
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'gitcommit',
+    callback = function(ev)
+        local first_line = vim.api.nvim_buf_get_lines(ev.buf, 0, 1, false)[1] or ''
+        if vim.startswith(first_line, '#') then
+            vim.api.nvim_buf_set_lines(ev.buf, 0, 0, false, { '', '' })
+
+            if vim.api.nvim_get_current_buf() == ev.buf then
+                vim.api.nvim_win_set_cursor(0, { 1, 0 })
+            end
+        end
     end,
     group = user_group,
 })
