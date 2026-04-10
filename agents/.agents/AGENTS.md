@@ -55,25 +55,31 @@ After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, 
 
 When referencing files in chat, use markdown links.
 
+When creating lists in chat, always use numbered lists, not bullets.
+
+If a single response contains multiple lists across sections, continue numbering logically across the full response instead of restarting at `1`, unless the user explicitly asks for separate per-section numbering.
+
+Prefer prose instead of a list when the content is not naturally list-shaped.
+
 For file references:
 - use an absolute filesystem path as the link target
 - when citing a specific line, use a GitHub-style line anchor in the target: `#L<line>`
 - when citing a specific line, include the line number in the visible link text as `path/to/file.lua:<line>`
 - when referencing a file as a whole, omit the line number in both the link target and the visible link text
 - in the visible link text, prefer the shortest sensible disambiguating path, not a bare filename
-- for files in this repo, prefer repo-relative paths in the visible link text
+- for files in this repo, prefer repo-relative paths in the visible link text, that include the repo root
 - for external modules, projects or dependency files, prefer a stable module-relative base in the visible link text that helps distinguish similar filenames
 
 Examples:
-- `[src/editor/actions/goto.lua](/home/user/projects/example-app/src/editor/actions/goto.lua)`
-- `[src/editor/actions/goto.lua:34](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
-- `[lib/ui/keymaps.lua:88](/home/user/projects/example-app/lib/ui/keymaps.lua#L88)`
+- `[example-app/src/editor/actions/goto.lua](/home/user/projects/example-app/src/editor/actions/goto.lua)`
+- `[example-app/src/editor/actions/goto.lua:34](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
+- `[other-app/lib/ui/keymaps.lua:88](/home/user/projects/other-app/lib/ui/keymaps.lua#L88)`
 
 When useful and easy to determine, include the enclosing function, method, or local context inline in the visible link text.
 
 Preferred:
-- `[src/editor/actions/goto.lua:34, goto_file_action()](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
-- `[lib/ui/keymaps.lua:88, normal_mode_mapping()](/home/user/projects/example-app/lib/ui/keymaps.lua#L88)`
+- `[example-app/src/editor/actions/goto.lua:34, goto_file_action()](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
+- `[other-app/lib/ui/keymaps.lua:88, normal_mode_mapping()](/home/user/projects/other-app/lib/ui/keymaps.lua#L88)`
 
 ## Tests
 
