@@ -719,10 +719,8 @@ return {
                         return
                     end
 
-                    -- if there's an ACP session, we can use model + mode + reasoning info; otherwise just adapter name
-                    local label = chat.adapter and chat.adapter.formatted_name
-
-                    -- collect status line segments, with proper highlighting for each
+                    -- collect status information segments, with proper highlighting for each
+                    -- see lua/modules/colorschemes.lua for the highlights
                     local status_segments = {}
                     local function add_status_segment(text, hl)
                         if type(text) ~= 'string' or text == '' then
@@ -731,6 +729,24 @@ return {
                         table.insert(status_segments, { text = text, hl = hl })
                     end
 
+                    -- if there's an ACP session, we can use model + mode + reasoning info; otherwise just adapter / model name
+                    local label = chat.adapter and chat.adapter.formatted_name
+
+                    -- model
+                    local meta = _G.codecompanion_chat_metadata[bufnr] or {}
+                    local model = meta.adapter and meta.adapter.model
+                    if type(model) == 'function' then
+                        model = model()
+                    end
+                    if type(model) ~= 'string' or model == '' then
+                        model = nil
+                    end
+
+                    -- adapter + model are available for both http and ACP chats; ACP-only
+                    -- session options like mode / reasoning are handled below
+                    add_status_segment(label, 'CodeCompanionChatStatusAdapter')
+                    add_status_segment(model, 'CodeCompanionChatStatusModel')
+
                     if
                         chat.adapter
                         and chat.adapter.type == 'acp'
@@ -738,16 +754,6 @@ return {
                         and type(chat.acp_connection.session_id) == 'string'
                         and chat.acp_connection.session_id ~= ''
                     then
-                        -- model
-                        local meta = _G.codecompanion_chat_metadata[bufnr] or {}
-                        local model = meta.adapter and meta.adapter.model
-                        if type(model) == 'function' then
-                            model = model()
-                        end
-                        if type(model) ~= 'string' or model == '' then
-                            model = nil
-                        end
-
                         local config_options = meta.config_options or {}
 
                         -- mode
@@ -763,13 +769,8 @@ return {
                             thought_level = nil
                         end
 
-                        -- see lua/modules/colorschemes.lua for the highlights
-                        add_status_segment(label, 'CodeCompanionChatStatusAdapter')
-                        add_status_segment(model, 'CodeCompanionChatStatusModel')
                         add_status_segment(mode and ('mode: ' .. mode), 'CodeCompanionChatStatusOption')
                         add_status_segment(thought_level and ('reasoning: ' .. thought_level), 'CodeCompanionChatStatusOption')
-                    else
-                        add_status_segment(label, 'CodeCompanionChatStatusAdapter')
                     end
 
                     -- if no info present, just return
