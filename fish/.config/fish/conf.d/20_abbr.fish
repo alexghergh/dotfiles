@@ -1,4 +1,7 @@
 # abbreviations
+#
+# DON'T RENAME THIS FILE; this _needs_ to run after 00_env_vars.fish and before
+# 21_abbr_tips.fish
 
 # only enable abbrs in interactive shells
 if not status is-interactive
@@ -8,14 +11,13 @@ end
 # shortcuts
 abbr --add --position anywhere desk     ~/Desktop/
 abbr --add --position anywhere down     ~/Downloads/
-abbr --add --position anywhere dots     ~/projects/dotfiles/
-abbr --add --position anywhere research ~/projects/uni-research/
-abbr --add --position anywhere proj     ~/projects/
-abbr --add --position anywhere pack     ~/packages/
-abbr --add --position anywhere tconf    ~/.config/tmux/
-abbr --add --position anywhere vconf    ~/.config/nvim/
-abbr --add --position anywhere fconf    ~/.config/fish/
-abbr --add --position anywhere wconf    ~/.config/wezterm/
+abbr --add --position anywhere dots     "$PROJECTS/dotfiles/"
+abbr --add --position anywhere research "$PROJECTS/uni-research/"
+abbr --add --position anywhere proj     "$PROJECTS/"
+abbr --add --position anywhere pack     "$PACKAGES/"
+abbr --add --position anywhere vconf    "$XDG_CONFIG_HOME/nvim/"
+abbr --add --position anywhere fconf    "$XDG_CONFIG_HOME/fish/"
+abbr --add --position anywhere wconf    "$XDG_CONFIG_HOME/wezterm/"
 
 # system stuff
 abbr --add                      h           history
@@ -92,8 +94,8 @@ abbr --add sudovim  sudo -E vim
 abbr --add sudonvim sudo -E vim
 
 # get my ip
-abbr --add myp curl http://ipecho.net/plain
-abbr --add myip curl http://ipecho.net/plain
+abbr --add myp curl https://ipecho.net/plain
+abbr --add myip curl https://ipecho.net/plain
 
 # texlive alias for tlmgr; hack for Arch
 abbr --add tlmgr /usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode

@@ -6,4 +6,7 @@ if not status is-interactive
     return
 end
 
-zoxide init --cmd c fish | source
+# if zoxide doesn't exist, skip setup
+if type -q zoxide
+    zoxide init --cmd c fish | source
+end

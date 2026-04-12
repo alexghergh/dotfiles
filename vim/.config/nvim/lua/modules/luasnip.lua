@@ -58,7 +58,7 @@ return {
 
             -- load custom snippets (see lua/snippets/<ft>.lua)
             require('luasnip.loaders.from_lua').load({
-                paths = { '~/.config/nvim/lua/snippets' },
+                paths = { vim.fn.stdpath('config') .. '/lua/snippets' },
             })
 
             -- select_choice with vim.ui.select (Ctrl-l in insert mode mapped in

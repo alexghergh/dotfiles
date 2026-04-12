@@ -4,6 +4,8 @@
 # variables, see the link below
 # https://fishshell.com/docs/current/faq.html#how-do-i-check-whether-a-variable-is-not-empty
 
+# DON'T RENAME THIS FILE; this _needs_ to run first when loading a shell, since
+# other conf files depend on these vars
 
 # basic setup
 set -gx EDITOR nvim
@@ -25,6 +27,10 @@ set --path XDG_DATA_DIRS $XDG_DATA_DIRS
 set -q XDG_CONFIG_DIRS; or set -gx XDG_CONFIG_DIRS "/etc/xdg/"
 set --path XDG_CONFIG_DIRS $XDG_CONFIG_DIRS
 
+# common user directories
+set -q PACKAGES; or set -gx PACKAGES "$HOME/packages"
+set -q PROJECTS; or set -gx PROJECTS "$HOME/projects"
+
 # set biber path, just a hack to work on Arch
 #fish_add_path --path --append /usr/bin/vendor_perl
 
@@ -32,10 +38,10 @@ set --path XDG_CONFIG_DIRS $XDG_CONFIG_DIRS
 fish_add_path --path --append "$HOME/.cargo/bin"
 
 # stylua (provided by mason.nvim)
-fish_add_path --path --append "$HOME/.local/share/nvim/mason/bin"
+fish_add_path --path --append "$XDG_DATA_HOME/nvim/mason/bin"
 
 # agent client protocol clients
-fish_add_path --path --append "$HOME/packages/acp"
+fish_add_path --path --append "$PACKAGES/acp"
 
 # npm global installs (also see https://developer.fedoraproject.org/tech/languages/nodejs/nodejs.html)
 fish_add_path --path --append "$HOME/.npm-global/bin"

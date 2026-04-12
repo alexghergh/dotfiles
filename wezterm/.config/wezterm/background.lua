@@ -1,6 +1,6 @@
 -- background configs for different assets
-local path = os.getenv('HOME')
-    .. '/projects/dotfiles/wezterm/.config/wezterm/assets/'
+local wezterm = require('wezterm')
+local path = wezterm.config_dir .. '/assets/'
 
 -- double nesting allows for backgrounds containing multiple images
 local background = {

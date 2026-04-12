@@ -5,6 +5,10 @@ local smart_splits = require('smart-splits')
 
 local config = wezterm.config_builder()
 
+-- re-usable env paths
+local xdg_config_home = os.getenv('XDG_CONFIG_HOME') or (wezterm.home_dir .. '/.config')
+local projects = os.getenv('PROJECTS') or (wezterm.home_dir .. '/projects')
+
 config.color_scheme = 'Afterglow'
 
 config.font = wezterm.font_with_fallback({
@@ -72,10 +76,7 @@ end
 config.use_ime = true
 config.xim_im_name = 'fcitx'
 
-config.default_prog = { '/usr/bin/fish' }
-config.set_environment_variables = {
-    SHELL = '/usr/bin/fish',
-}
+config.default_prog = { 'fish' }
 -- config.term = 'wezterm' -- ncurses fucked this up (again), keep commented for now
 
 config.scrollback_lines = 100000
@@ -84,12 +85,18 @@ config.scrollback_lines = 100000
 -- shift pinky press on copy/paste)
 config.quick_select_alphabet = 'htnsgcrlmwvzfdbaoeuqjkxpyi'
 
+-- broad slash-containing matcher for quick select
+-- also see scrollback_key_table path search, where this pattern is also used and contains
+-- some examples on what paths it actually matches
+local path_pattern = [[(?:/|~/|\./|\.\./|[\w.-]+/)(?:[\w.-]+/|\.\./)*(?:[\w.-]+)?/?]]
+config.quick_select_patterns = { path_pattern }
+
 -- configs for hyperlink rules (make things clickable in wezterm)
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- github links of the form "user/project"
 table.insert(config.hyperlink_rules, {
-    regex = '[" ]{1}([\\w\\d]{1}[-\\w\\d]+)(/){1}([-\\w\\d\\.]+)[" ]{1}',
+    regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
     format = 'https://www.github.com/$1/$3',
 })
 
@@ -100,52 +107,52 @@ config.launch_menu = {
     {
         label = 'neovim - init',
         args = { 'nvim', 'init.lua' },
-        cwd = '/home/alex/.config/nvim/',
+        cwd = xdg_config_home .. '/nvim/',
     },
     {
         label = 'neovim - keymaps',
         args = { 'nvim', 'keymaps.lua' },
-        cwd = '/home/alex/.config/nvim/lua/core/',
+        cwd = xdg_config_home .. '/nvim/lua/core/',
     },
     {
         label = 'neovim - plugins',
         args = { 'nvim', 'modules' },
-        cwd = '/home/alex/.config/nvim/lua/',
+        cwd = xdg_config_home .. '/nvim/lua/',
     },
     {
         label = 'neovim - snippets',
         args = { 'nvim', 'snippets' },
-        cwd = '/home/alex/.config/nvim/lua/',
+        cwd = xdg_config_home .. '/nvim/lua/',
     },
     {
         label = 'wezterm - wezterm.lua',
         args = { 'nvim', 'wezterm.lua' },
-        cwd = '/home/alex/.config/wezterm/',
+        cwd = wezterm.config_dir,
     },
     {
         label = 'fish - conf.d/',
         args = { 'nvim', 'conf.d/' },
-        cwd = '/home/alex/.config/fish/',
+        cwd = xdg_config_home .. '/fish/',
     },
     {
         label = 'fish - functions/',
         args = { 'nvim', 'functions/' },
-        cwd = '/home/alex/.config/fish/',
+        cwd = xdg_config_home .. '/fish/',
     },
     {
         label = 'fish - abbr.fish',
         args = { 'nvim', 'conf.d/abbr.fish' },
-        cwd = '/home/alex/.config/fish/',
+        cwd = xdg_config_home .. '/fish/',
     },
     {
         label = 'Notes / TODOs',
         args = { 'nvim', 'TODO.md' },
-        cwd = '/home/alex/projects/dotfiles/',
+        cwd = projects .. '/dotfiles/',
     },
     {
         label = 'Papers',
         args = { 'nvim', 'papers.txt' },
-        cwd = '/home/alex/projects/uni-research/',
+        cwd = projects .. '/uni-research/',
     },
 }
 
@@ -153,7 +160,8 @@ wezterm.on('update-right-status', function(window, _)
     -- "Sun April 22 22:50"
     local date = wezterm.strftime('%a %b %-d %H:%M')
 
-    local bat = ''
+    -- there may be multiple batteries on the system, or none at all
+    local bat_parts = {}
     for _, b in ipairs(wezterm.battery_info()) do
         local bat_status = ''
         if b.state == 'Charging' then
@@ -162,8 +170,14 @@ wezterm.on('update-right-status', function(window, _)
             bat_status = 'Disch.'
         end
 
-        bat = string.format('%s %.0f%%', bat_status, b.state_of_charge * 100)
+        local bat_charge = string.format('%.0f%%', b.state_of_charge * 100)
+        if bat_status ~= '' then
+            bat_charge = bat_status .. ' ' .. bat_charge
+        end
+
+        table.insert(bat_parts, bat_charge)
     end
+    local bat = table.concat(bat_parts, ' | ')
 
     -- display active key table
     local key_tbl = window:active_key_table()
@@ -174,14 +188,21 @@ wezterm.on('update-right-status', function(window, _)
     end
 
     local sep = wezterm.nerdfonts.ple_left_half_circle_thin
-    window:set_right_status(wezterm.format({
+    local status = {
         { Text = key_tbl },
         'ResetAttributes',
         { Foreground = { AnsiColor = 'Yellow' } },
-        {
-            Text = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' ',
-        },
-    }))
+    }
+    local right_status = ' ' .. sep .. ' ' .. date .. ' '
+    if bat ~= '' then
+        right_status = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' '
+    end
+
+    table.insert(status, {
+        Text = right_status,
+    })
+
+    window:set_right_status(wezterm.format(status))
 end)
 
 config.disable_default_key_bindings = true
@@ -524,7 +545,7 @@ config.key_tables = {
             action = act.Multiple({
                 act.PopKeyTable,
                 act.Search({
-                    Regex = [[(?<![\w./~-])(?:/|~/|\./|\.\./|[\w.-]+/)(?:[\w.-]+/|\.\./)*(?:[\w.-]+)?/?(?![\w./-])]],
+                    Regex = path_pattern,
                 }),
             }),
         },
