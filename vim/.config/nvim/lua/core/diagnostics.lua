@@ -33,7 +33,7 @@ vim.diagnostic.config({
     virtual_text = {
         source = 'if_many',
         prefix = '● ',
-        spacing = 15,
+        spacing = 10,
         current_line = true,
     },
     float = {
