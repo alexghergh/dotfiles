@@ -328,6 +328,47 @@ local function parse_markdown_file_path()
     end
 end
 
+local function change_adapter_override(chat)
+    local config = require('codecompanion.config')
+    local change_adapter = require('codecompanion.interactions.chat.keymaps.change_adapter')
+    local utils = require('codecompanion.utils')
+
+    if config.display.chat.show_settings then
+        return utils.notify("Adapter can't be changed when `display.chat.show_settings = true`", vim.log.levels.WARN)
+    end
+
+    local current_adapter = chat.adapter.name
+    local adapters_list = change_adapter.get_adapters_list(current_adapter)
+
+    vim.ui.select(adapters_list, {
+        prompt = 'Select Adapter',
+        kind = 'codecompanion.nvim',
+        format_item = function(item)
+            if current_adapter == item then
+                return '* ' .. item
+            end
+            return '  ' .. item
+        end,
+    }, function(selected_adapter)
+        if not selected_adapter then
+            return
+        end
+
+        local function on_adapter_ready()
+            if not chat.opts.ignore_system_prompt then
+                change_adapter.update_system_prompt(chat)
+            end
+        end
+
+        if current_adapter ~= selected_adapter then
+            chat.acp_connection = nil
+            chat:change_adapter(selected_adapter, on_adapter_ready)
+        else
+            on_adapter_ready()
+        end
+    end)
+end
+
 return {
     -- LLM code-assistant
     --
@@ -481,8 +522,16 @@ return {
                         clear_approvals = false, -- interferes with gt tab movement
                         yolo_mode = false, -- interferes with gt tab movement
                         fold_code = false, -- interferes with gf goto file
+                        -- override the built-in adapter switch because it always chains into the ACP model picker, which replaces the
+                        -- adapter default model; keep ga for adapter selection only, and expose model / mode / reasoning on a separate
+                        -- keymap (see below); this method copies almost word for the word the internal functionality
+                        change_adapter = {
+                            modes = { n = 'ga' },
+                            description = '[Adapter] Change adapter',
+                            callback = change_adapter_override,
+                        },
                         goto_file_under_cursor = {
-                            modes = { n = { 'gf' } }, -- neovim gf, overrides codecompanion's gR
+                            modes = { n = 'gf' }, -- neovim gf, overrides codecompanion's gR
                             description = 'Open file under cursor, with markdown line awareness',
                             -- overwrite gf to accept markdown github-style file + line number paths
                             -- e.g. [file.lua](path/to/file.lua#L32)
@@ -718,7 +767,7 @@ return {
                         add_status_segment(label, 'CodeCompanionChatStatusAdapter')
                         add_status_segment(model, 'CodeCompanionChatStatusModel')
                         add_status_segment(mode and ('mode: ' .. mode), 'CodeCompanionChatStatusOption')
-                        add_status_segment(thought_level and ('thought: ' .. thought_level), 'CodeCompanionChatStatusOption')
+                        add_status_segment(thought_level and ('reasoning: ' .. thought_level), 'CodeCompanionChatStatusOption')
                     else
                         add_status_segment(label, 'CodeCompanionChatStatusAdapter')
                     end
@@ -875,14 +924,98 @@ return {
             -- code actions (Companion Do)
             vim.keymap.set({ 'n', 'v' }, '<Leader>cd', '<Cmd>CodeCompanionActions<CR>', { desc = 'Open Code companion actions' })
 
-            -- show the current adapter's model picker
+            -- show a picker for model / mode / reasoning (last 2 only work for ACP paths)
             vim.keymap.set('n', '<leader>cm', function()
                 local chat = require('codecompanion').last_chat()
                 if not chat then
                     return
                 end
-                require('codecompanion.interactions.chat.keymaps.change_adapter').select_model(chat)
-            end, { desc = 'Open Code companion model picker' })
+
+                local metadata = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[chat.bufnr] or {}
+                local config_options = metadata.config_options or {}
+                local entries = {
+                    {
+                        id = 'model',
+                        label = 'model',
+                        value = metadata.adapter and metadata.adapter.model,
+                    },
+                    {
+                        id = 'mode',
+                        label = 'mode',
+                        value = config_options.mode and (config_options.mode.name or config_options.mode.current),
+                    },
+                    {
+                        id = 'thought_level',
+                        label = 'reasoning',
+                        value = config_options.thought_level
+                            and (config_options.thought_level.name or config_options.thought_level.current),
+                    },
+                }
+
+                require('telescope.pickers')
+                    .new({}, {
+                        prompt_title = 'CodeCompanion settings',
+                        finder = require('telescope.finders').new_table({
+                            results = entries,
+                            entry_maker = function(entry)
+                                if type(entry.value) == 'function' then
+                                    entry.value = entry.value()
+                                end
+                                local value = entry.value and ('  ' .. entry.value) or ''
+                                return {
+                                    value = entry,
+                                    display = string.format('%-15s%s', entry.label, value),
+                                    ordinal = table.concat({ entry.label, entry.value or '' }, ' '),
+                                }
+                            end,
+                        }),
+                        previewer = false,
+                        sorter = require('telescope.config').values.generic_sorter({}),
+                        attach_mappings = function(prompt_bufnr)
+                            require('telescope.actions').select_default:replace(function()
+                                local selection = require('telescope.actions.state').get_selected_entry()
+                                require('telescope.actions').close(prompt_bufnr)
+
+                                if not selection or not selection.value then
+                                    return
+                                end
+
+                                -- model works for both ACP and http
+                                if selection.value.id == 'model' then
+                                    require('codecompanion.interactions.chat.keymaps.change_adapter').select_model(chat)
+                                    return
+                                end
+
+                                -- mode and reasoning only work for ACP
+                                if chat.adapter.type ~= 'acp' or not chat.acp_connection then
+                                    vim.notify('Mode and reasoning are only available for ACP chats', vim.log.levels.WARN)
+                                    return
+                                end
+
+                                local config_option
+                                for _, option in ipairs(chat.acp_connection:get_config_options({ exclude_categories = { 'model' } })) do
+                                    if option.category == selection.value.id then
+                                        config_option = option
+                                        break
+                                    end
+                                end
+
+                                if not config_option then
+                                    vim.notify(string.format('ACP option not available: %s', selection.value.label), vim.log.levels.WARN)
+                                    return
+                                end
+
+                                require('codecompanion.interactions.chat.slash_commands.builtin.acp_session_options')
+                                    ---@diagnostic disable-next-line: missing-fields
+                                    .new({ Chat = chat })
+                                    :show_values(config_option)
+                            end)
+
+                            return true
+                        end,
+                    })
+                    :find()
+            end, { desc = 'Open Code companion settings picker' })
 
             -- invoke CodeCompanion's built-in ACP session/list resume picker
             vim.keymap.set(
