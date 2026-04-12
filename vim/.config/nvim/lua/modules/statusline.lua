@@ -39,6 +39,9 @@ local modes_map = {
 }
 
 -- choose statusline separators based on 'style'
+local separator_style = 'arrow'
+
+-- statusline element separator style
 local function sep(style)
     if style == 'arrow' then
         return { L_FULL = '', L_EMPTY = '', R_FULL = '', R_EMPTY = '' }
@@ -149,13 +152,10 @@ end
 return {
     {
         'nvimdev/galaxyline.nvim',
-        opts = {
-            separator_style = 'arrow',
-        },
         config = function(_, opts)
             local condition = require('galaxyline.condition')
             local gls = require('galaxyline').section
-            local separators = sep(opts.separator_style)
+            local separators = sep(separator_style)
 
             --
             -- left section
@@ -317,6 +317,95 @@ return {
             gls.left = left_statusline_section
             gls.mid = middle_statusline_section
             gls.right = right_statusline_section
+        end,
+    },
+
+    -- local per-window statusline
+    -- this allows the user to keep a global statusline (i.e. laststatus=3) while still displaying e.g. file paths per window
+    {
+        'b0o/incline.nvim',
+        dependencies = {
+            'SmiteshP/nvim-navic',
+        },
+        event = 'VeryLazy',
+        opts = {
+            window = {
+                padding = 0,
+                margin = {
+                    horizontal = 3,
+                },
+            },
+            -- this is the main function that renders statusline on each window; display path and breadcrumbs information
+            render = function(props)
+                local bufnr = props.buf
+                local bo = vim.bo[bufnr]
+                local path = vim.api.nvim_buf_get_name(bufnr)
+                local label = '[No Name]' -- empty buffers
+
+                local focused = props.focused -- neovim window focus
+
+                local separator = sep(separator_style).R_FULL
+                local hl_suffix = focused and '' or 'NC' -- current or non-current window hl
+
+                -- incline highlight groups
+                local status1_group = 'InclineStatus1' .. hl_suffix
+                local status2_group = 'InclineStatus2' .. hl_suffix
+                local separator01_group = 'InclineSeparator01' .. hl_suffix
+                local separator10_group = 'InclineSeparator10' .. hl_suffix
+                local separator02_group = 'InclineSeparator02' .. hl_suffix
+                local separator20_group = 'InclineSeparator20' .. hl_suffix
+
+                -- path is trimmed; compact version on active window; full path on inactive windows
+                if path ~= '' then
+                    label = vim.fn.fnamemodify(path, focused and ':t' or ':~')
+                    local max_chars = 70
+                    local label_len = vim.fn.strchars(label)
+                    if label_len > max_chars then
+                        label = '..' .. vim.fn.strcharpart(label, label_len - (max_chars - 1), max_chars - 1)
+                    end
+                end
+
+                -- add buffer state
+                if bo.modified then
+                    label = label .. ' [+]'
+                end
+                if bo.readonly or not bo.modifiable then
+                    label = label .. ' [ro]'
+                end
+
+                -- reserve breadcrumbs for the active window and cap width by trimming older context
+                if focused then
+                    local navic = require('nvim-navic')
+                    if navic.is_available(bufnr) then
+                        local location = navic.get_location({
+                            depth_limit = 4,
+                            depth_limit_indicator = '..',
+                        }, bufnr)
+
+                        -- build location hl
+                        if location ~= '' then
+                            return {
+                                { separator, group = separator01_group },
+                                { ' ' .. location .. ' ', group = status1_group },
+                                { separator, group = separator10_group },
+                                { separator, group = separator02_group },
+                                { ' ' .. label .. ' ', group = status2_group },
+                                { separator, group = separator20_group },
+                            }
+                        end
+                    end
+                end
+
+                -- regular no-breadcrumbs exit
+                return {
+                    { separator, group = separator02_group },
+                    { ' ' .. label .. ' ', group = status2_group },
+                    { separator, group = separator20_group },
+                }
+            end,
+        },
+        config = function(_, opts)
+            require('incline').setup(opts)
         end,
     },
 }

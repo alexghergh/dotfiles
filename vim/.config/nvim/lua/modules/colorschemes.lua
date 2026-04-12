@@ -29,6 +29,10 @@ end
 
 local function melange()
     local statusline_bg = '#282c34'
+    local editor_bg = '#292522'
+    local status1_fg = '#3d4451'
+    local status1_bg = '#8ab977'
+    local status2_bg = '#3e4452'
 
     return {
         -- floating windows
@@ -44,17 +48,32 @@ local function melange()
         -- statusline
         ['StatusLine'] = { bg = statusline_bg },
 
-        ['StatusLineColor1'] = { fg = '#3d4451', bg = '#8ab977', bold = true },
-        ['StatusLineColor2'] = { fg = '#a9a9af', bg = '#3e4452' },
+        ['StatusLineColor1'] = { fg = status1_fg, bg = status1_bg, bold = true },
+        ['StatusLineColor2'] = { fg = '#a9a9af', bg = status2_bg },
         ['StatusLineColor3'] = { fg = '#c2c2c2', bg = statusline_bg },
 
-        ['StatusLineSeparator12'] = { fg = '#8ab977', bg = '#3d4451' },
-        ['StatusLineSeparator23'] = { fg = '#3e4452', bg = statusline_bg },
+        ['StatusLineSeparator12'] = { fg = status1_bg, bg = status1_fg },
+        ['StatusLineSeparator23'] = { fg = status2_bg, bg = statusline_bg },
 
         -- statusline diff stats (added, removed, modified)
         ['StatusLineDiffAdd'] = { fg = '#78997a', bg = statusline_bg },
         ['StatusLineDiffDelete'] = { fg = '#bd8183', bg = statusline_bg },
         ['StatusLineDiffChange'] = { fg = '#b380b0', bg = statusline_bg },
+
+        -- incline statuslines
+        ['InclineStatus1'] = { fg = '#8c8d90', bg = statusline_bg },
+        ['InclineStatus1NC'] = { link = 'InclineStatus1' },
+        ['InclineStatus2'] = { link = 'StatusLineColor2' },
+        ['InclineStatus2NC'] = { fg = status1_fg, bg = status1_bg },
+
+        ['InclineSeparator01'] = { fg = statusline_bg, bg = editor_bg },
+        ['InclineSeparator01NC'] = { link = 'InclineSeparator01' },
+        ['InclineSeparator10'] = { fg = editor_bg, bg = statusline_bg },
+        ['InclineSeparator10NC'] = { link = 'InclineSeparator10' },
+        ['InclineSeparator02'] = { fg = status2_bg, bg = editor_bg },
+        ['InclineSeparator02NC'] = { fg = status1_bg, bg = editor_bg },
+        ['InclineSeparator20'] = { fg = editor_bg, bg = status2_bg },
+        ['InclineSeparator20NC'] = { fg = editor_bg, bg = status1_bg },
 
         -- autocompletion menu items (nvim-cmp)
         -- gray
@@ -85,9 +104,9 @@ local function melange()
         ['IblScope'] = { fg = '#d2691e' },
 
         -- codecompanion model / mode / roasoning elements
-        ['CodeCompanionChatStatusAdapter'] = { fg = '#ECE1D7', bg = 'None', bold = true },
-        ['CodeCompanionChatStatusModel'] = { fg = '#A3A9CE', bg = 'None' },
-        ['CodeCompanionChatStatusOption'] = { fg = '#C1A78E', bg = 'None' },
+        ['CodeCompanionChatStatusAdapter'] = { fg = '#ece1d7', bg = 'None', bold = true },
+        ['CodeCompanionChatStatusModel'] = { fg = '#a3a9ce', bg = 'None' },
+        ['CodeCompanionChatStatusOption'] = { fg = '#c1a78e', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
     }
 end
@@ -96,25 +115,43 @@ local function tokyonight()
     local colors = require('lualine.themes._tokyonight').get()
     local normal = colors.normal.a
     local statusline_bg = '#1a1c2a'
+    local editor_bg = theme_style == 'light' and '#e1e2e7' or '#222436'
+    local status2_fg = '#c8d3f5'
+    local status2_bg = '#3e4452'
 
     return {
         -- statusline
         ['StatusLine'] = { bg = statusline_bg },
 
         ['StatusLineColor1'] = { fg = normal.fg, bg = normal.bg, bold = true },
-        ['StatusLineColor2'] = { fg = '#c8d3f5', bg = '#3e4452' },
-        ['StatusLineColor3'] = { fg = '#c8d3f5', bg = statusline_bg },
+        ['StatusLineColor2'] = { fg = status2_fg, bg = status2_bg },
+        ['StatusLineColor3'] = { fg = status2_fg, bg = statusline_bg },
 
         ['StatusLineSeparator12'] = { fg = normal.bg, bg = '#3d4451' },
-        ['StatusLineSeparator23'] = { fg = '#3e4452', bg = statusline_bg },
+        ['StatusLineSeparator23'] = { fg = status2_bg, bg = statusline_bg },
 
         -- statusline diff stats (added, removed, modified)
         ['StatusLineDiffAdd'] = { fg = normal.bg, bg = statusline_bg },
         ['StatusLineDiffDelete'] = { fg = '#7f2530', bg = statusline_bg },
         ['StatusLineDiffChange'] = { fg = '#6f4d99', bg = statusline_bg },
 
+        -- incline statuslines
+        ['InclineStatus1'] = { fg = '#8b92ad', bg = statusline_bg },
+        ['InclineStatus1NC'] = { link = 'InclineStatus1' },
+        ['InclineStatus2'] = { link = 'StatusLineColor2' },
+        ['InclineStatus2NC'] = { fg = normal.fg, bg = normal.bg },
+
+        ['InclineSeparator01'] = { fg = statusline_bg, bg = editor_bg },
+        ['InclineSeparator01NC'] = { link = 'InclineSeparator01' },
+        ['InclineSeparator10'] = { fg = editor_bg, bg = statusline_bg },
+        ['InclineSeparator10NC'] = { link = 'InclineSeparator10' },
+        ['InclineSeparator02'] = { fg = status2_bg, bg = editor_bg },
+        ['InclineSeparator02NC'] = { fg = normal.bg, bg = editor_bg },
+        ['InclineSeparator20'] = { fg = editor_bg, bg = status2_bg },
+        ['InclineSeparator20NC'] = { fg = editor_bg, bg = normal.bg },
+
         -- codecompanion model / mode / roasoning elements
-        ['CodeCompanionChatStatusAdapter'] = { fg = '#c8d3f5', bg = 'None', bold = true },
+        ['CodeCompanionChatStatusAdapter'] = { fg = status2_fg, bg = 'None', bold = true },
         ['CodeCompanionChatStatusModel'] = { fg = '#82aaff', bg = 'None' },
         ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
@@ -125,6 +162,7 @@ end
 -- as the colorscheme it represents
 local _colorscheme_functions_table = {
     ['melange'] = melange,
+    ['tokyonight'] = tokyonight,
     ['tokyonight-moon'] = tokyonight,
     ['tokyonight-storm'] = tokyonight,
     ['tokyonight-night'] = tokyonight,
