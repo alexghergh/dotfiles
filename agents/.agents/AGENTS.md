@@ -8,8 +8,6 @@ Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reu
 
 Read before editing. Explore before planning. Plan before implementing. Scale the process to the change.
 
-Edit one file at a time. If a task requires multiple files, prepare and send each file's edits sequentially rather than in a single batch.
-
 A change is trivial when it is clearly scoped, low risk, and localized, for example: editing text in one file, a small obvious adjustment to a function without changing interfaces or external behavior, or renaming/comment updates with no behavioral change.
 
 For trivial changes:
@@ -29,6 +27,14 @@ Before implementing non-trivial changes:
 - explicitly ask the user to confirm the path forward
 - if the change would expand beyond the current scope or affect code paths outside the user's apparent target area, flag it and ask before proceeding
 - flag nearby issues separately rather than bundling them in
+
+## Edit Presentation
+
+Edit one file at a time. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch.
+
+Within a file, prefer a single `apply_patch` edit even when the changes are disjoint.
+
+When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span, from the first changed line through the last, so no intervening edits are omitted. If that span is too large to review comfortably, present one or more `apply_patch` edits for that file instead.
 
 ## Code Style
 
@@ -53,13 +59,9 @@ After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, 
 
 ## Chat Output
 
+When using lists in chat, use numbered lists instead of bullet lists. If a single LLM response contains multiple numbered list sections, continue numbering across them rather than restarting at `1`, so the user can easily refer to specific points.
+
 When referencing files in chat, use markdown links.
-
-When creating lists in chat, always use numbered lists, not bullets.
-
-If a single response contains multiple lists across sections, continue numbering logically across the full response instead of restarting at `1`, unless the user explicitly asks for separate per-section numbering.
-
-Prefer prose instead of a list when the content is not naturally list-shaped.
 
 For file references:
 - use an absolute filesystem path as the link target
