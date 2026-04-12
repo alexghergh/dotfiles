@@ -80,6 +80,12 @@ local function melange()
         -- indentation guides
         ['IblIndent'] = { fg = '#403c3b' },
         ['IblScope'] = { fg = '#d2691e' },
+
+        -- codecompanion model / mode / roasoning elements
+        ['CodeCompanionChatStatusAdapter'] = { fg = '#ECE1D7', bg = 'None', bold = true },
+        ['CodeCompanionChatStatusModel'] = { fg = '#A3A9CE', bg = 'None' },
+        ['CodeCompanionChatStatusOption'] = { fg = '#C1A78E', bg = 'None' },
+        ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
     }
 end
 
@@ -88,8 +94,8 @@ local function tokyonight()
     local normal = colors.normal.a
     local statusline_bg = '#1a1c2a'
 
-    -- statusline
     return {
+        -- statusline
         ['StatusLine'] = { bg = statusline_bg },
 
         ['StatusLineColor1'] = { fg = normal.fg, bg = normal.bg, bold = true },
@@ -103,6 +109,12 @@ local function tokyonight()
         ['StatusLineDiffAdd'] = { fg = normal.bg, bg = statusline_bg },
         ['StatusLineDiffDelete'] = { fg = '#7f2530', bg = statusline_bg },
         ['StatusLineDiffChange'] = { fg = '#6f4d99', bg = statusline_bg },
+
+        -- codecompanion model / mode / roasoning elements
+        ['CodeCompanionChatStatusAdapter'] = { fg = '#c8d3f5', bg = 'None', bold = true },
+        ['CodeCompanionChatStatusModel'] = { fg = '#82aaff', bg = 'None' },
+        ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
+        ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
     }
 end
 

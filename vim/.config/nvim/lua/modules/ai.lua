@@ -644,21 +644,16 @@ return {
                 })
             end
 
-            -- show adapter / model / mode info on the currently visible chat header line when:
-            --   - chat creation / open / clear / stop reset the visible header line
-            --   - submit / done move the visible header line between user and llm headers
+            -- show adapter / model / mode / reasoning info in the chat's winbar:
+            --   - chat creation / open / clear / stop populate or reset the information
             --   - adapter / model / acp mode changes update the metadata shown there
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = {
                     'CodeCompanionChatCreated',
                     'CodeCompanionChatOpened',
-                    'CodeCompanionChatCleared',
-                    'CodeCompanionChatSubmitted',
                     'CodeCompanionChatAdapter',
                     'CodeCompanionChatModel',
-                    'CodeCompanionChatDone',
-                    'CodeCompanionChatStopped',
-                    'CodeCompanionChatACPModeChanged',
+                    'CodeCompanionChatACPConfigChanged',
                     'CodeCompanionACPChatRestored',
                     'CodeCompanionACPConnected',
                     'CodeCompanionACPSessionPost', -- after an async session creation is finished
@@ -675,8 +670,18 @@ return {
                         return
                     end
 
-                    -- if there's an ACP session, we can use model + mode info; otherwise just adapter name
+                    -- if there's an ACP session, we can use model + mode + reasoning info; otherwise just adapter name
                     local label = chat.adapter and chat.adapter.formatted_name
+
+                    -- collect status line segments, with proper highlighting for each
+                    local status_segments = {}
+                    local function add_status_segment(text, hl)
+                        if type(text) ~= 'string' or text == '' then
+                            return
+                        end
+                        table.insert(status_segments, { text = text, hl = hl })
+                    end
+
                     if
                         chat.adapter
                         and chat.adapter.type == 'acp'
@@ -684,6 +689,7 @@ return {
                         and type(chat.acp_connection.session_id) == 'string'
                         and chat.acp_connection.session_id ~= ''
                     then
+                        -- model
                         local meta = _G.codecompanion_chat_metadata[bufnr] or {}
                         local model = meta.adapter and meta.adapter.model
                         if type(model) == 'function' then
@@ -693,45 +699,48 @@ return {
                             model = nil
                         end
 
-                        local mode = meta.mode and meta.mode.name
+                        local config_options = meta.config_options or {}
+
+                        -- mode
+                        local mode = config_options.mode and (config_options.mode.name or config_options.mode.current)
                         if type(mode) ~= 'string' or mode == '' then
                             mode = nil
                         end
 
-                        local suffix
-                        if model and mode then
-                            suffix = string.format(' |  %s  |  %s  ', model, mode)
-                        elseif model or mode then
-                            suffix = string.format(' |  %s  ', model or mode)
+                        -- reasoning level
+                        local thought_level = config_options.thought_level
+                            and (config_options.thought_level.name or config_options.thought_level.current)
+                        if type(thought_level) ~= 'string' or thought_level == '' then
+                            thought_level = nil
                         end
 
-                        if suffix then
-                            if type(label) == 'string' and label ~= '' then
-                                label = label .. suffix
-                            else
-                                label = suffix
-                            end
-                        end
+                        -- see lua/modules/colorschemes.lua for the highlights
+                        add_status_segment(label, 'CodeCompanionChatStatusAdapter')
+                        add_status_segment(model, 'CodeCompanionChatStatusModel')
+                        add_status_segment(mode and ('mode: ' .. mode), 'CodeCompanionChatStatusOption')
+                        add_status_segment(thought_level and ('thought: ' .. thought_level), 'CodeCompanionChatStatusOption')
+                    else
+                        add_status_segment(label, 'CodeCompanionChatStatusAdapter')
                     end
 
-                    local ns_id = vim.api.nvim_create_namespace('CodeCompanionCustomHL')
-                    vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
-
-                    -- parse the actual visible header line, don't rely on chat.header_line which is unreliable
-                    local ok, header_row = pcall(require('codecompanion.interactions.chat.parser').headers, chat)
-                    if not ok or type(header_row) ~= 'number' then
+                    -- if no info present, just return
+                    if #status_segments == 0 then
                         return
                     end
 
-                    if type(label) ~= 'string' or label == '' then
-                        return
+                    -- overwrite the window's winbar with the segments
+                    local winbar_parts = { '%=' }
+                    for i, segment in ipairs(status_segments) do
+                        if i > 1 then
+                            table.insert(winbar_parts, '%#CodeCompanionChatStatusGap# | ')
+                        end
+                        table.insert(winbar_parts, string.format('%%#%s#%s', segment.hl, segment.text:gsub('%%', '%%%%')))
                     end
 
-                    pcall(vim.api.nvim_buf_set_extmark, bufnr, ns_id, header_row, 0, {
-                        virt_text = { { label, 'CodeCompanionChatTokens' } },
-                        virt_text_pos = 'eol',
-                        hl_mode = 'combine',
-                    })
+                    local winbar = table.concat(winbar_parts)
+                    for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+                        pcall(vim.api.nvim_set_option_value, 'winbar', winbar, { win = win })
+                    end
                 end,
             })
 
