@@ -48,11 +48,9 @@ function __abbr_reminder_bind_newline
 end
 
 # bind the above wrappers
-for mode in default insert
-    bind --mode $mode ' ' __abbr_reminder_bind_space
-    bind --mode $mode \n __abbr_reminder_bind_newline
-    bind --mode $mode \r __abbr_reminder_bind_newline
-end
+bind ' ' __abbr_reminder_bind_space
+bind \n __abbr_reminder_bind_newline
+bind \r __abbr_reminder_bind_newline
 
 # the main part of the functionality; runs on fish_postexec, i.e. after the user
 # submits a command
