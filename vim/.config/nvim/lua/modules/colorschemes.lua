@@ -14,6 +14,10 @@ local theme_style = vim.env.DOTFILES_THEME_STYLE == 'light' and 'light' or 'dark
 
 local function colorscheme_defaults()
     return {
+        -- neovim window separators
+        ['WinSeparator'] = { fg = '#000000', bg = 'None' },
+        ['VertSplit'] = { link = 'WinSeparator' },
+
         -- LuaSnip
         ['LuasnipInsertNodeActiveDot'] = { fg = '#86e1fc' },
         ['LuasnipChoiceNodeActiveDot'] = { fg = '#ff966c' },
