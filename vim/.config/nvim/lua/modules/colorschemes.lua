@@ -9,6 +9,9 @@
 -- see :h highlight
 -- see :h colorscheme
 
+-- this env var gets set up by wezterm
+local theme_style = vim.env.DOTFILES_THEME_STYLE == 'light' and 'light' or 'dark'
+
 local function colorscheme_defaults()
     return {
         -- LuaSnip
@@ -167,9 +170,11 @@ return {
         lazy = false,
         priority = 1000,
         opts = {
-            style = 'moon', -- 'night', 'moon', 'storm', 'day' <- this requires light background
+            -- 'night', 'moon', 'storm', 'day' <- this requires light background
+            style = theme_style == 'light' and 'day' or 'moon',
         },
         config = function(_, opts)
+            vim.o.background = theme_style
             require('tokyonight').setup(opts)
             vim.cmd.colorscheme('tokyonight')
         end,

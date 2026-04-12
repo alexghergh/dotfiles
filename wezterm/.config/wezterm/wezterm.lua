@@ -9,7 +9,16 @@ local config = wezterm.config_builder()
 local xdg_config_home = os.getenv('XDG_CONFIG_HOME') or (wezterm.home_dir .. '/.config')
 local projects = os.getenv('PROJECTS') or (wezterm.home_dir .. '/projects')
 
-config.color_scheme = 'Afterglow'
+local theme_style = 'dark'
+local theme_schemes = {
+    dark = 'Afterglow',
+    light = 'Builtin Solarized Light',
+}
+
+config.color_scheme = theme_schemes[theme_style] or theme_schemes.dark
+config.set_environment_variables = {
+    DOTFILES_THEME_STYLE = theme_style,
+}
 
 config.font = wezterm.font_with_fallback({
     'Cascadia Code',
