@@ -8,19 +8,23 @@ Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reu
 
 Read before editing. Explore before planning. Plan before implementing. Scale the process to the change.
 
-A change is trivial when it is clearly scoped, low risk, and localized, for example: editing text in one file, a small obvious adjustment to a function without changing interfaces or external behavior, or renaming/comment updates with no behavioral change.
+### Trivial Changes
+
+A change is trivial when it is clearly scoped, low risk, and localized. Examples include editing text in one file, making a small obvious adjustment to a function without changing interfaces or external behavior, or making renames or comment updates with no behavioral change.
 
 For trivial changes:
 - read the target file and directly touched context
 - make the edit directly when the user is clearly asking for that change; treat that request as approval
 - if the change turns out to be less trivial than expected, stop and switch to the full workflow below
 
-For non-trivial changes, before planning:
+### Non-trivial Changes
+
+Before planning:
 - read the relevant code paths first
 - read the documentation relevant to the area you are changing, read local documentation files when present
 - ask questions for any non-obvious product or implementation choice until material ambiguities are resolved and the intended change is clear
 
-Before implementing non-trivial changes:
+Before implementing:
 - present a short spec covering the requirements being satisfied, the intended approach, the files you expect to touch, and if present any notable risks or trade-offs
 - include architecture and data model details where relevant
 - recommend one path with reasoning instead of presenting a large menu of options
@@ -28,15 +32,9 @@ Before implementing non-trivial changes:
 - if the change would expand beyond the current scope or affect code paths outside the user's apparent target area, flag it and ask before proceeding
 - flag nearby issues separately rather than bundling them in
 
-## Edit Presentation
+## Implementation Guidelines
 
-Edit one file at a time. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch.
-
-Within a file, prefer a single `apply_patch` edit even when the changes are disjoint.
-
-When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span, from the first changed line through the last, so no intervening edits are omitted. If that span is too large to review comfortably, present one or more `apply_patch` edits for that file instead.
-
-## Code Style
+### Code Style
 
 Match the project's existing style, structure, and conventions.
 
@@ -47,19 +45,25 @@ Keep implementations simple and direct:
 - avoid defensive code for unrealistic failure modes just to appear safe
 - do not introduce obvious bugs, security issues, race conditions or unnecessary complexity
 
-## Documentation
+### Comments
 
-Respect the project's documentation style. Keep comments consistent with the surrounding file. Default to lowercase comments without trailing punctuation when that fits the local style.
+Respect the project's documentation style. Keep comments consistent with the surrounding file. Default to lowercase comments without trailing punctuation if there's no other local style.
 
 Document functions, modules, and public interfaces in the style the project already uses. Include arguments, return values, side effects, and assumptions when they are not obvious. Prioritize code that is non-trivial, externally used, easy to misuse, or difficult to understand.
 
-Prefer concise comments that explain intent, assumptions, invariants, or non-obvious transformations. Do not comment obvious mechanics or add boilerplate comments. If separate blocks within a function act in distinct phases, add a brief section comment at the start of each phase. Use line-by-line commentary only when it materially improves clarity.
+Prefer concise comments that explain intent, assumptions, invariants, or non-obvious transformations. Do not comment obvious mechanics or add boilerplate. If separate blocks within a function act in distinct phases, add a brief section comment at the start of each phase. Use line-by-line commentary only when it materially improves clarity.
 
-After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md` files should be updated, as well as any nearby developer-facing docs. If the behavior, workflow, or architecture changed, and you think changes to the docs are warranted, then present the intended changes and ask the user about them. Apply the documentation edits separately from the code edits.
+### Docs Updates
 
-## Chat Output
+After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md`, or nearby developer-facing docs should be updated. If behavior, workflow, or architecture changed and you think docs updates are warranted, present the intended changes and ask the user about them. Apply documentation edits separately from code edits.
 
-When using lists in chat, use numbered lists instead of bullet lists. If a single LLM response contains multiple numbered list sections, continue numbering across them rather than restarting at `1`, so the user can easily refer to specific points.
+## Communication
+
+### Chat Output
+
+Use numbered lists instead of bullet lists when the content is actually list-shaped. Prefer plain prose otherwise. Do not number individual sentences. If a single LLM response contains multiple numbered list sections, continue numbering across them rather than restarting at `1`.
+
+### File References
 
 When referencing files in chat, use markdown links.
 
@@ -82,6 +86,14 @@ When useful and easy to determine, include the enclosing function, method, or lo
 Preferred:
 - `[example-app/src/editor/actions/goto.lua:34, goto_file_action()](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
 - `[other-app/lib/ui/keymaps.lua:88, normal_mode_mapping()](/home/user/projects/other-app/lib/ui/keymaps.lua#L88)`
+
+### Edit Presentation
+
+Edit one file at a time. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch.
+
+Within a file, prefer a single `apply_patch` edit even when the changes are disjoint.
+
+When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span so no intervening edits are omitted. If that span is too large to review comfortably, present two or more separate `apply_patch` edits for that file instead.
 
 ## Tests
 
