@@ -219,8 +219,8 @@ return {
 
             vim.api.nvim_create_autocmd('LspDetach', {
                 callback = function(_)
-                    -- reset omnifunc, tagfunc, foldexpr
-                    vim.cmd('setlocal tagfunc< omnifunc< foldexpr<')
+                    -- reset omnifunc, tagfunc, and any lsp-driven folding override
+                    vim.cmd('setlocal tagfunc< omnifunc< foldmethod< foldexpr<')
                 end,
             })
 
