@@ -87,7 +87,7 @@ function __recursive_path_pick --description "Recursive file finder"
 
     # if you selected something, replace the current token with that path
     if test -n "$picked"
-        commandline --current-token --replace -- $picked
+        commandline --current-token --replace -- (string escape -- $picked)
     end
 
     commandline -f repaint
