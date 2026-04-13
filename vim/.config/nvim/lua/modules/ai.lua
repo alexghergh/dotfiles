@@ -916,8 +916,8 @@ return {
                 show_and_yank_chat_session_id()
             end, { nargs = 0 })
 
-            -- expand cc to CodeCompanion in the command line
-            vim.keymap.set('c', 'cc', "getcmdtype() == ':' ? 'CodeCompanion' : 'cc'", { expr = true })
+            -- expand cc to CodeCompanion in the command line, but only for the exact :cc command
+            vim.cmd.cnoreabbrev([[<expr> cc getcmdtype() == ':' && getcmdline() ==# 'cc' ? 'CodeCompanion' : 'cc']])
 
             -- add code from current visual selection to chat buffer
             vim.keymap.set('v', 'ga', '<Cmd>CodeCompanionChat Add<CR>', { desc = 'Add code from selection to Code companion chat window' })
