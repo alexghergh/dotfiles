@@ -65,22 +65,25 @@ abbr --add gs       git status
 abbr --add gg       git status
 abbr --add gco      git checkout
 abbr --add gcb      git checkout -b
+abbr --add gsw      git switch
 abbr --add gc       git commit
 abbr --add gca      git commit --amend
 abbr --add gp       git push
 abbr --add gpf      git push -f
+abbr --add gpup     git push --set-upstream origin
 abbr --add gl       git log
 abbr --add gla      git log --oneline --graph --all
-abbr --add gsw      git switch
-abbr --add gpup     git push --set-upstream origin
 abbr --add gsh      git show
 abbr --add gd       git diff
 abbr --add gds      git diff --staged
 abbr --add gdc      git diff --cached # same as the above
+abbr --add grs      git restore --staged
+abbr --add gst      git stash
+abbr --add gsp      git stash pop
+abbr --add gsl      git stash list
 abbr --add gri      git rebase -i
 abbr --add greco    git rebase --continue
 abbr --add greab    git rebase --abort
-abbr --add grs      git restore --staged
 abbr --add gcl      git clone https://
 abbr --add gcgh     git clone https://github.com/
 abbr --add gcgl     git clone https://gitlab.com/
