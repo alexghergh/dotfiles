@@ -212,10 +212,13 @@ local function show_and_yank_chat_session_id()
 end
 
 -- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
-local function toast_notify(title, body)
+local function toast_notify(header, body)
+    local title = 'Neovim AI'
+    local wezterm_available = vim.fn.executable('wezterm') == 1
+
     -- get the wezterm tab id (unfortunately this is more complicated than a simple translation of pane id -> tab id)
     local pane_num = tonumber(vim.env.WEZTERM_PANE)
-    if pane_num then
+    if pane_num and wezterm_available then
         local list_result = vim.system({ 'wezterm', 'cli', 'list', '--format', 'json' }, { text = true }):wait()
 
         -- if wezterm is installed, we have to iterate on the list of results; this is a list of _panes_,
@@ -245,22 +248,27 @@ local function toast_notify(title, body)
         end
     end
 
+    if vim.fn.executable('notify-send') ~= 1 then
+        return
+    end
+
     local notify_cmd = {
         'notify-send',
         '--app-name',
         title,
         '--expire-time',
         '6000',
-        -- always expose a button; we only handle the callback for some configured terminals, see more below
+        -- always expose a button, but only handle the callback for some configured terminals (like wezterm); see more below
         '--action',
         'open=Go to conversation',
+        header,
         body,
     }
 
     -- upon callback, extract whether the button was pressed; if yes, switch
-    -- focus back to the conversation when the current terminal supports it
+    -- focus the conversation when the current terminal supports it
     vim.system(notify_cmd, { text = true }, function(result)
-        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or not pane_num then
+        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or not pane_num or not wezterm_available then
             return
         end
 
@@ -873,16 +881,11 @@ return {
                             return
                         end
 
-                        local title, output
+                        local title, body
 
                         if req.match == 'CodeCompanionToolApprovalRequested' then
-                            title = 'Nvim AI tool approval request'
-                            output = string.format(
-                                '⚠️ %s requested use for tool: %s\nArgs: %s',
-                                chat.adapter.formatted_name,
-                                req.data.name,
-                                req.data.args
-                            )
+                            title = string.format('⚠️ %s requested tool use', chat.adapter.formatted_name)
+                            body = req.data.name .. (req.data.args ~= nil and ': ' .. req.data.args or '')
                         elseif req.match == 'CodeCompanionRequestFinished' then
                             local chat_messages = chat.messages
                             if chat_messages == nil then
@@ -890,15 +893,15 @@ return {
                             end
 
                             local last_message = chat_messages[#chat_messages].content
-                            local body = last_message:sub(1, 100)
+                            local max_chars = 200
 
-                            title = 'Neovim AI response'
-                            output = string.format('✅ %s (%s)\n%s', req.data.adapter.formatted_name, req.data.status, body)
+                            title = string.format('✅ %s (%s)', req.data.adapter.formatted_name, req.data.status)
+                            body = string.len(last_message) > max_chars and last_message:sub(1, max_chars) .. '..' or last_message
                         else
                             return
                         end
 
-                        toast_notify(title, output)
+                        toast_notify(title, body)
                     end
                 end,
             })
