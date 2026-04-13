@@ -149,8 +149,8 @@ config.launch_menu = {
         cwd = xdg_config_home .. '/fish/',
     },
     {
-        label = 'fish - abbr.fish',
-        args = { 'nvim', 'conf.d/abbr.fish' },
+        label = 'fish - 20_abbr.fish',
+        args = { 'nvim', 'conf.d/20_abbr.fish' },
         cwd = xdg_config_home .. '/fish/',
     },
     {
