@@ -19,9 +19,11 @@ bind \co\ct 'transpose-words'
 # cycle through long/short path displays (Ctrl-o + Ctrl-r)
 # see https://fishshell.com/docs/current/cmds/prompt_pwd.html)
 function __cycle_prompt_display
-    test $fish_prompt_pwd_full_dirs -eq 1
-    and set fish_prompt_pwd_full_dirs 999
-    or set fish_prompt_pwd_full_dirs 1
+    if not set -q fish_prompt_pwd_full_dirs; or test $fish_prompt_pwd_full_dirs -eq 1
+        set -g fish_prompt_pwd_full_dirs 999
+    else
+        set -g fish_prompt_pwd_full_dirs 1
+    end
     commandline -f repaint
 end
 bind \co\cr __cycle_prompt_display
