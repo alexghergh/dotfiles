@@ -837,10 +837,7 @@ return {
                         -- wrapped call
                         original_handle_session_update(prompt_self, update)
 
-                        if type(update) ~= 'table' or update.sessionUpdate ~= 'usage_update' then
-                            return
-                        end
-                        if type(update.used) ~= 'number' then
+                        if type(update) ~= 'table' or update.sessionUpdate ~= 'usage_update' or type(update.used) ~= 'number' then
                             return
                         end
 
@@ -860,7 +857,46 @@ return {
                 end,
             })
 
-            -- show a system toast message:
+            -- capture LLM output chunks for notify toasts while the request is still streaming, otherwise there's no way to differentiate
+            -- the output from reasoning / tools, as they get collapsed into a single chat message; works for both http and ACP paths
+            vim.api.nvim_create_autocmd({ 'User' }, {
+                pattern = 'CodeCompanionRequestStarted',
+                group = group,
+                callback = function(req)
+                    local bufnr = req.data and req.data.bufnr
+                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+                        return
+                    end
+
+                    local chat = require('codecompanion').buf_get_chat(bufnr)
+                    if not chat then
+                        return
+                    end
+
+                    chat._toast_output_chunks = {}
+
+                    -- overwrite the built-in add chat message with a wrapper that builds the output LLM response chunks
+                    if chat._toast_original_add_buf_message == nil then
+                        chat._toast_original_add_buf_message = chat.add_buf_message
+                        chat.add_buf_message = function(self, data, options)
+                            if
+                                options
+                                and options.type == self.MESSAGE_TYPES.LLM_MESSAGE
+                                and type(data) == 'table'
+                                and type(data.content) == 'string'
+                                and data.content ~= ''
+                            then
+                                table.insert(self._toast_output_chunks, data.content)
+                            end
+
+                            -- wrapped call
+                            return self._toast_original_add_buf_message(self, data, options)
+                        end
+                    end
+                end,
+            })
+
+            -- show a system toast message (works for both http and ACP paths):
             -- - when tool use or web access is requested
             -- - upon API response completion
             vim.api.nvim_create_autocmd({ 'User' }, {
@@ -887,14 +923,14 @@ return {
                             title = string.format('⚠️ %s requested tool use', chat.adapter.formatted_name)
                             body = req.data.name .. (req.data.args ~= nil and ': ' .. req.data.args or '')
                         elseif req.match == 'CodeCompanionRequestFinished' then
-                            local chat_messages = chat.messages
-                            if chat_messages == nil then
-                                return
+                            local last_message
+
+                            if type(chat._toast_output_chunks) == 'table' then
+                                -- use the built output chunks (see above autocommand)
+                                last_message = vim.trim(table.concat(chat._toast_output_chunks, ''))
                             end
 
-                            local last_message = chat_messages[#chat_messages].content
                             local max_chars = 200
-
                             title = string.format('✅ %s (%s)', req.data.adapter.formatted_name, req.data.status)
                             body = string.len(last_message) > max_chars and last_message:sub(1, max_chars) .. '..' or last_message
                         else
