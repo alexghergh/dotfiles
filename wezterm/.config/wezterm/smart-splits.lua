@@ -31,10 +31,7 @@ function M.resize_pane(key, direction)
                 window:perform_action({ SendKey = { key = 'w' } }, pane)
                 window:perform_action({ SendKey = { key = key } }, pane)
             else
-                window:perform_action(
-                    { AdjustPaneSize = { direction, 1 } },
-                    pane
-                )
+                window:perform_action({ AdjustPaneSize = { direction, 1 } }, pane)
             end
         end),
     }
