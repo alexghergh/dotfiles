@@ -94,6 +94,11 @@ function __abbr_reminder_show --on-event fish_postexec
     printf '\n💡 \e[1m%s\e[0m => %s\n' $abbr "$expansion"
 end
 
+# explicitly reset state when a commandline is abandoned or on fresh prompt
+function __abbr_reminder_reset_state --on-event fish_prompt --on-event fish_cancel
+    set -g __abbr_reminder_used 0
+end
+
 # run init to build up a cache of abbrs; this way, we don't always parse abbrs
 # on every typed command
 function __abbr_reminder_init
