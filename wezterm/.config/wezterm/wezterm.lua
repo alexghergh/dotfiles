@@ -509,8 +509,7 @@ config.key_tables = {
         { key = 'd', mods = 'CTRL', action = act.ScrollByPage(0.5) },
         { key = 'f', mods = 'CTRL', action = act.ScrollByPage(1) },
 
-        -- osc 133 compatible commands
-        -- see ~/.config/fish/conf.d/osc133.fish
+        -- osc 133 compatible commands (fish 4.0+ emits these natively)
 
         -- scroll up by command (osc 133)
         { key = 'k', mods = 'CTRL', action = act.ScrollToPrompt(-1) },
