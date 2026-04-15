@@ -355,9 +355,9 @@ return {
                 local separator02_group = 'InclineSeparator02' .. hl_suffix
                 local separator20_group = 'InclineSeparator20' .. hl_suffix
 
-                -- path is trimmed; compact version on active window; full path on inactive windows
+                -- path is trimmed; compact version on active window; relative path on inactive windows
                 if path ~= '' then
-                    label = vim.fn.fnamemodify(path, focused and ':t' or ':~')
+                    label = vim.fn.fnamemodify(path, focused and ':t' or ':.')
                     local max_chars = 70
                     local label_len = vim.fn.strchars(label)
                     if label_len > max_chars then
