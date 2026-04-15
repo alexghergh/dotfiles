@@ -5,7 +5,11 @@ return {
         dependencies = {
             'nvim-telescope/telescope.nvim',
         },
-        opts = {},
+        opts = {
+            system_clipboard = {
+                sync_with_ring = false,
+            },
+        },
         config = function(_, opts)
             require('yanky').setup(opts)
 
