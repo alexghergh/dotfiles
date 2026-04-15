@@ -80,6 +80,9 @@ function __nextd-or-forward-char
 end
 bind \e\[C __nextd-or-forward-char # right arrow
 
+# insert a literal space without expanding abbreviations (Ctrl-o Ctrl-o)
+bind \co\co 'commandline -i " "'
+
 # search recursively under the current dir for files by basename prefix and
 # present a path picker
 # e.g. by typing some.c, all the files under a/b/some.c, a/some.c and some.c
