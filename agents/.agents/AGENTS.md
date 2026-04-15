@@ -61,7 +61,7 @@ After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, 
 
 ### Chat Output
 
-Use numbered lists instead of bullet lists when the content is actually list-shaped. Prefer plain prose otherwise. Do not number individual sentences. If a single LLM response contains multiple numbered list sections, continue numbering across them rather than restarting at `1`.
+When a list is the natural format, use numbered lists instead of bulleted lists. Do not restructure prose or explanations into list form.
 
 ### File References
 
