@@ -1,6 +1,7 @@
 local wezterm = require('wezterm')
 local act = wezterm.action
 local background = require('background')
+local battery = require('battery')
 local smart_splits = require('smart-splits')
 
 local config = wezterm.config_builder()
@@ -168,25 +169,7 @@ config.launch_menu = {
 wezterm.on('update-right-status', function(window, _)
     -- "Sun April 22 22:50"
     local date = wezterm.strftime('%a %b %-d %H:%M')
-
-    -- there may be multiple batteries on the system, or none at all
-    local bat_parts = {}
-    for _, b in ipairs(wezterm.battery_info()) do
-        local bat_status = ''
-        if b.state == 'Charging' then
-            bat_status = 'Ch.'
-        elseif b.state == 'Discharging' then
-            bat_status = 'Disch.'
-        end
-
-        local bat_charge = string.format('%.0f%%', b.state_of_charge * 100)
-        if bat_status ~= '' then
-            bat_charge = bat_status .. ' ' .. bat_charge
-        end
-
-        table.insert(bat_parts, bat_charge)
-    end
-    local bat = table.concat(bat_parts, ' | ')
+    local bat = battery.status()
 
     -- display active key table
     local key_tbl = window:active_key_table()
