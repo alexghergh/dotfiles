@@ -1,0 +1,55 @@
+# atuin.sh reference config: https://docs.atuin.sh/cli/configuration/config/
+
+# history db path
+db_path = '~/.local/share/atuin/history.db'
+
+# don't auto-run on enter
+enter_accept = false
+
+# height of the search window
+inline_height = 40
+
+# compact UI
+style = 'compact'
+
+# on pressing Up / Down, do regular prefix matching (fuzzy is still Ctrl-N / Ctrl-P)
+search_mode_shell_up_key_binding = 'prefix'
+
+# history to filter out
+history_filter = [
+    '^ls$',           # Exclude bare 'ls' commands
+    '^cd ',           # Exclude cd commands
+    '^c ',
+    '^cat ',          # Exclude cat commands
+]
+
+[theme]
+name = 'default'
+
+# don't check for atuin updates
+update_check = false
+
+# disable sync entirely (local only)
+auto_sync = false
+
+# filter out secrets
+secrets_filter = true
+
+# git-repo-aware filtering (cycle to it with Tab in the search UI)
+workspaces = true
+
+[stats]
+# treat some subcommands as separate entries in `atuin stats`
+common_subcommands = [
+    'cargo',
+    'dnf',
+    'docker',
+    'git',
+    'go',
+    'ip',
+    'kubectl',
+    'npm',
+    'podman',
+    'systemctl',
+]
+common_prefix = ['sudo']
