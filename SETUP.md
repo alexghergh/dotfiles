@@ -9,3 +9,16 @@ or recreated manually. They are NOT managed by stow / git.
 - fish history: ~/.local/share/fish/fish_history
   (fish still writes to this even with atuin enabled)
 - zoxide db: ~/.local/share/zoxide/db.zo
+
+npm
+---
+
+Set the global prefix so packages install under the user's home:
+
+    npm config set prefix ~/.npm-global
+
+ACP servers
+---
+
+- claude-agent-acp: `npm install -g @agentclientprotocol/claude-agent-acp`
+- codex-acp: download binary from the codex-acp repo's releases page
