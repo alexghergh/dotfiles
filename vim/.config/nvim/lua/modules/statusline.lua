@@ -343,17 +343,19 @@ return {
                 local label = '[No Name]' -- empty buffers
 
                 local focused = props.focused -- neovim window focus
+                local on_first_line = vim.api.nvim_win_get_cursor(props.win)[1] == 1
 
                 local separator = sep(separator_style).R_FULL
                 local hl_suffix = focused and '' or 'NC' -- current or non-current window hl
+                local sep_suffix = hl_suffix .. (on_first_line and 'CL' or '') -- swap separator bg on the incline line
 
                 -- incline highlight groups
                 local status1_group = 'InclineStatus1' .. hl_suffix
                 local status2_group = 'InclineStatus2' .. hl_suffix
-                local separator01_group = 'InclineSeparator01' .. hl_suffix
-                local separator10_group = 'InclineSeparator10' .. hl_suffix
-                local separator02_group = 'InclineSeparator02' .. hl_suffix
-                local separator20_group = 'InclineSeparator20' .. hl_suffix
+                local separator01_group = 'InclineSeparator01' .. sep_suffix
+                local separator10_group = 'InclineSeparator10' .. sep_suffix
+                local separator02_group = 'InclineSeparator02' .. sep_suffix
+                local separator20_group = 'InclineSeparator20' .. sep_suffix
 
                 -- path is trimmed; compact version on active window; relative path on inactive windows
                 if path ~= '' then

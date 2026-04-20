@@ -37,6 +37,7 @@ local function melange()
     local status1_fg = '#3d4451'
     local status1_bg = '#8ab977'
     local status2_bg = '#3e4452'
+    local cursorline_bg = vim.api.nvim_get_hl(0, { name = 'CursorLine', link = false }).bg or editor_bg
 
     return {
         -- floating windows
@@ -78,6 +79,17 @@ local function melange()
         ['InclineSeparator02NC'] = { fg = status1_bg, bg = editor_bg },
         ['InclineSeparator20'] = { fg = editor_bg, bg = status2_bg },
         ['InclineSeparator20NC'] = { fg = editor_bg, bg = status1_bg },
+
+        -- incline separators when the cursor is on the incline line; tinted to
+        -- match CursorLine so the separator outer edge blends with the line bg
+        ['InclineSeparator01CL'] = { fg = statusline_bg, bg = cursorline_bg },
+        ['InclineSeparator10CL'] = { fg = cursorline_bg, bg = statusline_bg },
+        ['InclineSeparator02CL'] = { fg = status2_bg, bg = cursorline_bg },
+        ['InclineSeparator20CL'] = { fg = cursorline_bg, bg = status2_bg },
+        ['InclineSeparator01NCCL'] = { link = 'InclineSeparator01CL' },
+        ['InclineSeparator10NCCL'] = { link = 'InclineSeparator10CL' },
+        ['InclineSeparator02NCCL'] = { fg = status1_bg, bg = cursorline_bg },
+        ['InclineSeparator20NCCL'] = { fg = cursorline_bg, bg = status1_bg },
 
         -- autocompletion menu items (nvim-cmp)
         -- gray
@@ -122,6 +134,7 @@ local function tokyonight()
     local editor_bg = theme_style == 'light' and '#e1e2e7' or '#222436'
     local status2_fg = '#c8d3f5'
     local status2_bg = '#3e4452'
+    local cursorline_bg = vim.api.nvim_get_hl(0, { name = 'CursorLine', link = false }).bg or editor_bg
 
     return {
         -- statusline
@@ -153,6 +166,17 @@ local function tokyonight()
         ['InclineSeparator02NC'] = { fg = normal.bg, bg = editor_bg },
         ['InclineSeparator20'] = { fg = editor_bg, bg = status2_bg },
         ['InclineSeparator20NC'] = { fg = editor_bg, bg = normal.bg },
+
+        -- incline separators when the cursor is on the incline line; tinted to
+        -- match CursorLine so the separator outer edge blends with the line bg
+        ['InclineSeparator01CL'] = { fg = statusline_bg, bg = cursorline_bg },
+        ['InclineSeparator10CL'] = { fg = cursorline_bg, bg = statusline_bg },
+        ['InclineSeparator02CL'] = { fg = status2_bg, bg = cursorline_bg },
+        ['InclineSeparator20CL'] = { fg = cursorline_bg, bg = status2_bg },
+        ['InclineSeparator01NCCL'] = { link = 'InclineSeparator01CL' },
+        ['InclineSeparator10NCCL'] = { link = 'InclineSeparator10CL' },
+        ['InclineSeparator02NCCL'] = { fg = normal.bg, bg = cursorline_bg },
+        ['InclineSeparator20NCCL'] = { fg = cursorline_bg, bg = normal.bg },
 
         -- codecompanion model / mode / roasoning elements
         ['CodeCompanionChatStatusAdapter'] = { fg = status2_fg, bg = 'None', bold = true },
