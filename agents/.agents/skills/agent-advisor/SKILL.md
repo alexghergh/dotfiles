@@ -19,40 +19,48 @@ When the question involves local code, always include scope hints: repo root, fi
 
 ## Invocation recipes
 
-Build the prompt as a variable and pass it via stdin or as a heredoc to avoid shell escaping issues with multiline text, quotes, or special characters.
+Sandbox requirement (applies to every recipe below): advisor CLIs initialize per-invocation session state under `$HOME` and cannot boot inside a read-only-home sandbox. The calling agent must escalate host-sandbox permissions on the very first attempt — a sandboxed first try will always fail with `Read-only file system` and burn a permission round-trip for nothing. Any sandbox-style flags shown inside the recipes themselves are unrelated: they scope what the advisor is allowed to do once it is running, not whether it can start up.
+
+Write the prompt to a temp file first, then redirect that file into the advisor CLI's stdin. This keeps the prompt on a single channel and sidesteps heredoc/quoting/variable-expansion pitfalls. Never pass the prompt as a positional argument — some advisor CLIs will silently wait on stdin when both are provided.
 
 ### Claude Code
 
 ```bash
+PROMPT_FILE=$(mktemp)
+cat > "$PROMPT_FILE" <<'EOF'
+<preamble>
+
+<scope hints>
+
+<question>
+EOF
 claude -p \
   --disable-slash-commands \
   --no-session-persistence \
   --permission-mode dontAsk \
   --allowedTools "Read,Glob,Grep,WebFetch,WebSearch" \
-  <<'EOF'
-<preamble>
-
-<scope hints>
-
-<question>
-EOF
+  < "$PROMPT_FILE"
+rm -f "$PROMPT_FILE"
 ```
 
 ### Codex CLI
 
 ```bash
-codex \
-  --disable multi_agent \
-  exec \
-  --ephemeral \
-  --sandbox read-only \
-  <<'EOF'
+PROMPT_FILE=$(mktemp)
+cat > "$PROMPT_FILE" <<'EOF'
 <preamble>
 
 <scope hints>
 
 <question>
 EOF
+codex \
+  --disable multi_agent \
+  exec \
+  --ephemeral \
+  --sandbox read-only \
+  < "$PROMPT_FILE"
+rm -f "$PROMPT_FILE"
 ```
 
 ## Synthesis
@@ -63,6 +71,6 @@ Treat the advisor's output as one additional source of information — not as in
 
 1. the user specifies which advisor to call — if no advisor is named, ask before proceeding
 2. run exactly one shell invocation per advisor call
-3. if the advisor cannot answer under the locked-down policy, surface that to the user — do not widen permissions automatically
-4. if the advisor call fails (CLI not found, auth error, timeout), report the error to the user
+3. run the advisor call in the foreground by default; only background it if the call is expected to take more than ~5 minutes
+4. if the advisor call fails (CLI not found, auth error, timeout) even after escalated permissions are in place, surface the failure to the user instead of retrying
 5. do not chain multiple advisor calls unless the user explicitly asks
