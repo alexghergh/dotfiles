@@ -65,11 +65,31 @@ return {
                             vim.cmd.edit(vim.fn.fnameescape(name))
                         end)
 
-                        map('i', '<A-a>', function(pr_bufnr)
+                        map({ 'i', 'n' }, '<A-a>', function(pr_bufnr)
                             -- close buffer picker and open a fresh unnamed buffer (same as :enew)
                             actions.close(pr_bufnr)
                             vim.cmd.enew()
                         end, { desc = 'add_empty_buffer_and_close' })
+
+                        -- override default <A-d> to also force-delete empty unnamed buffers
+                        map({ 'i', 'n' }, '<A-d>', function(pr_bufnr)
+                            local picker = action_state.get_current_picker(pr_bufnr)
+                            local sels = picker:get_multi_selection()
+                            if vim.tbl_isempty(sels) then
+                                sels = { action_state.get_selected_entry() }
+                            end
+                            for _, sel in ipairs(sels) do
+                                if
+                                    sel
+                                    and vim.api.nvim_buf_get_name(sel.bufnr) == ''
+                                    and vim.api.nvim_buf_line_count(sel.bufnr) == 1
+                                    and vim.api.nvim_buf_get_lines(sel.bufnr, 0, 1, true)[1] == ''
+                                then
+                                    vim.bo[sel.bufnr].modified = false
+                                end
+                            end
+                            actions.delete_buffer(pr_bufnr)
+                        end, { desc = 'delete_buffer' })
                         return true
                     end,
                 },
