@@ -496,7 +496,7 @@ return {
             },
             interactions = {
                 chat = {
-                    adapter = 'codex',
+                    adapter = 'claude_code',
                     variables = {
                         ['buffer'] = {
                             opts = {
