@@ -13,12 +13,18 @@
             "Bash(* --version)",
             "Bash(* --help *)",
             "WebSearch",
-            "WebFetch"
+            "WebFetch",
+            "Skill",
+            "Read(~/.claude/**)",
+            "Read(/tmp/claude/**)",
+            "Read(/tmp/claude-write/**)",
+            "Write(/tmp/claude/**)",
+            "Write(/tmp/claude-write/**)",
+            "Edit(/tmp/claude/**)",
+            "Edit(/tmp/claude-write/**)"
         ],
         "ask": [],
         "deny": [
-            "Bash(curl *)",
-            "Bash(wget *)",
             "Bash(rm -rf *)",
             "Bash(git push *)",
             "Bash(sudo *)",
@@ -32,11 +38,15 @@
     "sandbox": {
         "enabled": true,
         "failIfUnavailable": true,
-        "autoAllowBashIfSandboxed": false,
-        "allowUnsandboxedCommands": false,
+        "autoAllowBashIfSandboxed": true,
+        "allowUnsandboxedCommands": true,
+        "network": {
+            "allowedDomains": []
+        },
         "filesystem": {
             "allowWrite": [
-                "/tmp/claude-write"
+                "/tmp/claude-write",
+                "/tmp/claude"
             ],
             "denyRead": [
                 "~/.ssh",
@@ -84,6 +94,7 @@
         "DISABLE_ERROR_REPORTING": "1",
         "DISABLE_FEEDBACK_COMMAND": "1",
         "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
-        "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1"
+        "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+        "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1"
     }
 }
