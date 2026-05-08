@@ -71,24 +71,47 @@ return {
                             vim.cmd.enew()
                         end, { desc = 'add_empty_buffer_and_close' })
 
-                        -- override default <A-d> to also force-delete empty unnamed buffers
+                        local function is_empty_unnamed_buffer(bufnr)
+                            return vim.api.nvim_buf_is_valid(bufnr)
+                                and vim.api.nvim_buf_get_name(bufnr) == ''
+                                and vim.api.nvim_buf_is_loaded(bufnr)
+                                and vim.api.nvim_buf_line_count(bufnr) == 1
+                                and vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1] == ''
+                        end
+
+                        -- override default <A-d> to also garbage-collect empty unnamed buffers
                         map({ 'i', 'n' }, '<A-d>', function(pr_bufnr)
                             local picker = action_state.get_current_picker(pr_bufnr)
                             local sels = picker:get_multi_selection()
                             if vim.tbl_isempty(sels) then
                                 sels = { action_state.get_selected_entry() }
                             end
+
                             for _, sel in ipairs(sels) do
-                                if
-                                    sel
-                                    and vim.api.nvim_buf_get_name(sel.bufnr) == ''
-                                    and vim.api.nvim_buf_line_count(sel.bufnr) == 1
-                                    and vim.api.nvim_buf_get_lines(sel.bufnr, 0, 1, true)[1] == ''
-                                then
+                                if sel and is_empty_unnamed_buffer(sel.bufnr) then
                                     vim.bo[sel.bufnr].modified = false
                                 end
                             end
-                            actions.delete_buffer(pr_bufnr)
+
+                            if not vim.tbl_isempty(sels) then
+                                actions.delete_buffer(pr_bufnr)
+                            end
+
+                            local removed = false
+                            for i = #picker.finder.results, 1, -1 do
+                                local bufnr = picker.finder.results[i].bufnr
+                                if is_empty_unnamed_buffer(bufnr) then
+                                    vim.bo[bufnr].modified = false
+                                    if pcall(vim.api.nvim_buf_delete, bufnr, { force = false }) then
+                                        table.remove(picker.finder.results, i)
+                                        removed = true
+                                    end
+                                end
+                            end
+
+                            if removed then
+                                picker:refresh()
+                            end
                         end, { desc = 'delete_buffer' })
                         return true
                     end,
