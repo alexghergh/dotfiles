@@ -34,6 +34,9 @@ set -q PROJECTS; or set -gx PROJECTS "$HOME/projects"
 # set biber path, just a hack to work on Arch
 #fish_add_path --path --append /usr/bin/vendor_perl
 
+# user's local binaries
+fish_add_path --path --append "$HOME/.local/bin"
+
 # rustup/cargo tools
 fish_add_path --path --append "$HOME/.cargo/bin"
 
@@ -45,9 +48,6 @@ fish_add_path --path --append "$PACKAGES/acp"
 
 # npm global installs (also see https://developer.fedoraproject.org/tech/languages/nodejs/nodejs.html)
 fish_add_path --path --append "$HOME/.npm-global/bin"
-
-# uv global keyring
-fish_add_path --path --append "$XDG_DATA_HOME/uv/tools/keyring/bin"
 
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
