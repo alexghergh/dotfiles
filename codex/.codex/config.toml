@@ -52,7 +52,7 @@ personality = "pragmatic"
 # /tmp, or read-only otherwise
 sandbox_mode = "read-only"
 
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "xhigh"
 
 project_doc_fallback_filenames = ["CLAUDE.md"]
