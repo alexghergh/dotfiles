@@ -97,8 +97,8 @@ abbr --add sudovim  sudo -E vim
 abbr --add sudonvim sudo -E vim
 
 # get my ip
-abbr --add myp curl https://ipecho.net/plain
-abbr --add myip curl https://ipecho.net/plain
+abbr --add myp curl https://ipinfo.io
+abbr --add myip curl https://ipinfo.io
 
 # texlive alias for tlmgr; hack for Arch
 abbr --add tlmgr /usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode
