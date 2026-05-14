@@ -46,5 +46,8 @@ fish_add_path --path --append "$PACKAGES/acp"
 # npm global installs (also see https://developer.fedoraproject.org/tech/languages/nodejs/nodejs.html)
 fish_add_path --path --append "$HOME/.npm-global/bin"
 
+# uv global keyring
+fish_add_path --path --append "$XDG_DATA_HOME/uv/tools/keyring/bin"
+
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
