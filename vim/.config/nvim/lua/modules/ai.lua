@@ -962,7 +962,9 @@ return {
             vim.keymap.set({ 'n', 'v' }, '<Leader>cc', '<Cmd>CodeCompanionChat Toggle<CR>', { desc = 'Toggle Code companion chat' })
 
             -- code actions (Companion Do)
-            vim.keymap.set({ 'n', 'v' }, '<Leader>cd', '<Cmd>CodeCompanionActions<CR>', { desc = 'Open Code companion actions' })
+            vim.keymap.set({ 'n', 'v' }, '<Leader>cd', function()
+                require('codecompanion').actions({})
+            end, { desc = 'Open Code companion actions' })
 
             -- show a picker for model / mode / reasoning (last 2 only work for ACP paths)
             vim.keymap.set('n', '<leader>cm', function()
