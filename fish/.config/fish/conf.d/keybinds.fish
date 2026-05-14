@@ -8,7 +8,7 @@ end
 # duplicate last word in the commandline (Ctrl-o + Ctrl-d)
 function __dup_last_word
     set -l cmd (string split ' ' (string trim (commandline)))
-    commandline --insert $cmd[-1]
+    commandline --insert -- "$cmd[-1]"
 end
 bind \co\cd __dup_last_word
 
