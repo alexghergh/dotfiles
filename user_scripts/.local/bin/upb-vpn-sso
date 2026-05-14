@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Refresh the SAML cookie for the UPB Cisco VPN NM connection.
+# Run before each tray-driven connect; cookies are single-use.
+
+set -euo pipefail
+
+CONN="${1:-UPB Cisco VPN}"
+SERVER="vpn.upb.ro"
+CONDA_ENV="oc-sso-env"
+
+# locate conda; override with CONDA_BASE env var if it lives elsewhere
+CONDA_BASE="${CONDA_BASE:-}"
+if [[ -z "$CONDA_BASE" ]]; then
+  for c in "$HOME/miniforge3" "$HOME/mambaforge" "$HOME/miniconda3" "$HOME/anaconda3" "/opt/conda"; do
+    if [[ -f "$c/etc/profile.d/conda.sh" ]]; then
+      CONDA_BASE="$c"
+      break
+    fi
+  done
+fi
+if [[ -z "$CONDA_BASE" || ! -f "$CONDA_BASE/etc/profile.d/conda.sh" ]]; then
+  echo "Cannot find conda. Set CONDA_BASE to your conda root and re-run." >&2
+  exit 1
+fi
+
+if ! nmcli -t -f connection.id con show "$CONN" >/dev/null 2>&1; then
+  echo "NetworkManager connection '$CONN' not found." >&2
+  exit 1
+fi
+
+# shellcheck disable=SC1091
+source "$CONDA_BASE/etc/profile.d/conda.sh"
+conda activate "$CONDA_ENV"
+
+out="$(mktemp -t upb-saml.XXXXXX)"
+chmod 600 "$out"
+trap 'shred -u "$out" 2>/dev/null || rm -f "$out"' EXIT
+
+echo "Launching SAML auth via openconnect-saml..." >&2
+openconnect-saml \
+  --authenticate \
+  --server "$SERVER" \
+  -- \
+  --protocol=anyconnect \
+  --useragent "AnyConnect Linux_64 4.10.07061" \
+  --os linux-64 \
+  > "$out"
+
+cookie=""
+fingerprint=""
+while IFS= read -r line; do
+  case "$line" in
+    COOKIE=*)      cookie="${line#COOKIE=}" ;;
+    FINGERPRINT=*) fingerprint="${line#FINGERPRINT=}" ;;
+  esac
+done < "$out"
+
+if [[ -z "$cookie" || -z "$fingerprint" ]]; then
+  echo "Failed to parse COOKIE/FINGERPRINT from openconnect-saml output." >&2
+  exit 1
+fi
+
+# nmcli a{ss} values use ',' as kv separator; escape backslashes then commas
+escape() {
+  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/,/\\,/g'
+}
+esc_cookie="$(escape "$cookie")"
+esc_fp="$(escape "$fingerprint")"
+
+# force secret flags to 0 (system-stored) so NM uses the values we're about
+# to write and doesn't invoke the broken plasma-nm auth-dialog.
+nmcli connection modify "$CONN" \
+  +vpn.data "cookie-flags=0,gateway-flags=0,gwcert-flags=0"
+
+nmcli connection modify "$CONN" \
+  vpn.secrets "cookie=$esc_cookie,gwcert=$esc_fp,gateway=$SERVER"
+
+echo "Done. Click '$CONN' in the tray to connect." >&2
