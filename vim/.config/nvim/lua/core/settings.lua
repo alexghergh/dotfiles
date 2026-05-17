@@ -17,7 +17,7 @@ vim.g.health = { style = 'float' }
 -- the icon itself comes from a patched font that has a neovim logo colored emoji;
 -- see wezterm.lua as well for the patched font
 vim.opt.title = true
-vim.opt.titlestring = '\u{E4C5} %{pathshorten(fnamemodify(getcwd(), ":~"))}'
+vim.opt.titlestring = '\u{E4C8} %{pathshorten(fnamemodify(getcwd(), ":~"))}'
 
 vim.opt.clipboard = 'unnamedplus'
 

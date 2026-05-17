@@ -10,12 +10,12 @@
 
 [[icons]]
 filename = "neovim.svg"
-codepoint = "E4C5"
+codepoint = "E4C8"
 
 [[icons]]
 filename = "codex.svg"
-codepoint = "E4C6"
+codepoint = "E4C9"
 
 [[icons]]
 filename = "claude.svg"
-codepoint = "E4C7"
+codepoint = "E4CA"
