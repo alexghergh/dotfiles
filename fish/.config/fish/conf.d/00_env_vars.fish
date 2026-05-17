@@ -35,19 +35,16 @@ set -q PROJECTS; or set -gx PROJECTS "$HOME/projects"
 #fish_add_path --path --append /usr/bin/vendor_perl
 
 # user's local binaries
-fish_add_path --path --append "$HOME/.local/bin"
+fish_add_path --path --prepend --move "$HOME/.local/bin"
 
 # rustup/cargo tools
-fish_add_path --path --append "$HOME/.cargo/bin"
-
-# stylua (provided by mason.nvim)
-fish_add_path --path --append "$XDG_DATA_HOME/nvim/mason/bin"
-
-# agent client protocol clients
-fish_add_path --path --append "$PACKAGES/acp"
+fish_add_path --path --prepend --move "$HOME/.cargo/bin"
 
 # npm global installs (also see https://developer.fedoraproject.org/tech/languages/nodejs/nodejs.html)
-fish_add_path --path --append "$HOME/.npm-global/bin"
+fish_add_path --path --prepend --move "$HOME/.npm-global/bin"
+
+# stylua (provided by mason.nvim)
+fish_add_path --path --prepend --move "$XDG_DATA_HOME/nvim/mason/bin"
 
 # japanese IME (see https://wiki.archlinux.org/title/Fcitx5)
 set -gx XMODIFIERS @im=fcitx
