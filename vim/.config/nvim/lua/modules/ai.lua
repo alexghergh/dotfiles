@@ -633,6 +633,13 @@ return {
             -- they are instead bound to the current (non-CodeCompanion) open buffer
             local status, gl = pcall(require, 'galaxyline')
             if status ~= false then
+                -- shape of gl.galaxyline_code_companion_buffer_status (read by statusline.lua):
+                --   - chat[bufnr]    : 0 = ready
+                --                      1 = processing
+                --                      2 = pending tool approval
+                --                      nil = closed
+                --   - one_off[bufnr] : 1 = processing
+                --                      nil = idle/absent
                 local function get_galaxyline_status_table()
                     if gl.galaxyline_code_companion_buffer_status == nil then
                         gl.galaxyline_code_companion_buffer_status = {
@@ -647,15 +654,26 @@ return {
                     return status_table
                 end
 
-                -- on request started / finished, update the status
+                -- dispatch for the six User events that affect the codecompanion status line info
                 vim.api.nvim_create_autocmd({ 'User' }, {
-                    pattern = 'CodeCompanionRequest*',
+                    pattern = {
+                        'CodeCompanionRequestStarted',
+                        'CodeCompanionRequestFinished',
+                        'CodeCompanionChatCreated',
+                        'CodeCompanionChatClosed',
+                        'CodeCompanionToolApprovalRequested',
+                        'CodeCompanionToolApprovalFinished',
+                    },
                     group = group,
                     callback = function(req)
-                        local bufnr = req.data.bufnr
-                        local interaction = req.data.interaction
+                        local bufnr = req.data and req.data.bufnr
+                        if not bufnr then
+                            return
+                        end
                         local status_table = get_galaxyline_status_table()
+                        local interaction = req.data.interaction
 
+                        -- on request started / finished, update the status
                         if req.match == 'CodeCompanionRequestStarted' then
                             if interaction == 'chat' then
                                 status_table.chat[bufnr] = 1
@@ -668,34 +686,29 @@ return {
                             else
                                 status_table.one_off[bufnr] = nil
                             end
+
+                        -- on chat created, append a new buffer to status;
+                        -- on chat closed, delete the buffer
+                        elseif req.match == 'CodeCompanionChatCreated' then
+                            status_table.chat[bufnr] = 0
+                        elseif req.match == 'CodeCompanionChatClosed' then
+                            status_table.chat[bufnr] = nil
+
+                        -- tool approval mid-turn, pause the spinner; the underlying request is
+                        -- still in flight, so on resolution we go back to processing (1), not ready
+                        elseif req.match == 'CodeCompanionToolApprovalRequested' then
+                            status_table.chat[bufnr] = 2
+                        elseif req.match == 'CodeCompanionToolApprovalFinished' then
+                            -- "View" only opens the diff preview, doesn't resolve the prompt;
+                            -- the 2 -> 1 transition is also guarded because when the user cancels
+                            -- mid-turn on a tool approval, the usual events don't fire
+                            -- correctly; instead, they fire as ToolApprovalFinished
+                            -- _after_ a RequestFinished, so the transitions are wrong
+                            if req.data.choice ~= 'View' and status_table.chat[bufnr] == 2 then
+                                status_table.chat[bufnr] = 1
+                            end
                         end
 
-                        gl.load_galaxyline()
-                    end,
-                })
-
-                -- on chat created, append a new buffer to status
-                vim.api.nvim_create_autocmd({ 'User' }, {
-                    pattern = 'CodeCompanionChatCreated',
-                    group = group,
-                    callback = function(req)
-                        local bufnr = req.data and req.data.bufnr
-                        if bufnr then
-                            get_galaxyline_status_table().chat[bufnr] = 0
-                        end
-                        gl.load_galaxyline()
-                    end,
-                })
-
-                -- on chat closed, delete the buffer from the status
-                vim.api.nvim_create_autocmd({ 'User' }, {
-                    pattern = 'CodeCompanionChatClosed',
-                    group = group,
-                    callback = function(req)
-                        local bufnr = req.data and req.data.bufnr
-                        if bufnr then
-                            get_galaxyline_status_table().chat[bufnr] = nil
-                        end
                         gl.load_galaxyline()
                     end,
                 })

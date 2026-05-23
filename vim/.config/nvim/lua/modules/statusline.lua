@@ -96,12 +96,16 @@ local function codecompanion_status()
         end
     end
 
-    -- second, iterate the active open chats, for which we want
-    -- to show whether the chat is user-ready or processing; this kind
+    -- second, iterate the active open chats, for which we want to show whether
+    -- the chat is user-ready, pending tool approval, or processing; this kind
     -- of chat is persistent until it gets closed by the user
     local open_chats_spinners = {}
+
+    -- chat[bufnr] enum shape (see ai.lua): 0 = ready, 1 = processing, 2 = pending tool approval
     for bufnr, val in pairs(cc_status.chat or {}) do
-        if val == 1 then
+        if val == 2 then
+            open_chats_spinners[#open_chats_spinners + 1] = '󰀪'
+        elseif val == 1 then
             local idx = gl.spinner_idxs[bufnr] or 1
             open_chats_spinners[#open_chats_spinners + 1] = spinner_list[idx]
             active_buffers[bufnr] = true
