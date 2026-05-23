@@ -98,8 +98,11 @@ local function codecompanion_status()
 
     -- second, iterate the active open chats, for which we want to show whether
     -- the chat is user-ready, pending tool approval, or processing; this kind
-    -- of chat is persistent until it gets closed by the user
+    -- of chat is persistent until it gets closed by the user; the chat whose
+    -- buffer is currently focused gets highlighted to disambiguate which entry
+    -- corresponds to the active window
     local open_chats_spinners = {}
+    local focused_bufnr = vim.api.nvim_get_current_buf()
 
     -- chat[bufnr] enum shape (see ai.lua): 0 = ready, 1 = processing, 2 = pending tool approval
     for bufnr, val in pairs(cc_status.chat or {}) do
@@ -111,6 +114,11 @@ local function codecompanion_status()
             active_buffers[bufnr] = true
         else
             open_chats_spinners[#open_chats_spinners + 1] = ''
+        end
+
+        if bufnr == focused_bufnr then
+            local last_idx = #open_chats_spinners
+            open_chats_spinners[last_idx] = '[' .. open_chats_spinners[last_idx] .. ' ]'
         end
     end
 
@@ -150,7 +158,7 @@ local function codecompanion_status()
         out = out .. table.concat(open_chats_spinners, '  ')
     end
 
-    return out
+    return out .. ' '
 end
 
 return {
