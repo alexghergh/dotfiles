@@ -40,8 +40,11 @@
             "Read(~/.claude/**)",
             "Read(//home/alex/projects/**)",
             "Read(//home/alex/.local/share/nvim/lazy/**)",
+            "Read(//tmp/claude/**)",
             "Read(//tmp/claude-*/**)",
+            "Write(//tmp/claude/**)",
             "Write(//tmp/claude-*/**)",
+            "Edit(//tmp/claude/**)",
             "Edit(//tmp/claude-*/**)"
         ],
         "ask": [
