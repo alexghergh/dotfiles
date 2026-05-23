@@ -1,7 +1,7 @@
 [user]
     name = Alexandru Gherghescu
-    email = gherghescu_alex1@yahoo.ro
-    signingKey = gherghescu_alex1@yahoo.ro
+    email = alexghergh@gmail.com
+    signingKey = alexghergh@gmail.com
 [commit]
     gpgsign = true
     template = ~/.config/git/git-commit-template
