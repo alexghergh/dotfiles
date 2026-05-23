@@ -5,6 +5,9 @@ if not status is-interactive
     return
 end
 
+# default emacs keybindings
+set --global fish_key_bindings fish_default_key_bindings
+
 # duplicate last word in the commandline (Ctrl-o + Ctrl-d)
 function __dup_last_word
     set -l cmd (string split ' ' (string trim (commandline)))
