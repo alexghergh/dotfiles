@@ -18,12 +18,18 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- open files to last known position (:h last-position-jump)
 vim.api.nvim_create_autocmd('BufReadPost', {
     callback = function(ev)
-        -- filetypes to ignore
-        local regex = vim.regex('commit\\|rebase\\|help\\|quickfix\\|nofile')
-        local filetype = vim.bo[ev.buf].filetype
+        -- 'filetype' isn't set yet at BufReadPost (FileType fires later),
+        -- so run detection ourselves to get the would-be value
+        local filetype = vim.filetype.match({ buf = ev.buf }) or ''
 
-        -- check filetype
+        -- filetypes to ignore
+        local regex = vim.regex('commit\\|rebase\\|help')
         if regex:match_str(filetype) ~= nil then
+            return
+        end
+
+        -- skip special buffers (nofile, terminal, quickfix list etc.)
+        if vim.bo[ev.buf].buftype ~= '' then
             return
         end
 
