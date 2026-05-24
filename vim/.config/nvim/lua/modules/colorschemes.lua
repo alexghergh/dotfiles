@@ -119,11 +119,12 @@ local function melange()
         ['IblIndent'] = { fg = '#403c3b' },
         ['IblScope'] = { fg = '#d2691e' },
 
-        -- codecompanion model / mode / roasoning elements
+        -- codecompanion model / mode / reasoning / statusline elements
         ['CodeCompanionChatStatusAdapter'] = { fg = '#ece1d7', bg = 'None', bold = true },
         ['CodeCompanionChatStatusModel'] = { fg = '#a3a9ce', bg = 'None' },
         ['CodeCompanionChatStatusOption'] = { fg = '#c1a78e', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
+        ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#3a3f4a', bold = true },
     }
 end
 
@@ -178,11 +179,12 @@ local function tokyonight()
         ['InclineSeparator02NCCL'] = { fg = normal.bg, bg = cursorline_bg },
         ['InclineSeparator20NCCL'] = { fg = cursorline_bg, bg = normal.bg },
 
-        -- codecompanion model / mode / roasoning elements
+        -- codecompanion model / mode / reasoning / statusline elements
         ['CodeCompanionChatStatusAdapter'] = { fg = status2_fg, bg = 'None', bold = true },
         ['CodeCompanionChatStatusModel'] = { fg = '#82aaff', bg = 'None' },
         ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
+        ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#2a2d40', bold = true },
     }
 end
 
