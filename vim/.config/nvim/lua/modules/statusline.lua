@@ -63,6 +63,23 @@ local function args_list()
     end
 end
 
+-- codecompanion statusline symbols we're using: chat ready, pending tool approval, thinking spinner
+-- stylua: ignore
+local cc_symbols = {
+    chat_ready              = '',
+    pending_tool_approval   = '󰀪',
+    spinner_list            = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+}
+
+-- the icon glyphs we're using for codecompanion status are drawn at ~1.5 cells, which glitches
+-- inside nvim because it assumes width 1; reserve 2 cells for each so the renderer has room and
+-- they don't glitch out
+-- stylua: ignore
+vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
+    { vim.fn.char2nr(cc_symbols.chat_ready),            vim.fn.char2nr(cc_symbols.chat_ready),              2 },
+    { vim.fn.char2nr(cc_symbols.pending_tool_approval), vim.fn.char2nr(cc_symbols.pending_tool_approval),   2 },
+}))
+
 -- codecompanion statusline provider; shows information on active / running AI chat sessions
 -- see also lua/modules/ai.lua
 local function codecompanion_status()
@@ -73,11 +90,6 @@ local function codecompanion_status()
     if type(cc_status) ~= 'table' then
         return ' '
     end
-
-    -- stylua: ignore
-    local spinner_list = {
-        "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"
-    }
 
     -- this needs to be global to preserve state across function calls
     gl.spinner_idxs = gl.spinner_idxs or {}
@@ -91,35 +103,49 @@ local function codecompanion_status()
     for bufnr, val in pairs(cc_status.one_off or {}) do
         if val == 1 then
             local idx = gl.spinner_idxs[bufnr] or 1
-            one_offs_spinners[#one_offs_spinners + 1] = spinner_list[idx]
+            one_offs_spinners[#one_offs_spinners + 1] = cc_symbols.spinner_list[idx]
             active_buffers[bufnr] = true
         end
     end
 
-    -- second, iterate the active open chats, for which we want to show whether
-    -- the chat is user-ready, pending tool approval, or processing; this kind
-    -- of chat is persistent until it gets closed by the user; the chat whose
-    -- buffer is currently focused gets highlighted to disambiguate which entry
-    -- corresponds to the active window
+    -- second, iterate the active open chats (sort by bufnr first, to respect codecompanion cycle
+    -- order with `{` and `}`), for which we want to show whether the chat is user-ready, pending
+    -- tool approval, or processing; this kind of chat is persistent until it gets closed by the
+    -- user; the chat whose buffer is currently focused is rendered with a different highlight so
+    -- the active window is unmistakable
     local open_chats_spinners = {}
     local focused_bufnr = vim.api.nvim_get_current_buf()
 
-    -- chat[bufnr] enum shape (see ai.lua): 0 = ready, 1 = processing, 2 = pending tool approval
-    for bufnr, val in pairs(cc_status.chat or {}) do
+    -- sort by buf id
+    local chat_bufnrs = {}
+    for bufnr, _ in pairs(cc_status.chat or {}) do
+        chat_bufnrs[#chat_bufnrs + 1] = bufnr
+    end
+    table.sort(chat_bufnrs)
+
+    -- chat[bufnr] enum shape (set by lua/modules/ai.lua):
+    -- 0 = ready, 1 = processing, 2 = pending tool approval
+    for ordinal, bufnr in ipairs(chat_bufnrs) do
+        local val = cc_status.chat[bufnr]
+        local symbol
         if val == 2 then
-            open_chats_spinners[#open_chats_spinners + 1] = '󰀪'
+            symbol = cc_symbols.pending_tool_approval
         elseif val == 1 then
             local idx = gl.spinner_idxs[bufnr] or 1
-            open_chats_spinners[#open_chats_spinners + 1] = spinner_list[idx]
+            symbol = cc_symbols.spinner_list[idx]
             active_buffers[bufnr] = true
         else
-            open_chats_spinners[#open_chats_spinners + 1] = ''
+            symbol = cc_symbols.chat_ready
         end
 
+        -- pad entries so entry width stays equal and entries don't shift/jiggle; the focused chat
+        -- entry is highlighted (see lua/modules/colorschemes.lua)
+        symbol = ' ' .. tostring(ordinal) .. ' ' .. symbol .. ' '
         if bufnr == focused_bufnr then
-            local last_idx = #open_chats_spinners
-            open_chats_spinners[last_idx] = '[' .. open_chats_spinners[last_idx] .. ' ]'
+            symbol = '%#CodeCompanionChatFocusedStatusLine#' .. symbol .. '%#StatusLineColor3#'
         end
+
+        open_chats_spinners[#open_chats_spinners + 1] = symbol
     end
 
     -- delete old inactive spinners; important for transient stuff
@@ -137,7 +163,7 @@ local function codecompanion_status()
             for bufnr, _ in pairs(active_buffers) do
                 any_active = true
                 local idx = gl.spinner_idxs[bufnr] or 1
-                gl.spinner_idxs[bufnr] = (idx % #spinner_list) + 1
+                gl.spinner_idxs[bufnr] = (idx % #cc_symbols.spinner_list) + 1
             end
             if any_active then
                 gl.load_galaxyline()
@@ -155,7 +181,7 @@ local function codecompanion_status()
         if out ~= '' then
             out = out .. ' | '
         end
-        out = out .. table.concat(open_chats_spinners, '  ')
+        out = out .. table.concat(open_chats_spinners)
     end
 
     return out .. ' '
@@ -165,8 +191,9 @@ return {
     {
         'nvimdev/galaxyline.nvim',
         config = function(_, opts)
-            local condition = require('galaxyline.condition')
+            local gl = require('galaxyline')
             local gls = require('galaxyline').section
+            local condition = require('galaxyline.condition')
             local separators = sep(separator_style)
 
             --
@@ -329,6 +356,45 @@ return {
             gls.left = left_statusline_section
             gls.mid = middle_statusline_section
             gls.right = right_statusline_section
+
+            -- this is a workaround for galaxyline's highlight rendering in the statusline;
+            -- galaxyline wraps every provider's output in `%{luaeval(...)}`, which makes vim escape
+            -- `%` items in the result, so an embedded `%#group#` highlight switch would render as
+            -- literal text rather than switching highlight groups; nvim _does_ have the `%{%...%}`
+            -- form whose result is re-interpreted as statusline format, so we post-process the
+            -- generated statusline and rewrite just the CodeCompanion section to use that form
+            local cc_needle = [[%{luaeval('require("galaxyline").component_decorator')("CodeCompanion")}]]
+            local cc_fixed = [[%{%luaeval('require("galaxyline").component_decorator')("CodeCompanion")%}]]
+            local function patch_codecompanion_in_statusline()
+                for _, win in ipairs(vim.api.nvim_list_wins()) do
+                    local sl = vim.api.nvim_get_option_value('statusline', { win = win })
+                    if sl and sl ~= '' and not sl:find(cc_fixed, 1, true) and sl:find(cc_needle, 1, true) then
+                        local new_sl = (
+                            sl:gsub(vim.pesc(cc_needle), function()
+                                return cc_fixed
+                            end)
+                        )
+                        vim.api.nvim_set_option_value('statusline', new_sl, { win = win })
+                    end
+                end
+            end
+
+            -- galaxyline writes vim.wo.statusline in two paths: the regular redraw path (very badly
+            -- named `init_colorscheme()`) and an inactive window cached redraw path; wrap both so
+            -- the patch runs correctly on either path
+            local orig_init_colorscheme = gl.init_colorscheme
+            gl.init_colorscheme = function(...)
+                local ret = orig_init_colorscheme(...)
+                patch_codecompanion_in_statusline()
+                return ret
+            end
+            local orig_inactive = gl.inactive_galaxyline
+            gl.inactive_galaxyline = function(...)
+                local ret = orig_inactive(...)
+                patch_codecompanion_in_statusline()
+                return ret
+            end
+            patch_codecompanion_in_statusline()
         end,
     },
 
