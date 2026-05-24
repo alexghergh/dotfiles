@@ -1,3 +1,17 @@
+-- Glyphs / Icons
+-- glyphs for the codecompanion adapters should be added here
+-- these glyphs, depending on the font, may use 1-cell widths or 1.5-cell widths; so
+-- nvim doesn't bug out, normalize them to 2-cell widths
+-- stylua: ignore
+local glyphs = {
+    codex            = '',
+    claude_code      = '',
+}
+
+local cw = require('shared.setcellwidths')
+cw.add_2cellwidth_glyph(glyphs.codex)
+cw.add_2cellwidth_glyph(glyphs.claude_code)
+
 -- Helper Methods
 -- generic helpers for CodeCompanion
 -- implement missing ACP functionality, like session load by id, token usage updates etc., and other generic stuff (keymaps etc.)
@@ -396,7 +410,7 @@ return {
                     },
                     codex = function()
                         return require('codecompanion.adapters').extend('codex', {
-                            formatted_name = '\u{E4C9}  Codex',
+                            formatted_name = glyphs.codex .. '  Codex',
                             defaults = {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
                                 auth_method = 'chatgpt', -- 'openai-api-key'|'codex-api-key'|'chatgpt'
@@ -405,7 +419,7 @@ return {
                     end,
                     claude_code = function()
                         return require('codecompanion.adapters').extend('claude_code', {
-                            formatted_name = '\u{E4CA}  Claude Code',
+                            formatted_name = glyphs.claude_code .. '  Claude Code',
                             defaults = {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
                             },

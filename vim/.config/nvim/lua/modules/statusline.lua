@@ -74,11 +74,9 @@ local cc_symbols = {
 -- the icon glyphs we're using for codecompanion status are drawn at ~1.5 cells, which glitches
 -- inside nvim because it assumes width 1; reserve 2 cells for each so the renderer has room and
 -- they don't glitch out
--- stylua: ignore
-vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
-    { vim.fn.char2nr(cc_symbols.chat_ready),            vim.fn.char2nr(cc_symbols.chat_ready),              2 },
-    { vim.fn.char2nr(cc_symbols.pending_tool_approval), vim.fn.char2nr(cc_symbols.pending_tool_approval),   2 },
-}))
+local cw = require('shared.setcellwidths')
+cw.add_2cellwidth_glyph(cc_symbols.chat_ready)
+cw.add_2cellwidth_glyph(cc_symbols.pending_tool_approval)
 
 -- codecompanion statusline provider; shows information on active / running AI chat sessions
 -- see also lua/modules/ai.lua

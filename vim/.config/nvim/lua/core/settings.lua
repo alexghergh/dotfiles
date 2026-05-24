@@ -18,9 +18,7 @@ vim.g.health = { style = 'float' }
 -- the icon itself comes from a patched font that has a neovim logo colored emoji;
 -- see wezterm.lua as well for the patched font
 local nvim_glyph = ''
-vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
-    { vim.fn.char2nr(nvim_glyph), vim.fn.char2nr(nvim_glyph), 2 },
-}))
+require('shared.setcellwidths').add_2cellwidth_glyph(nvim_glyph)
 
 vim.opt.title = true
 vim.opt.titlestring = nvim_glyph .. ' %{pathshorten(fnamemodify(getcwd(), ":~"))}'

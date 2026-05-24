@@ -17,14 +17,12 @@ local glyphs = {
     virt_text_prefix = '●',
 }
 
--- stylua: ignore
-vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
-    { vim.fn.char2nr(glyphs.error),             vim.fn.char2nr(glyphs.error),            2 },
-    { vim.fn.char2nr(glyphs.warn),              vim.fn.char2nr(glyphs.warn),             2 },
-    { vim.fn.char2nr(glyphs.hint),              vim.fn.char2nr(glyphs.hint),             2 },
-    { vim.fn.char2nr(glyphs.info),              vim.fn.char2nr(glyphs.info),             2 },
-    { vim.fn.char2nr(glyphs.virt_text_prefix),  vim.fn.char2nr(glyphs.virt_text_prefix), 2 },
-}))
+local cw = require('shared.setcellwidths')
+cw.add_2cellwidth_glyph(glyphs.error)
+cw.add_2cellwidth_glyph(glyphs.warn)
+cw.add_2cellwidth_glyph(glyphs.hint)
+cw.add_2cellwidth_glyph(glyphs.info)
+cw.add_2cellwidth_glyph(glyphs.virt_text_prefix)
 
 -- diagnostic gutter signs and line number highlight, virtual text and floating window
 vim.diagnostic.config({
