@@ -13,11 +13,17 @@ vim.g.health = { style = 'float' }
 --
 
 -- display a nice icon for Neovim windows in terminal tabs; uses OSC 2 sequences
--- to set terminal tab title to neovim icon + shortened cwd;
+-- to set terminal tab title to neovim icon + shortened cwd; the icon may be 1-cell or
+-- 1.5-cell width depending on font; normalize to 2-cell so nvim doesn't glitch out
 -- the icon itself comes from a patched font that has a neovim logo colored emoji;
 -- see wezterm.lua as well for the patched font
+local nvim_glyph = ''
+vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
+    { vim.fn.char2nr(nvim_glyph), vim.fn.char2nr(nvim_glyph), 2 },
+}))
+
 vim.opt.title = true
-vim.opt.titlestring = '\u{E4C8} %{pathshorten(fnamemodify(getcwd(), ":~"))}'
+vim.opt.titlestring = nvim_glyph .. ' %{pathshorten(fnamemodify(getcwd(), ":~"))}'
 
 vim.opt.clipboard = 'unnamedplus'
 
