@@ -1,16 +1,38 @@
+local cw = require('shared.setcellwidths')
+
 -- Glyphs / Icons
--- glyphs for the codecompanion adapters should be added here
--- these glyphs, depending on the font, may use 1-cell widths or 1.5-cell widths; so
--- nvim doesn't bug out, normalize them to 2-cell widths
+-- glyphs for the codecompanion adapters should be added here; these glyphs, depending on the font, may
+-- use 1-cell widths or 1.5-cell widths; in order for nvim not to bug out, normalize them to 2-cell widths
 -- stylua: ignore
 local glyphs = {
-    codex            = '',
-    claude_code      = '',
+    codex       = '',
+    claude_code = '',
 }
 
-local cw = require('shared.setcellwidths')
 cw.add_2cellwidth_glyph(glyphs.codex)
 cw.add_2cellwidth_glyph(glyphs.claude_code)
+
+-- emit an OSC 2 attention marker when a CodeCompanion chat requires attention (either pending
+-- tool approval or finished execution); clear on window refocused
+glyphs.attention_marker = '🔴'
+
+cw.add_2cellwidth_glyph(glyphs.attention_marker)
+
+local attn_mark = ' ' .. glyphs.attention_marker
+local function set_attention_marker()
+    local current = vim.opt.titlestring:get()
+    if current:sub(-#attn_mark) ~= attn_mark then
+        vim.opt.titlestring = current .. attn_mark
+        vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+    end
+end
+local function clear_attention_marker()
+    local current = vim.opt.titlestring:get()
+    if current:sub(-#attn_mark) == attn_mark then
+        vim.opt.titlestring = current:sub(1, -#attn_mark - 1)
+        vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+    end
+end
 
 -- Helper Methods
 -- generic helpers for CodeCompanion
@@ -875,12 +897,18 @@ return {
             })
 
             -- for system toast messages, remember whether the current neovim instance
-            -- is focused or not; if it is focused, don't send a toast (used below)
+            -- is focused or not; if it is focused, don't send a toast (used below); also
+            -- clear the emitted OSC 2 attention marker when the user returns focus to the pane
             vim.api.nvim_create_autocmd({ 'FocusGained', 'FocusLost' }, {
                 group = group,
                 callback = function(ev)
                     -- global per neovim instance / process, across all windows
                     vim.g.wezterm_pane_focused = (ev.event == 'FocusGained')
+
+                    -- clear attention marker on wezterm tab on focus gained (user re-enters nvim window)
+                    if vim.g.wezterm_pane_focused then
+                        clear_attention_marker()
+                    end
                 end,
             })
 
@@ -923,9 +951,9 @@ return {
                 end,
             })
 
-            -- show a system toast message (works for both http and ACP paths):
-            -- - when tool use or web access is requested
-            -- - upon API response completion
+            -- on tool approval request or completed turn (works for both http and ACP paths):
+            -- - set the wezterm tab-title attention marker when the pane isn't focused
+            -- - show a system toast when the pane isn't focused or the chat buffer is hidden
             vim.api.nvim_create_autocmd({ 'User' }, {
                 pattern = {
                     'CodeCompanionToolApprovalRequested',
@@ -933,6 +961,11 @@ return {
                 },
                 group = group,
                 callback = function(req)
+                    -- set attention marker on wezterm tab when pane is explicitly unfocused
+                    if vim.g.wezterm_pane_focused == false then
+                        set_attention_marker()
+                    end
+
                     local bufnr = (req.data and req.data.bufnr) or req.buf
                     local bufinfo = vim.fn.getbufinfo(bufnr)[1] or {}
 
