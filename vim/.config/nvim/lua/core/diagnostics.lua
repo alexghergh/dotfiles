@@ -6,14 +6,34 @@
 -- see lua/core/keymaps.lua - diagnostic keymaps
 --
 
+-- diagnostic glyphs; tell nvim that each is 2-cell width; in reality, depending
+-- on the font, they may be 1-cell or 1.5-cell widths, but that breaks UI without the workaround
+-- stylua: ignore
+local glyphs = {
+    error            = '󰅚',
+    warn             = '󰀪',
+    hint             = '󰌶',
+    info             = '',
+    virt_text_prefix = '●',
+}
+
+-- stylua: ignore
+vim.fn.setcellwidths(vim.list_extend(vim.fn.getcellwidths(), {
+    { vim.fn.char2nr(glyphs.error),             vim.fn.char2nr(glyphs.error),            2 },
+    { vim.fn.char2nr(glyphs.warn),              vim.fn.char2nr(glyphs.warn),             2 },
+    { vim.fn.char2nr(glyphs.hint),              vim.fn.char2nr(glyphs.hint),             2 },
+    { vim.fn.char2nr(glyphs.info),              vim.fn.char2nr(glyphs.info),             2 },
+    { vim.fn.char2nr(glyphs.virt_text_prefix),  vim.fn.char2nr(glyphs.virt_text_prefix), 2 },
+}))
+
 -- diagnostic gutter signs and line number highlight, virtual text and floating window
 vim.diagnostic.config({
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = '󰅚 ',
-            [vim.diagnostic.severity.WARN] = '󰀪 ',
-            [vim.diagnostic.severity.HINT] = '󰌶 ',
-            [vim.diagnostic.severity.INFO] = ' ',
+            [vim.diagnostic.severity.ERROR] = glyphs.error,
+            [vim.diagnostic.severity.WARN] = glyphs.warn,
+            [vim.diagnostic.severity.HINT] = glyphs.hint,
+            [vim.diagnostic.severity.INFO] = glyphs.info,
         },
         texthl = {
             -- see lua/modules/colorschemes.lua
@@ -32,7 +52,7 @@ vim.diagnostic.config({
     },
     virtual_text = {
         source = 'if_many',
-        prefix = '● ',
+        prefix = glyphs.virt_text_prefix,
         spacing = 10,
         current_line = true,
     },
