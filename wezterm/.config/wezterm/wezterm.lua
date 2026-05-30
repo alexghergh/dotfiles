@@ -197,6 +197,9 @@ wezterm.on('update-right-status', function(window, _)
     window:set_right_status(wezterm.format(status))
 end)
 
+-- enable the extended kitty protocol that supports shift/ctrl combination reporting
+config.enable_kitty_keyboard = true
+
 config.disable_default_key_bindings = true
 config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
 config.keys = {
