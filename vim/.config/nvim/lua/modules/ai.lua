@@ -18,18 +18,18 @@ glyphs.attention_marker = '🔴'
 
 cw.add_2cellwidth_glyph(glyphs.attention_marker)
 
-local attn_mark = ' ' .. glyphs.attention_marker
+local attn_mark = glyphs.attention_marker .. ' '
 local function set_attention_marker()
     local current = vim.opt.titlestring:get()
-    if current:sub(-#attn_mark) ~= attn_mark then
-        vim.opt.titlestring = current .. attn_mark
+    if current:sub(1, #attn_mark) ~= attn_mark then
+        vim.opt.titlestring = attn_mark .. current
         vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
     end
 end
 local function clear_attention_marker()
     local current = vim.opt.titlestring:get()
-    if current:sub(-#attn_mark) == attn_mark then
-        vim.opt.titlestring = current:sub(1, -#attn_mark - 1)
+    if current:sub(1, #attn_mark) == attn_mark then
+        vim.opt.titlestring = current:sub(#attn_mark + 1)
         vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
     end
 end
