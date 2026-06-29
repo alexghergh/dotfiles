@@ -30,6 +30,9 @@
             "Bash(git branch --list:*)",
             "Bash(git worktree list)",
             "Bash(git worktree list:*)",
+            "Bash(gh api:*)",
+            "Bash(base64:*)",
+            "Bash(head:*)",
             "Bash(unzip -l:*)",
             "Bash(* --version)",
             "Bash(* --help)",
@@ -93,7 +96,9 @@
         "autoAllowBashIfSandboxed": false,
         "allowUnsandboxedCommands": true,
         "network": {
-            "allowedDomains": []
+            "allowedDomains": [
+                "api.github.com"
+            ]
         },
         "filesystem": {
             "allowWrite": [],

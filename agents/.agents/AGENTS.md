@@ -104,3 +104,7 @@ Do not add new tests unless the project already has them or the user explicitly 
 Never force-push, amend published commits, or skip hooks without explicit permission.
 
 Prefer small, focused commits.
+
+### GitHub Access
+
+When you need to read files or metadata from a remote GitHub repository, prefer `gh api` over `curl` or web-fetching tools. It reuses local credentials, works for private repos, and respects rate limits. Chain shell utilities as needed (e.g., `gh api repos/<owner>/<repo>/contents/<path> --jq '.content' | base64 -d` to decode a file).
