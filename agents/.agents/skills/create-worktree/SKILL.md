@@ -7,15 +7,9 @@ description: Create a git worktree for parallel development on a new branch.
 
 Create a git worktree to work on a separate branch in parallel without switching the current checkout. Present the user with the git worktree command before running and ask for confirmation. Upon completion of changes, prompt the user on whether to remove the worktree. Do not automatically do that.
 
-## Prerequisites
+## Note on uncommitted changes
 
-Check for uncommitted changes before creating a worktree:
-
-```bash
-git status --porcelain
-```
-
-If there are uncommitted changes, do not proceed. Ask the user to choose what to do. Offer to either stash the changes or commit the changes.
+`git worktree add` does not require a clean working tree. The current checkout keeps its uncommitted changes and the new worktree starts clean. Proceed without blocking. If you notice uncommitted changes that look relevant to the new branch, mention them in passing and ask, but do not force a stash/commit step by default.
 
 ## Usage
 

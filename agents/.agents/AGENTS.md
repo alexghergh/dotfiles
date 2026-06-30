@@ -61,7 +61,7 @@ After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, 
 
 ### Chat Output
 
-When a list is the natural format, use numbered lists instead of bulleted lists. Do not restructure prose or explanations into list form.
+When a list is the natural format, prefer numbered lists when items have inherent order or you might reference them by number later. Use bulleted lists for unordered enumerations. Do not restructure prose or explanations into list form.
 
 ### File References
 
@@ -75,11 +75,14 @@ For file references:
 - in the visible link text, prefer the shortest sensible disambiguating path, not a bare filename
 - for files in this repo, prefer repo-relative paths in the visible link text, that include the repo root
 - for external modules, projects or dependency files, prefer a stable module-relative base in the visible link text that helps distinguish similar filenames
+- for files without a clear repo or module anchor (system paths, temp files, generated files), use the absolute path as both the link target and visible link text
 
 Examples:
 - `[example-app/src/editor/actions/goto.lua](/home/user/projects/example-app/src/editor/actions/goto.lua)`
 - `[example-app/src/editor/actions/goto.lua:34](/home/user/projects/example-app/src/editor/actions/goto.lua#L34)`
 - `[other-app/lib/ui/keymaps.lua:88](/home/user/projects/other-app/lib/ui/keymaps.lua#L88)`
+- `[mypackage/utils.py:42](/home/user/projects/example-app/.venv/lib/python3.12/site-packages/mypackage/utils.py#L42)`
+- `[/etc/nginx/nginx.conf:88](/etc/nginx/nginx.conf#L88)`
 
 When useful and easy to determine, include the enclosing function, method, or local context inline in the visible link text.
 
@@ -89,11 +92,11 @@ Preferred:
 
 ### Edit Presentation
 
-Edit one file at a time. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch.
+Edit one file at a time so you can react to each file before the next goes out. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch. Exception: when files must change together to compile or pass type checks, present the coordinated set as one batch and call out the dependency.
 
-Within a file, prefer a single `apply_patch` edit even when the changes are disjoint.
+Within a file, prefer a single edit operation even when the changes are disjoint.
 
-When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span so no intervening edits are omitted. If that span is too large to review comfortably, present two or more separate `apply_patch` edits for that file instead.
+When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span so no intervening edits are omitted. If that span is too large to review comfortably, present two or more separate edits for that file instead.
 
 ## Tests
 
