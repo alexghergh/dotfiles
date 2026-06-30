@@ -5,10 +5,7 @@ machine or recreated manually. They should **NOT** be managed by stow / git.
 
 ### Shells
 
-- atuin history db: `~/.local/share/atuin/history.db` (or import fish history:
-`atuin import fish`)
-- fish history: `~/.local/share/fish/fish_history` (fish still writes to this
-even with atuin enabled)
+- fish history: `~/.local/share/fish/fish_history`
 - zoxide db: `~/.local/share/zoxide/db.zo`
 
 ### SSH and GPG keys
