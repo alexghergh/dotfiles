@@ -7,6 +7,8 @@ return {
         dependencies = {
             'nvim-treesitter/nvim-treesitter',
         },
-        opts = {},
+        opts = {
+            render_modes = true,
+        },
     },
 }
