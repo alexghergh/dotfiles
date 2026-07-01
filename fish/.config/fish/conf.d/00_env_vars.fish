@@ -7,6 +7,14 @@
 # DON'T RENAME THIS FILE; this _needs_ to run first when loading a shell, since
 # other conf files depend on these vars
 
+# disable fish's kitty keyboard protocol handling; this is broken on a dvorak
+# layout keyboard, because both the physical key and the layout key are mapped
+# (try `fish_key_reader`, press any ctrl-_ key combination; 2 keys show); this
+# only drops fish's own extended-key prompt handling; other apps are unaffected
+if not contains -- no-query-term $fish_features
+    set -Ua fish_features no-query-term
+end
+
 # basic setup
 set -gx EDITOR nvim
 set -gx SYSTEMD_EDITOR nvim
