@@ -1,12 +1,19 @@
 -- tooling registry for LSP servers, formatters and linters
 -- configs in this file are pulled into lua/modules/{lsp,format,lint}.lua; see also those files
 
+-- entry shape in the `languages` table below:
+--   'name'     (string, or table.name) runtime config identifier used by the plugin that consumes it: nvim-lspconfig / vim.lsp.config for
+--              LSPs, conform.nvim for formatters, nvim-lint for linters; it may differ from the Mason package name (e.g. lspconfig uses
+--              'lua_ls' but Mason ships it as 'lua-language-server'); where to find: :h lspconfig-all, or
+--              https://github.com/neovim/nvim-lspconfig/tree/master/lsp; for formatters/linters see the conform.nvim / nvim-lint docs
+--   'package'  (optional) the Mason package name; set only when it differs from 'name'; where to find: the :Mason UI shows package names,
+--              or the mason-registry on github (https://github.com/mason-org/mason-registry)
+--   'install'  (optional) set to 'ignore' to skip auto-install (tools installed via distro package manager, or bundled with a toolchain
+--              like rustup)
+
 -- notes:
 -- - some of the formatters / linters may run in LSP mode; because of that, they accept e.g. textDocument/rangeFormatting methods
--- - packages are assumed to be installed by :Mason unless otherwise noted
--- - 'name' is the runtime config identifier used by the LSP / formatter / linter plugins (it may be different from the package name)
--- - 'package' is the actual Mason tool package; if present, overrides 'name' as the package name to use
--- - 'install' = 'ignore' marks tools that should not be auto-installed by Mason
+-- - packages are assumed to be installed by :Mason unless 'install' says otherwise
 
 local M = {}
 
@@ -14,7 +21,7 @@ local M = {}
 local languages = {
     lua = {
         filetypes = { 'lua' },
-        lsp = { 'lua_ls' },
+        lsp = { { name = 'lua_ls', package = 'lua-language-server' } },
         formatters = { 'stylua' }, -- note: stylua doesn't always work in visual mode
         linters = {
             { name = 'luac', install = 'ignore' }, -- comes bundled with lua
@@ -44,7 +51,7 @@ local languages = {
     },
     rust = {
         filetypes = { 'rust' },
-        lsp = { 'rust_analyzer' },
+        lsp = { { name = 'rust_analyzer', package = 'rust-analyzer' } },
         formatters = {
             { name = 'rustfmt', install = 'ignore' }, -- installed by the rust stack
         },
@@ -80,7 +87,7 @@ local languages = {
     },
     yaml = {
         filetypes = { 'yaml' },
-        lsp = { 'yamlls' },
+        lsp = { { name = 'yamlls', package = 'yaml-language-server' } },
         formatters = { 'yamlfmt' },
         linters = { 'yamllint' },
     },

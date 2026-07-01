@@ -33,7 +33,6 @@ return {
         'WhoIsSethDaniel/mason-tool-installer.nvim',
         dependencies = {
             'mason-org/mason.nvim',
-            'mason-org/mason-lspconfig.nvim', -- use tool names instead of lsp names
         },
         opts = {
             ensure_installed = mason_packages,
