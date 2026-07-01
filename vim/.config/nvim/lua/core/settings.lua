@@ -86,8 +86,8 @@ vim.opt.splitright = true
 -- add directories upwards as search path
 vim.opt.path:append({ '**' })
 
--- show tab characters, line-endings, leading space, wrap chars
-vim.opt.list = true
+-- listchars glyphs; 'list' is left off by default so it doesn't fight indent plugins, but turns on with a toggle so listchars are kept in
+vim.opt.list = false
 vim.opt.listchars = {
     ['tab'] = '>·',
     ['trail'] = '·',

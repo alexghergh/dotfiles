@@ -93,17 +93,65 @@ return {
         end,
     },
 
-    -- custom vim.ui.input implementation
+    -- swiss-army knife of QoL utilities; see :h snacks
     {
         'folke/snacks.nvim',
+        priority = 1000,
+        lazy = false,
         opts = {
-            input = {},
+            input = {}, -- vim.ui.input replacement
+            bigfile = {}, -- auto-disable heavy features (LSP, treesitter, syntax) on huge files (1.5MB)
+            quickfile = {}, -- speed up initial file open by deferring plugin FileType events
+            bufdelete = {}, -- exiting a buffer won't close its window; a previously opened buffer will take its place (see config below)
+            scroll = {}, -- smooth scrolling
+
+            -- indent guides + current-scope highlight
+            indent = {
+                chunk = {
+                    enabled = true,
+                    only_current = true,
+                    char = { corner_top = '╭', corner_bottom = '╰', arrow = '' },
+                },
+            },
+
+            -- merged signs on the status column, folded into a column (left and right sides)
+            statuscolumn = {
+                left = { 'mark', 'sign' },
+                right = { 'fold', 'git' },
+            },
+
             styles = {
                 input = {
                     row = -20,
                 },
             },
         },
+        config = function(_, opts)
+            require('snacks').setup(opts)
+
+            -- override telescope's buffer-picker delete (<C-d>) to route through Snacks.bufdelete so window
+            -- layout is preserved; deferred until telescope loads (snacks has priority=1000 and loads first)
+            vim.api.nvim_create_autocmd('User', {
+                pattern = 'LazyLoad',
+                callback = function(ev)
+                    if ev.data ~= 'telescope.nvim' then
+                        return
+                    end
+                    local ok_a, actions = pcall(require, 'telescope.actions')
+                    local ok_s, state = pcall(require, 'telescope.actions.state')
+                    if not (ok_a and ok_s and Snacks and Snacks.bufdelete) then
+                        return
+                    end
+                    actions.delete_buffer = function(prompt_bufnr)
+                        local picker = state.get_current_picker(prompt_bufnr)
+                        picker:delete_selection(function(selection)
+                            Snacks.bufdelete({ buf = selection.bufnr })
+                            return true
+                        end)
+                    end
+                end,
+            })
+        end,
     },
 
     -- custom vim.notify implementation
