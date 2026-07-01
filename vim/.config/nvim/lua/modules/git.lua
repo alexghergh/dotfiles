@@ -44,6 +44,22 @@ return {
             -- show file git blame ('s' on a blame line to show full commit info)
             vim.keymap.set('n', '<Leader>hb', gs.blame, { desc = 'Git blame the file' })
 
+            -- buffer-local 'q' closes the blame side-panel (gitsigns doesn't ship one)
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = 'gitsigns-blame',
+                callback = function(ev)
+                    vim.keymap.set('n', 'q', '<Cmd>close<CR>', { buffer = ev.buf, desc = 'Close blame panel' })
+                end,
+            })
+
+            -- same 'q' as above to close commits and file-at-revision splits
+            vim.api.nvim_create_autocmd('BufWinEnter', {
+                pattern = 'gitsigns://*',
+                callback = function(ev)
+                    vim.keymap.set('n', 'q', '<Cmd>close<CR>', { buffer = ev.buf, desc = 'Close gitsigns view' })
+                end,
+            })
+
             -- hunk text objects
             vim.keymap.set({ 'o', 'x' }, 'ih', gs.select_hunk, { desc = 'Diff inner text object' })
 
