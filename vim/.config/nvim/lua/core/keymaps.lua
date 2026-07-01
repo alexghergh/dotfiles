@@ -101,6 +101,7 @@ vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>', { desc = 'Resi
 vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>', { desc = 'Resize window width (+10)' })
 vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>', { desc = 'Make windows equal' })
 vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>', { desc = 'Split and edit alternate file' })
+vim.keymap.set('n', '<C-w>L', '<Cmd>leftabove vnew | wincmd l<CR>', { desc = 'New vertical window (empty buffer)' })
 
 --
 -- diagnostics/quickfix/location lists keymaps
@@ -113,7 +114,7 @@ vim.keymap.set('n', '<Leader>ds', vim.diagnostic.open_float, { desc = 'Open diag
 
 -- quick fix list and location list open / close; although location list is per-window,
 -- we're just trying to toggle an existing one, without trying too hard to find all open windows
-vim.keymap.set('n', '<leader>lq', function()
+vim.keymap.set('n', '<Leader>lq', function()
     local qf = vim.fn.getqflist({ size = 0, winid = 0 })
 
     -- close the existing quickfix window if it is already visible
@@ -146,7 +147,7 @@ vim.keymap.set('n', '<leader>lq', function()
     end
 end, { desc = 'Open / close quickfix list' })
 
-vim.keymap.set('n', '<leader>ll', function()
+vim.keymap.set('n', '<Leader>ll', function()
     -- location lists are per-window, so this only toggles the current window's list
     local ll = vim.fn.getloclist(0, { size = 0, winid = 0 })
 
