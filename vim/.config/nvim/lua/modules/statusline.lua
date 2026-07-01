@@ -411,6 +411,10 @@ return {
                     horizontal = 3,
                 },
             },
+            hide = {
+                -- hide the status line when the cursor is on the same line with it
+                cursorline = true,
+            },
             -- this is the main function that renders statusline on each window; display path and breadcrumbs information
             render = function(props)
                 local bufnr = props.buf
