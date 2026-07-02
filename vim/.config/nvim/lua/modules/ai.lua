@@ -36,12 +36,12 @@ end
 
 -- Helper Methods
 -- generic helpers for CodeCompanion
--- implement missing ACP functionality, like session load by id, token usage updates etc., and other generic stuff (keymaps etc.)
+-- implement missing ACP functionality, like session load by id etc., and other generic stuff (keymaps etc.);
 -- these methods do use internal functionality, so expect breakage on updates
 
 -- determine whether the current chat buffer is "dirty", i.e. has an unsubmitted user text draft
 local function chat_has_user_draft(chat)
-    if not chat or type(chat.header_line) ~= 'number' or not chat.chat_parser then
+    if not chat or type(chat.header_line) ~= 'number' or not (chat.parsers and chat.parsers.markdown) then
         return false
     end
 
@@ -218,6 +218,7 @@ local function load_acp_session_by_id(session_id)
     -- setup the chat session and update metadata
     require('codecompanion.interactions.chat.acp.handler').new(chat):ensure_session()
     require('codecompanion.interactions.chat.acp.render').restore_session(chat, updates)
+    require('codecompanion.interactions.chat.acp.commands').link_buffer_to_session(chat.bufnr, conn.session_id)
     chat:update_metadata()
 
     vim.notify('ACP session loaded: ' .. session_id, vim.log.levels.INFO)
@@ -405,7 +406,6 @@ local function change_adapter_override(chat)
         end
 
         if current_adapter ~= selected_adapter then
-            chat.acp_connection = nil
             chat:change_adapter(selected_adapter, on_adapter_ready)
         else
             on_adapter_ready()
@@ -772,7 +772,7 @@ return {
                     end
 
                     local chat = require('codecompanion').buf_get_chat(bufnr)
-                    if not chat or not chat.chat_parser then
+                    if not chat or not (chat.parsers and chat.parsers.markdown) then
                         return
                     end
 
@@ -847,51 +847,6 @@ return {
                     local winbar = table.concat(winbar_parts)
                     for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
                         pcall(vim.api.nvim_set_option_value, 'winbar', winbar, { win = win })
-                    end
-                end,
-            })
-
-            -- since token session updates are not standardized by ACP, CodeCompanion doesn't
-            -- yet implement those; for now, simply parse those manually and update chat tokens;
-            -- since the callback handler we hook into is cleared and re-built for every request,
-            -- we hook into RequestStarted
-            vim.api.nvim_create_autocmd({ 'User' }, {
-                pattern = 'CodeCompanionRequestStarted',
-                group = group,
-                callback = function(req)
-                    local bufnr = req.data and req.data.bufnr
-                    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
-                        return
-                    end
-
-                    -- acp connections only
-                    local chat = require('codecompanion').buf_get_chat(bufnr)
-                    if not chat or not chat.adapter or chat.adapter.type ~= 'acp' or not chat.acp_connection then
-                        return
-                    end
-
-                    -- get the active callback handler
-                    local prompt = chat.acp_connection._active_prompt
-                    if not prompt then
-                        return
-                    end
-
-                    -- wrap the original handle_session_update, if any
-                    local original_handle_session_update = prompt.handle_session_update
-                    if type(original_handle_session_update) ~= 'function' then
-                        return
-                    end
-
-                    prompt.handle_session_update = function(prompt_self, update)
-                        -- wrapped call
-                        original_handle_session_update(prompt_self, update)
-
-                        if type(update) ~= 'table' or update.sessionUpdate ~= 'usage_update' or type(update.used) ~= 'number' then
-                            return
-                        end
-
-                        chat.ui.tokens = update.used
-                        chat:update_metadata()
                     end
                 end,
             })
