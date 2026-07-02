@@ -21,22 +21,24 @@ return {
             require('leap').opts.equivalence_classes = { ' \t\r\n', '([{', ')]}', '\'"`' }
 
             -- define a preview filter (skip the middle of alphanumeric words)
-            require('leap').opts.preview_filter = function(ch0, ch1, ch2)
+            require('leap').opts.preview = function(ch0, ch1, ch2)
                 return not (ch1:match('%s') or ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
             end
 
             -- movement
-            vim.keymap.set({ 'n', 'x', 'o' }, 'S', '<Plug>(leap)', { desc = 'Leap in file' })
-            vim.keymap.set('n', 'gs', '<Plug>(leap-from-window)', { desc = 'Leap from window' })
+            vim.keymap.set({ 'n', 'x', 'o' }, 'S', function()
+                require('leap').leap({ opts = require('leap.user').with_traversal_keys('S', 's') })
+            end, { desc = 'Leap in file' })
+            vim.keymap.set('n', 'gs', '<Plug>(leap-anywhere)', { desc = 'Leap from window' })
 
             -- remote action
             vim.keymap.set({ 'n', 'x', 'o' }, 'gS', function()
                 require('leap.remote').action({ input = '' })
             end, { desc = 'Leap + remote action and come back' })
 
-            -- treesitter node selection
+            -- treesitter node selection; while the labels are shown, cycle up/down with S/s
             vim.keymap.set({ 'n', 'x', 'o' }, '<leader>gs', function()
-                require('leap.treesitter').select()
+                require('leap.treesitter').select({ opts = require('leap.user').with_traversal_keys('S', 's') })
             end, { desc = 'Tree sitter leap visual selection' })
         end,
     },
