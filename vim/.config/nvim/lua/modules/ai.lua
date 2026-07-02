@@ -112,18 +112,18 @@ local function get_target_chat_for_resumed_acp_session()
     return new_chat, true
 end
 
--- ensure the chosen chat has an authenticated ACP connection
+-- ensure the chosen chat has an authenticated and established ACP connection
 local function ensure_acp_connection(chat, close_on_failure)
     -- the connection is vim.schedule'd in the setup phase, so we need to vim.wait for it
     local timeout = tonumber(chat and chat.adapter and chat.adapter.defaults and chat.adapter.defaults.timeout) or 20000
     local ok = vim.wait(timeout, function()
         local conn = chat.acp_connection
-        return conn and conn:is_ready()
+        return conn and conn:is_connected()
     end)
 
     -- close new chat if connection failed
     local conn = chat.acp_connection
-    if not ok or not conn or not conn:is_ready() then
+    if not ok or not conn or not conn:is_connected() then
         if close_on_failure then
             chat:close()
         end
