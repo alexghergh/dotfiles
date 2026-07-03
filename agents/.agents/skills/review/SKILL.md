@@ -14,7 +14,7 @@ Judge whether it is the apt change for this repository.
 1. Identify the review target:
    - targeted change review for a diff, file set, branch, or worktree
    - whole-codebase review for repo-wide structure and implementation quality
-2. Spawn two first-pass sub-agents in parallel and keep their responsibilities separate.
+2. Spawn two first-pass sub-agents in parallel and keep their responsibilities separate. Include the [Fowler smell baseline](#fowler-smell-baseline) below in every sub-agent's brief as judgment calls, not hard violations.
 
 ### Targeted change review
 
@@ -50,11 +50,30 @@ Spawn:
 7. Do not run a dedicated performance review unless the user explicitly asks for one.
 8. If an obvious catastrophic performance regression appears during another pass, report it as a finding, but do not branch into a full performance review unless requested.
 
+## Fowler smell baseline
+
+Baseline set of Fowler code smells (*Refactoring*, ch. 3) that every sub-agent brief includes. Applied as judgment calls, not hard violations. Repo-documented standards always override the baseline. Skip anything tooling already enforces.
+
+Each smell reads *what it is* → *how to fix*; match it against the diff:
+
+- **Mysterious Name** — a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
+- **Duplicated Code** — the same logic shape appears in more than one hunk or file. → extract the shared shape, call it from both.
+- **Feature Envy** — a method that reaches into another object's data more than its own. → move the method onto the data it envies.
+- **Data Clumps** — the same few fields or params keep traveling together (a type wanting to be born). → bundle them into one type, pass that.
+- **Primitive Obsession** — a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
+- **Repeated Switches** — the same `switch` / `if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
+- **Shotgun Surgery** — one logical change forces scattered edits across many files. → gather what changes together into one module.
+- **Divergent Change** — one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
+- **Speculative Generality** — abstraction, parameters, or hooks added for needs the spec doesn't have. → delete it; inline back until a real need shows.
+- **Message Chains** — long `a.b().c().d()` navigation the caller shouldn't depend on. → hide the walk behind one method on the first object.
+- **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
+- **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
+
 ## Review Priorities
 
 Apply these priorities in order.
 
-1. correctness, regressions, security-sensitive mistakes, and whether the change solves the right problem
+1. correctness, regressions, security-sensitive mistakes, and whether the change solves the right problem (and *only* that problem - flag scope creep if the diff includes work beyond the stated ask)
 2. system fit, integration quality, and codebase consistency
 3. tests, documentation, and comments for non-obvious logic
 4. performance, only when explicitly requested
@@ -77,14 +96,14 @@ Do not let lower-priority concerns drown out merge-blocking correctness or integ
 
 Use the reference files selectively. Not every review needs every reference.
 
-- [correctness.md](references/correctness.md) — bugs, regressions, wrong assumptions, broken behavior
-- [architecture.md](references/architecture.md) — system fit, layering, extension points, repo patterns
-- [tests.md](references/tests.md) — coverage of changed behavior, test quality, avoiding test theater
-- [documentation.md](references/documentation.md) — stale or missing docs, misleading comments, public interface docs
-- [security.md](references/security.md) — vulnerabilities, boundary validation, secrets handling
-- [maintainability.md](references/maintainability.md) — changeability, coupling, structural friction
-- [clean-code.md](references/clean-code.md) — naming, duplication, dead code, local readability
-- [performance.md](references/performance.md) — opt-in performance review only
+- [correctness.md](references/correctness.md) - bugs, regressions, wrong assumptions, broken behavior
+- [architecture.md](references/architecture.md) - system fit, layering, extension points, repo patterns
+- [tests.md](references/tests.md) - coverage of changed behavior, test quality, avoiding test theater
+- [documentation.md](references/documentation.md) - stale or missing docs, misleading comments, public interface docs
+- [security.md](references/security.md) - vulnerabilities, boundary validation, secrets handling
+- [maintainability.md](references/maintainability.md) - changeability, coupling, structural friction
+- [clean-code.md](references/clean-code.md) - naming, duplication, dead code, local readability
+- [performance.md](references/performance.md) - opt-in performance review only
 
 ## Output Format
 
