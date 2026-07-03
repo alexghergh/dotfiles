@@ -1,6 +1,6 @@
 ---
 name: review
-description: Maintainer-style code review for local changes, worktrees, or whole codebases using paired first-pass sub-agents and fresh deeper passes when needed.
+description: Maintainer-style code review for local changes, PRs, branches, diffs, worktrees, or whole codebases. Runs three first-pass sub-agents (precision, explorer, documentation) in parallel and spawns fresh deeper passes when needed. Use when the user says "review this", "review the PR", "review this branch", "review the diff", or wants a repo audit.
 ---
 
 # Maintainer Review
@@ -12,39 +12,48 @@ Judge whether it is the apt change for this repository.
 ## Workflow
 
 1. Identify the review target:
-   - targeted change review for a diff, file set, branch, or worktree
+   - targeted change review for a diff, file set, PR, branch, or worktree
    - whole-codebase review for repo-wide structure and implementation quality
-2. Spawn two first-pass sub-agents in parallel and keep their responsibilities separate. Include the [Fowler smell baseline](#fowler-smell-baseline) below in every sub-agent's brief as judgment calls, not hard violations.
+   - if unclear, stop and prompt the user
+2. Spawn three first-pass sub-agents in parallel and keep their responsibilities separate. Include the [Fowler smell baseline](#fowler-smell-baseline) below in every sub-agent's brief as judgment calls, not hard violations.
 
 ### Targeted change review
 
 Spawn:
 - `precision reviewer`
-  - inspect the changed files, immediate callers or callees, nearby tests, and directly affected docs
-  - surface concrete correctness bugs, regressions, stale or missing docs or comments, direct test gaps, and obvious integration mistakes
+  - inspect the changed files, immediate callers or callees, and nearby tests
+  - surface concrete correctness bugs, regressions, direct test gaps, and obvious integration mistakes
   - stay close to the target and optimize for immediate actionable findings
 - `explorer reviewer`
   - inspect surrounding modules, extension points, similar implementations elsewhere in the repo, and local architecture docs when present
   - judge whether the change uses the right seam, layer, and repo pattern
   - review from a third-person maintainer perspective and look for system-fit problems that are easy to miss when staying near the diff
+- `documentation reviewer`
+  - inspect the changed code and the docs that touch it — docstrings, inline comments, `.md` files (README, ARCHITECTURE, per-module docs)
+  - on the changed code, assess whether public interfaces, non-obvious logic, invariants, assumptions, and side effects are documented adequately, and whether comment style matches the surrounding code
+  - on `.md` files and adjacent prose, flag anything the change made stale, misleading, or contradicted — and anything that should have been updated but wasn't
+  - findings can be blocking when a public interface is undocumented or documentation actively misleads
 
 ### Whole-codebase review
 
 Spawn:
 - `implementation reviewer`
-  - inspect representative hotspots and concrete code paths for correctness risks, stale docs or comments, weak or misleading tests where tests already exist, and practical implementation issues
+  - inspect representative hotspots and concrete code paths for correctness risks, weak or misleading tests where tests already exist, and practical implementation issues
   - focus on low-level realities, not just structure
 - `architecture reviewer`
-  - inspect the repo at a high level for layering, seams, consistency, duplication, and documentation drift
+  - inspect the repo at a high level for layering, seams, consistency, and duplication
   - focus on the forest, not individual trees
+- `documentation reviewer`
+  - inspect the repo's documentation surface — README, ARCHITECTURE, AGENTS, per-module docs, and docstrings on public interfaces
+  - flag missing public-interface documentation, stale or contradictory `.md` prose, and docstring/comment coverage gaps on non-obvious logic
+  - findings can be blocking when the repo's public surface is undocumented or actively misleads
 
-3. Collect both first-pass summaries and produce a quick overview.
-4. If either first pass already surfaces clear blocking issues or enough actionable findings, surface them promptly instead of spending time on unnecessary deeper review.
+3. Collect all three first-pass summaries and produce a quick overview.
+4. If any first pass already surfaces clear blocking issues or enough actionable findings, surface them promptly instead of spending time on unnecessary deeper review.
 5. If deeper review is warranted, spawn fresh focused sub-agents for the next passes. Do not continue with the original sub-agents; keep contexts narrow.
 6. Choose deeper reviewers based on what the first pass uncovered. Common follow-up reviewers:
    - `correctness reviewer`
    - `tests reviewer`
-   - `documentation reviewer`
    - `system-fit reviewer`
    - `repo-consistency reviewer`
 7. Do not run a dedicated performance review unless the user explicitly asks for one.
@@ -73,10 +82,11 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 Apply these priorities in order.
 
-1. correctness, regressions, security-sensitive mistakes, and whether the change solves the right problem (and *only* that problem - flag scope creep if the diff includes work beyond the stated ask)
+1. correctness, regressions, security-sensitive mistakes, and whether the change solves the right problem (and *only* that problem — flag scope creep if the diff includes work beyond the stated ask)
 2. system fit, integration quality, and codebase consistency
-3. tests, documentation, and comments for non-obvious logic
-4. performance, only when explicitly requested
+3. documentation quality — docstrings and comments on the changed code (public interfaces, non-obvious logic, invariants, assumptions, side effects); `.md` files that should reflect the change (README, ARCHITECTURE, per-module docs); existing docs now stale or misleading
+4. tests for changed behavior
+5. performance, only when explicitly requested
 
 Use the following severity examples to keep labels consistent:
 - high: guaranteed merge blockers, user-visible breakage, or immediate correctness/security regressions
@@ -111,15 +121,16 @@ Prefer list output over tables. The result should be easy to scan in a terminal.
 
 ### Quick Overview
 
-Start with the two first-pass summaries:
+Start with the three first-pass summaries:
 
 ```text
 quick overview:
 - precision reviewer: one or two concrete issues or "no immediate blockers found"
 - explorer reviewer: one or two system-fit issues or "no broader fit issues found"
+- documentation reviewer: one or two doc gaps or "no meaningful documentation issues"
 ```
 
-For whole-codebase review, replace the reviewer labels with `architecture reviewer` and `implementation reviewer`.
+For whole-codebase review, replace the reviewer labels with `implementation reviewer`, `architecture reviewer`, and `documentation reviewer`.
 
 ### Findings
 
@@ -130,10 +141,13 @@ blocking issues:
 1. high — `path/to/file.py:42` — concrete bug, regression, or wrong integration point
 
 merge-readiness issues:
-1. medium — `path/to/file.py:87` — missing or misleading tests, docs, comments, or maintainability issue that should be fixed
+1. medium — `path/to/file.py:87` — missing or misleading tests, comments, or maintainability issue that should be fixed
 
 consistency and architecture concerns:
 1. medium — `path/to/file.py:12` — inconsistent repo pattern or wrong layer for the behavior
+
+documentation:
+1. medium — `README.md` — installation section still refers to a removed `--foo` flag
 
 performance:
 - not reviewed
@@ -145,5 +159,5 @@ If no findings are discovered, say so explicitly and then list residual risks or
 
 ## Review Limits
 
-When the request is narrow, keep the review narrow unless the first-pass explorer finds a good reason to widen it.
+When the request is narrow, keep the review narrow unless a first-pass reviewer finds a good reason to widen it.
 When the request is broad, prefer representative hotspots and recurring patterns over shallow commentary on every file.
