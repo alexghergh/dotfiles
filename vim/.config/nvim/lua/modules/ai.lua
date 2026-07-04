@@ -566,6 +566,7 @@ return {
                         clear_approvals = false, -- interferes with gt tab movement
                         yolo_mode = false, -- interferes with gt tab movement
                         fold_code = false, -- interferes with gf goto file
+                        clear = false, -- interferes with gx open url
                         -- override the built-in adapter switch because it always chains into the ACP model picker, which replaces the
                         -- adapter default model; keep ga for adapter selection only, and expose model / mode / reasoning on a separate
                         -- keymap (see below); this method copies almost word for the word the internal functionality

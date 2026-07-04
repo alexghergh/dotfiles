@@ -43,6 +43,10 @@ vim.keymap.set({ 'n', 'v' }, '<Leader>D', '"_D', { desc = 'Delete without regist
 -- switch to last file
 vim.keymap.set('n', '<Leader>o', '<C-^>', { desc = 'Switch to last file' })
 
+-- open URL / path under cursor in the system's default handler on ctrl+click; the leading
+-- <LeftMouse> positions the cursor where the click landed, then the built-in gx invokes vim.ui.open()
+vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse>gx', { desc = 'Open link under cursor in browser' })
+
 -- navigate tags (mnemonic Switch Tag)
 vim.keymap.set('n', '<Leader>st', '<C-]>', { desc = 'Navigate to tag' })
 
