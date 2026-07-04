@@ -13,3 +13,6 @@ require('core.keymaps')
 
 -- built-in diagnostics setup
 require('core.diagnostics')
+
+-- enable the new experimental ui
+require('vim._core.ui2').enable()
