@@ -1,17 +1,16 @@
 ---
 name: grill-me
-description: A relentless interview that resolves ambiguity in a plan, feature, or design before any code is written. Use whenever the user says "grill me", "let's plan this", "help me think through X", or proposes a new feature or approach they want stress-tested. Also invoke proactively when you notice you're about to implement something with visible ambiguity — pause and grill instead.
+description: A relentless interview that resolves ambiguity in a plan, feature, or design before any code is written. Use whenever the user says "grill me", "let's plan this", "help me think through X", or proposes a new feature or approach they want stress-tested. Also invoke proactively when about to implement something with visible ambiguity — pause and grill instead. Or when the user describes a feature at a high level and expects implementation, has an approach not yet tested against edge cases and rollout, or you can already see three ways to interpret the requirement.
+allowed-tools: Read Grep Glob WebSearch
 ---
 
 # Grill Me
 
 Almost every bad line of code was written to satisfy an unclear requirement. This skill's job is to surface that ambiguity before code commits to it — not fast agreement, but agreement with every load-bearing decision explicit.
 
-## When to invoke
+## Opt-out
 
-Beyond the trigger phrases in the description: whenever the user describes a feature at a high level and expects implementation, has an approach that hasn't been tested against edge cases and rollout, or when you (the agent) can already see three ways to interpret the requirement. Mid-implementation ambiguity is also grounds — stop and reach for this.
-
-If the user opts out ("just implement it", "no grill needed"), respect it. In your first reply list the highest-value questions you would have asked as a short "Unresolved" block (one line each) so they're visible if the implementation later hits ambiguity, then proceed.
+If the user asks to skip grilling ("just implement it", "no grill needed"), respect it. In your first reply list the highest-value questions you would have asked as a short "Unresolved" block (one line each) so they're visible if the implementation later hits ambiguity, then proceed.
 
 ## The one rule
 

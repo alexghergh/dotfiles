@@ -1,7 +1,9 @@
 ---
 name: handoff
-description: Write a self-contained implementation brief for a brand-new session, so a fresh agent with no prior context can pick up the work. Use whenever the user says "handoff", "hand this off", "write a handoff", "chat handoff", "file handoff", "save this session", or when a long session is about to end and continuity matters. Argument decides destination — no arg or `file` writes a file, `chat` outputs in chat only.
+description: Write a self-contained implementation brief for a brand-new session, so a fresh agent with no prior context can pick up the work. Use only when the user explicitly asks for a handoff — the user says "handoff", "hand this off", "write a handoff", "chat handoff", "file handoff", "invoke handoff now", "save this session", or types `/handoff`. Never invoke proactively. Argument decides destination — no arg or `file` writes a file, `chat` outputs in chat only.
 argument-hint: "chat | file (default)"
+disable-model-invocation: true
+allowed-tools: Write
 ---
 
 # Handoff

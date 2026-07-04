@@ -1,6 +1,7 @@
 ---
 name: review
 description: Maintainer-style code review for local changes, PRs, branches, diffs, worktrees, or whole codebases. Runs three first-pass sub-agents (precision, explorer, documentation) in parallel and spawns fresh deeper passes when needed. Use when the user says "review this", "review the PR", "review this branch", "review the diff", or wants a repo audit.
+allowed-tools: Agent Read Grep Glob Bash
 ---
 
 # Maintainer Review
