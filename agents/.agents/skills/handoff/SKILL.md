@@ -19,13 +19,14 @@ Assume the new session has no prior context, no access to this chat, and no hidd
 - **No context-implying phrases.** Do not say "we", "our conversation", "this chat", "as discussed", "above", "earlier", "continue", "pick up where we left off", or anything else that implies prior-session context.
 - **A clean working brief, not a recap.** The reader is starting fresh; give them a task, not a summary.
 
-## Structure — exactly these seven sections in this order
+## Structure — exactly these eight sections in this order
 
-Use markdown `#` headers for section titles. The seven sections and their content:
+Use markdown `#` headers for section titles. The eight sections and their content:
 
-- `# Goal` — what is being built, changed, or fixed, and why, in 1-2 sentences.
+- `# Goal` — what is being built, changed, or fixed, and why, in 1-2 sentences. Include success criteria: what "done" looks like, so the next session knows when to stop.
 - `# Current state` — what is done, what is in progress, what is not started.
-- `# Key decisions` — constraints and reasoning, written as directives ("Use X because Y").
+- `# Key decisions` — constraints and reasoning, written as directives ("Use X because Y"). Include a `Style:` directive when the user has expressed preferences that shape output (e.g., "Style: no British spelling; ASCII only unless em-dashes read better; prefer terse answers").
+- `# What didn't work` — dead ends already explored and why they failed, so the next session doesn't re-take the same wrong roads. Omit if nothing was tried and abandoned.
 - `# Files touched` — path and one-line description per relevant file changed so far.
 - `# Open questions` — unresolved ambiguities that need answers before proceeding.
 - `# Next steps` — ordered, concrete actions the next session can take immediately.
