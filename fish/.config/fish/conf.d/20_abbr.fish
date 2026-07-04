@@ -69,6 +69,7 @@ abbr --add gsw      git switch
 abbr --add gc       git commit
 abbr --add gca      git commit --amend
 abbr --add gp       git push
+abbr --add gpt      git push --tags
 abbr --add gpf      git push -f
 abbr --add gpup     git push --set-upstream origin
 abbr --add gl       git log
