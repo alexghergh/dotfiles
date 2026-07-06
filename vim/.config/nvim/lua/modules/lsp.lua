@@ -1,9 +1,8 @@
 --
 -- lsp servers setup
 --
--- includes setting up lsp configs, the auto-completion engine managed by
--- nvim-cmp, and any other off-spec lsp servers
--- server definitions are under lua/shared/tooling.lua
+-- lsp configs and per-server overrides only; completion capabilities are injected by whichever
+-- completion plugin is used; server definitions are under lua/shared/tooling.lua
 --
 -- see :h vim.lsp
 --
@@ -45,16 +44,11 @@ return {
         'p00f/clangd_extensions.nvim',
     },
 
-    -- neovim dev off-spec lsp to assist with lua configs; sets up runtime deps
-    -- for neovim
-    --
-    -- see :h lazydev
+    -- neovim dev off-spec lsp to assist with lua configs; sets up runtime deps for neovim (see :h lazydev)
     {
         'folke/lazydev.nvim',
-        opts = {},
-        dependencies = {
-            'hrsh7th/nvim-cmp',
-        },
+        ft = 'lua',
+        config = true, -- call setup()
     },
 
     -- neovim lsp server configs
@@ -63,22 +57,13 @@ return {
     -- see :h lspconfig
     {
         'neovim/nvim-lspconfig',
-        dependencies = {
-            'hrsh7th/nvim-cmp',
-            'hrsh7th/cmp-nvim-lsp',
-            'folke/lazydev.nvim',
-        },
         opts = {},
         config = function(_, _)
-            -- global opts
-            vim.lsp.config('*', {
-                capabilities = require('cmp_nvim_lsp').default_capabilities(),
-                -- init_options = {
-                --     usePlaceholders = true, -- snippet expansion for func args
-                -- },
-            })
-
-            -- specific opts
+            -- per-server opts only; global capabilities come from the completion plugin's configs:
+            --
+            --   vim.lsp.config('*', {
+            --       capabilities = require('<cmp>').default_capabilities(),
+            --   })
             vim.lsp.config('basedpyright', {
                 settings = {
                     basedpyright = {

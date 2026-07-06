@@ -3,7 +3,7 @@ return {
     -- snippets support
 
     -- see :h luasnip.txt
-    -- see lua/modules/nvim-cmp.lua
+    -- see lua/modules/cmp.lua
     -- see lua/snippets/<ft>.lua
     {
         'L3MON4D3/LuaSnip',
@@ -49,8 +49,20 @@ return {
         config = function(_, opts)
             local ls = require('luasnip')
 
-            -- snippet expand/jumps and change choice keymaps can be found in
-            -- lua/modules/nvim-cmp.lua as Tab/S-Tab/Ctrl-j/Ctrl-l
+            -- monkey-patch the LuaSnip choice-preview completion menu items; this works around a
+            -- plugin shortcoming that doesn't properly expand the description of a choice's node
+            do
+                local snip_mod = require('luasnip.nodes.snippet')
+                local dict = require('luasnip.util.dict')
+                local orig = snip_mod.Snippet.fake_expand
+                snip_mod.Snippet.fake_expand = function(self, patch_opts)
+                    self.dependents_dict = self.dependents_dict or dict.new()
+                    return orig(self, patch_opts)
+                end
+            end
+
+            -- snippet expand/jumps and change choice keymaps can be
+            -- found in lua/modules/cmp.lua as Tab/S-Tab/Ctrl-l
             ls.setup(opts)
 
             -- load vim-snippets
@@ -62,7 +74,7 @@ return {
             })
 
             -- select_choice with vim.ui.select (Ctrl-l in insert mode mapped in
-            -- lua/modules/nvim-cmp.lua; this keymap is normal mode for choice)
+            -- lua/modules/cmp.lua; this keymap is normal mode for choice)
             vim.keymap.set('n', '<Leader><C-l>', require('luasnip.extras.select_choice'), { desc = 'Select snippet choice' })
 
             -- edit snippets

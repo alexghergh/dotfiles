@@ -84,6 +84,9 @@ return {
         'nvim-lua/plenary.nvim',
         lazy = true,
     },
+    {
+        'saghen/blink.lib',
+    },
 
     -- custom vim.ui.select implementation
     {
