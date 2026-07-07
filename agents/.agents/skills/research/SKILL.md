@@ -1,6 +1,6 @@
 ---
 name: research
-description: Ground a claim in evidence before answering, by reading local code, searching the web, or running a probe — as much as the question actually needs. Use when the user says "research this first before implementing", "look this up", "verify how X actually works", "check what version of X we have", "confirm this before we build". Also invoke proactively when about to answer a falsifiable question from memory — if you find yourself typing "I think", "usually", "typically", or "should be", stop and reach for this.
+description: Ground a claim in evidence before answering, by reading local code, searching the web, or running a probe — as much as the question actually needs. Use when the user says "research this first before implementing", "look this up", "verify how X actually works", "check what version of X we have", "confirm this before we build". Also invoke proactively when (a) the user pastes a URL as the source of truth for their question — fetch it, do not summarize from memory; (b) the question is an enumeration ("which X are there", "any other Y", "list the Z", "what options does Z have") — memory is unreliable for lists; (c) you catch yourself writing any hedge — "I think", "usually", "typically", "should be", "fair warning", "from what I remember", "IIRC", "roughly", "off the top of my head", "I believe", "as far as I know", "someone please double-check but" — the hedge is the failure signal; delete it and fetch the source.
 allowed-tools: WebSearch WebFetch Read Grep Glob Bash
 ---
 
