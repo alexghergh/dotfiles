@@ -70,7 +70,6 @@ return {
             -- completion sources
             'Kaiser-Yang/blink-cmp-git',
             'delphinus/cmp-wezterm',
-            'mikavilpas/blink-ripgrep.nvim',
         },
         build = function()
             require('blink.cmp').build():pwait()
@@ -194,7 +193,6 @@ return {
                             'lazydev',
                             'git',
                             'wezterm',
-                            'ripgrep',
                         }
                     end
                 end,
@@ -279,10 +277,6 @@ return {
                             end
                             return items
                         end,
-                    },
-                    ripgrep = {
-                        name = 'Ripgrep',
-                        module = 'blink-ripgrep',
                     },
                 },
             },
