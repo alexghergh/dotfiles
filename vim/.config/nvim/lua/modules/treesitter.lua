@@ -79,8 +79,11 @@ return {
                         vim.wo[win][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
                     end
 
-                    -- set indentation method (provided by nvim-treesitter)
-                    vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+                    -- set indentation method (provided by nvim-treesitter); skip
+                    -- markdown because the treesitter indents are terrible for it
+                    if vim.bo[ev.buf].filetype ~= 'markdown' then
+                        vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+                    end
                 end,
             })
         end,

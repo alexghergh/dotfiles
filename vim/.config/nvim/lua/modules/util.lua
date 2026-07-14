@@ -117,12 +117,6 @@ return {
                 },
             },
 
-            -- merged signs on the status column, folded into a column (left and right sides)
-            statuscolumn = {
-                left = { 'mark', 'sign' },
-                right = { 'fold', 'git' },
-            },
-
             styles = {
                 input = {
                     row = -20,

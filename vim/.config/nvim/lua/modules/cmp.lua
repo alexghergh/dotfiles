@@ -261,6 +261,50 @@ return {
                         enabled = function()
                             return vim.tbl_contains({ 'octo', 'gitcommit', 'markdown' }, vim.bo.filetype)
                         end,
+                        -- separate github PAT for this command, distinct from the system's gh; requires curl since gh cannot use arbitrary
+                        -- tokens on demand; token stored in kwallet
+                        opts = {
+                            git_centers = {
+                                github = {
+                                    issue = {
+                                        get_command = 'curl',
+                                        get_token = function()
+                                            return vim.trim(
+                                                vim.system(
+                                                    { 'kwallet-query', '-r', 'gh_pat', '-f', 'blink-cmp-git', 'kdewallet' },
+                                                    { text = true }
+                                                )
+                                                    :wait().stdout or ''
+                                            )
+                                        end,
+                                    },
+                                    pull_request = {
+                                        get_command = 'curl',
+                                        get_token = function()
+                                            return vim.trim(
+                                                vim.system(
+                                                    { 'kwallet-query', '-r', 'gh_pat', '-f', 'blink-cmp-git', 'kdewallet' },
+                                                    { text = true }
+                                                )
+                                                    :wait().stdout or ''
+                                            )
+                                        end,
+                                    },
+                                    mention = {
+                                        get_command = 'curl',
+                                        get_token = function()
+                                            return vim.trim(
+                                                vim.system(
+                                                    { 'kwallet-query', '-r', 'gh_pat', '-f', 'blink-cmp-git', 'kdewallet' },
+                                                    { text = true }
+                                                )
+                                                    :wait().stdout or ''
+                                            )
+                                        end,
+                                    },
+                                },
+                            },
+                        },
                     },
                     wezterm = {
                         name = 'wezterm',

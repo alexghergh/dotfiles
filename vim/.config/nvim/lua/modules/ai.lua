@@ -293,6 +293,7 @@ local function toast_notify(header, body)
         'notify-send',
         '--app-name',
         title,
+        '--transient',
         '--expire-time',
         '6000',
         -- always expose a button, but only handle the callback for some configured terminals (like wezterm); see more below
