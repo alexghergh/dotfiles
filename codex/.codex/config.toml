@@ -73,3 +73,10 @@ multi_agent = true
 [agents]
 max_threads = 6
 max_depth = 2
+
+# ascii-only edit gate; same script as claude code's PreToolUse hook (it reads
+# both harnesses' payload shapes); `Edit`/`Write` are codex matcher aliases
+# for `apply_patch`
+[[hooks.PreToolUse]]
+matcher = "Edit|Write"
+hooks = [{ type = "command", command = "python3 /home/alex/.claude/hooks/ascii-check.py", timeout = 10 }]

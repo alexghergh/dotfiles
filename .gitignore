@@ -18,7 +18,8 @@
 !/claude/.claude/settings.json
 !/claude/.claude/commands/
 !/claude/.claude/commands/**
-!/claude/.claude/hooks.json
+!/claude/.claude/hooks/
+!/claude/.claude/hooks/**
 !/claude/.claude/skills
 
 # agents: keep shared agent config (AGENTS.md, skills, session handoffs)
