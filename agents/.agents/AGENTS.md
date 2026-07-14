@@ -42,22 +42,135 @@ Do not run CLI formatting or linting tools unless prompted.
 
 Keep implementations simple and direct:
 - avoid duplicate logic
-- avoid defensive code for unrealistic failure modes just to appear safe
+- avoid defensive code for unrealistic failure modes just to appear safe; validate at system boundaries (user input, external APIs, wire responses), trust internal code and pinned dependencies, and remove guards against shapes that cannot occur rather than adding them
+- delete unused code outright: no backwards-compat shims, no re-exports "just in case", no unused `_var` renames or "removed" markers for deleted code
 - do not introduce obvious bugs, security issues, race conditions or unnecessary complexity
+
+### Prose Style
+
+The rules below cover comments, docstrings, commit messages, and `.md` docs, unless the project has a conflicting local convention.
+
+ASCII-only. No em-dashes, curly quotes, arrows, or unicode ellipses; use `-`, `'`, `"`, `->`, `...` instead. Never use `--` as prose punctuation; prefer `-`. Literal CLI flags and code stay verbatim.
+
+American English spellings: `color`, `initialize`, `analyze` - not `colour`, `initialise`, `analyse`. Third-party names stay verbatim.
+
+Wrap code references in backticks: types, fields, module paths, CLI flags, env-var names - anything a reader would copy-paste or grep for. Function and method references include parentheses: `build()`, not `build`.
+
+In code files, emphasize words with surrounding underscores (`_this_`, not `THIS`); reserve UPPERCASE for actual constants. `.md` files use standard markdown emphasis.
+
+Present tense for prose that describes behavior: "the parser skips X", not "the parser will skip X". Third-person indicative for descriptions, second-person imperative for instructions to a contributor. No first person: no "we", "I", "our" in comments, docstrings, docs, or commit bodies.
 
 ### Comments
 
-Respect the project's documentation style. Keep comments consistent with the surrounding file. Default to lowercase comments without trailing punctuation if there's no other local style.
+Default to no comments, no TODOs, no docstrings beyond what a callable's callers need. The test for every comment is whether removing it would confuse a future reader. Three things earn a comment:
 
-Document functions, modules, and public interfaces in the style the project already uses. Include arguments, return values, side effects, and assumptions when they are not obvious. Prioritize code that is non-trivial, externally used, easy to misuse, or difficult to understand.
+1. A non-obvious constraint: a hidden invariant, an upstream bug that shapes the code, an assumption a caller must respect. State the constraint positively - what the code requires - not the deliberation that produced it. When the constraint comes from outside the local code, point at the source of truth (upstream issue, module docstring, architecture doc), but encode enough of the constraint inline that the pointer is depth, not the load-bearer. Workaround comments open with the upstream ref: `workaround (proj#NNNN): <constraint>`.
+2. Compression: a 1-2 line summary of a dense block that would otherwise take ten times as long to understand. Name the algorithm, complexity, or resource pattern; leave the mechanics in the code. A brief phase comment at the start of each distinct block of a longer function falls under this case; for multi-case dispatch, one labeled block per input shape (with a compact shape literal) counts as compression, not mechanics.
+3. A load-bearing cross-file reference: the reader has to look at the referenced code to correctly change the local code. Name the specific contract or invariant. If the reference disappeared and the reader would not be misled or blocked, delete it.
 
-Prefer concise comments that explain intent, assumptions, invariants, or non-obvious transformations. Do not comment obvious mechanics or add boilerplate. If separate blocks within a function act in distinct phases, add a brief section comment at the start of each phase. Use line-by-line commentary only when it materially improves clarity.
+Length is not the test - checkability is. A clause survives if a future reader can verify it: an upstream issue, a named model or version where the behavior was observed, a peer system's value, an exact measurement window. A clause dies if it can only be believed: praise for the design, promises about the future outside a `TODO:`, deliberation with no surviving constraint. A rejected alternative earns a clause when a future editor could still reach for it - state why it fails, with the checkable reason. A six-line comment where every clause is a checkable fact beats a one-liner that hides the constraint.
+
+What does not earn a comment. Comments describe the code as it exists now - not what it used to do, not what change produced it, not why the design is good:
+
+- restating the code or the identifier's name
+- framework-wiring context ("wrapped by `X`", "consumed by `Y`"): it goes stale the moment the wrappers move
+- defensive narration ("explicit pin because `~=X.Y` would have been too loose"): state the constraint, not the deliberation
+- historical narration ("used to accept a list", "currently empty until `X` lands"): rewrite for the post-change behavior
+- justification vocabulary and asides: clauses that sell the design instead of stating a fact ("so the blast radius stays auditable", "keeps the surface area small") and trivia parentheticals the reader does not need ("(KDE)", "(read+write)"); if a clause cannot be checked against the code or an external source, cut it
+
+Casing and rhythm: if the file already has a comment convention, match it; otherwise lowercase, no trailing punctuation. Multi-clause comments join with `;` instead of mid-comment periods so the comment reads as one continuous note (abbreviations like `e.g.`, `i.e.` stay). `TODO:` keeps the uppercase prefix with a lowercase body.
+
+Function and class docstrings stay short: one line or a short paragraph stating the contract - inputs, the return, side effects, and non-obvious assumptions - treating the implementation as a black box. Required structural shapes (minimum sequences, layouts, orderings a caller must respect) are part of the contract and belong in the docstring as a compact literal. Mechanics (algorithmic detail, edge-case handling) go in a comment block immediately below the docstring. Module-level docstrings are the inverse: in-depth enough that a reader who never opens the rest of the file still understands what the file owns; a module that exists solely to hold workarounds lists the upstream issue refs in its module docstring. Docstrings and `.md` prose are full sentences, cased and punctuated normally.
+
+#### Rewrite Examples
+
+Before/after pairs. The first three `wrong` versions commit anti-patterns from the list above; the last two show the boundary cases - a comment that should be long, and one that should not exist.
+
+Justification vocabulary, trivia asides, sentence-per-period rhythm:
+
+```lua
+-- wrong
+-- separate github PAT for this command, distinct from the system's gh so the plugin's
+-- blast radius stays auditable; classic PAT with `repo` scope (read+write). requires curl
+-- since gh ignores arbitrary tokens on demand. token stored in KWallet (KDE)
+
+-- right
+-- separate github PAT for this command, distinct from the system's gh; requires curl
+-- since gh cannot use arbitrary tokens on demand; token stored in kwallet
+```
+
+Restating the function name and narrating the future; the checkable constraint stays:
+
+```python
+# wrong
+# transparently swap the caller's session for the pooled variant when the
+# backend is `redis://...`; no-op otherwise. workaround for reconnect gaps in
+# the upstream client; will go away once fixed upstream
+session = maybe_apply_pooling_workaround(session)
+
+# right
+# workaround (redispy#4127): the upstream pool drops sessions on reconnect;
+# applies only to `redis://` backends
+session = maybe_apply_pooling_workaround(session)
+```
+
+Historical narration instead of the present constraint:
+
+```python
+# wrong
+# populated when the parser preserves source offsets; currently always empty
+# until the planned `OffsetTrackingParser` lands
+offsets: list[int] | None
+
+# right
+# source offsets surfaced by the parser when the tokenizer provides them;
+# None when the input carried none
+offsets: list[int] | None
+```
+
+Over-trimming - a thin one-liner that hides the derivation; long is right when every clause is a checkable fact:
+
+```python
+# wrong
+# rough bytes-per-row estimate for sizing the prefetch batch
+_APPROX_BYTES_PER_ROW = 512
+
+# right
+# flat bytes-per-row heuristic for sizing the prefetch batch; biased toward
+# overestimation so batches flush slightly early; the vendor driver assumes
+# 1024, but on this schema (short varchar columns, no blobs) the measured
+# average is closer to 512; an exact figure would require a full table scan
+# at startup
+_APPROX_BYTES_PER_ROW = 512
+```
+
+Restating the identifier; the right answer is no comment:
+
+```python
+# wrong
+# default timeout in seconds
+DEFAULT_TIMEOUT_SECONDS = 30
+
+# right
+DEFAULT_TIMEOUT_SECONDS = 30
+```
+
+Self-check before shipping a comment: delete every clause that can only be believed - praise, future promises outside a `TODO:`, deliberation with no surviving constraint; keep every clause that can be checked - facts, constraints, pointers a future reader needs. If nothing survives, delete the comment.
 
 ### Docs Updates
 
-After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md`, or nearby developer-facing docs should be updated. If behavior, workflow, or architecture changed and you think docs updates are warranted, present the intended changes and ask the user about them. Apply documentation edits separately from code edits.
+After any meaningful code change, judge whether `README.md`, `ARCHITECTURE.md`, local `AGENTS.md`, or nearby developer-facing docs should be updated. If behavior, workflow, or architecture changed and you think docs updates are warranted, present the intended changes and ask the user about them.
 
 ## Communication
+
+### Pushback
+
+Disagreement is a deliverable; do not wait for it to be invited.
+
+- When the user proposes a design, plan, or conclusion, stress-test it before agreeing: name the strongest objection, the failure case, or the simpler alternative. If agreement survives that, say why in one line; "sounds good" alone is not a review.
+- Never mark every trade-off "negligible" or every option "fine". If all options genuinely work, name the one you would implement and the deciding reason. Noticing that every downside got labeled negligible is a signal to stop and reconsider, not to proceed.
+- Do not abandon a position because the user pushes back once. Restate the evidence; concede to arguments, not to pressure.
+- Surface deviations instead of executing them silently: extra abstraction, scope growth, or rewriting user-authored comments and docs get flagged before or alongside the change, not discovered in review.
 
 ### Chat Output
 
@@ -107,6 +220,10 @@ Do not add new tests unless the project already has them or the user explicitly 
 Never force-push, amend published commits, or skip hooks without explicit permission.
 
 Prefer small, focused commits.
+
+### Attribution
+
+The committed record reads as if the programmer wrote every line by hand. No AI co-author trailers, no "generated with" footers, no references to AI tools, review passes, or planning sessions in commit messages, PR descriptions, code, or docs. Commit messages describe the change itself, not the process that produced it. Attribution is the programmer's call to make explicitly; do not insert it unprompted.
 
 ### GitHub Access
 
