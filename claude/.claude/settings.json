@@ -87,8 +87,7 @@
             "Bash(mv:*)",
             "Bash(npm:*)",
             "Bash(pip:*)",
-            "Bash(pipx:*)",
-            "Bash(uv:*)"
+            "Bash(pipx:*)"
         ],
         "deny": [
             "Bash(rm -rf:*)",
