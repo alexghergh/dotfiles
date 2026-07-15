@@ -46,6 +46,10 @@
             "Bash(docker logs:*)",
             "Bash(base64:*)",
             "Bash(head:*)",
+            "Bash(grep:*)",
+            "Bash(cat:*)",
+            "Bash(wc:*)",
+            "Bash(jq:*)",
             "Bash(unzip -l:*)",
             "Bash(* --version)",
             "Bash(* --help)",
@@ -97,9 +101,20 @@
             "Bash(ssh:*)",
             "Bash(dd:*)",
             "Bash(mkfs:*)",
+            "Bash(rg --pre:*)",
+            "Bash(rg -z:*)",
+            "Bash(rg --search-zip:*)",
             "Read(**/.env)",
             "Read(**/.env.*)",
-            "Read(**/secrets/**)"
+            "Read(**/secrets/**)",
+            "Read(**/*.pem)",
+            "Read(**/*.key)",
+            "Read(**/id_rsa)",
+            "Read(**/id_ed25519)",
+            "Read(**/.git-credentials)",
+            "Read(**/.credentials.json)",
+            "Read(**/.codex/auth.json)",
+            "Read(**/rclone.conf)"
         ]
     },
     "sandbox": {
@@ -136,6 +151,17 @@
                 "~/.zsh_history",
                 "~/.psql_history",
                 "~/.mysql_history",
+                "~/.claude/.credentials.json",
+                "~/.codex/auth.json",
+                "~/.git-credentials",
+                "~/.config/rclone/rclone.conf",
+                "~/**/.env",
+                "~/**/.env.*",
+                "~/**/*.pem",
+                "~/**/*.key",
+                "~/**/id_rsa",
+                "~/**/id_ed25519",
+                "~/**/secrets",
                 "/etc/shadow"
             ]
         }
