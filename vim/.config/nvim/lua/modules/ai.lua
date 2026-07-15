@@ -659,6 +659,16 @@ return {
         config = function(_, opts)
             require('codecompanion').setup(opts)
 
+            -- override core set_title() to skip the buffer rename; the ACP agent pushes the
+            -- user-typed prompt on every turn; keep chat.title to the default [CodeCompanion]
+            local chat_class = require('codecompanion.interactions.chat')
+            local chat_registry = require('codecompanion.interactions.shared.registry')
+            function chat_class:set_title(title)
+                self.title = title
+                chat_registry.update(self.bufnr, { description = title })
+                return self
+            end
+
             -- set this to override _all_ open chat buffers with a specific llm
             -- vim.g.codecompanion_adapter = 'ollama'
 
