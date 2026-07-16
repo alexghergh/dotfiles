@@ -32,6 +32,14 @@ return {
                 'fish',
                 'bash',
                 'html',
+                'json',
+                'javascript',
+                'typescript',
+                'diff',
+                'toml',
+                'css',
+                'sql',
+                'xml',
             }
 
             -- install languages (this runs async)
