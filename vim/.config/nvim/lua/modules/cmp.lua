@@ -375,6 +375,12 @@ return {
                     menu = {
                         auto_show = true,
                     },
+                    -- don't auto-select the first entry
+                    list = {
+                        selection = {
+                            preselect = false,
+                        },
+                    },
                 },
                 keymap = {
                     preset = 'cmdline',
