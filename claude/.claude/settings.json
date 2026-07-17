@@ -8,7 +8,7 @@
         "claude-opus-4-7",
         "claude-opus-4-6",
         "claude-opus-4-6[1m]",
-        "haiku",
+        "haiku"
     ],
     "effortLevel": "max",
     "attribution": {
@@ -131,6 +131,9 @@
         "failIfUnavailable": true,
         "autoAllowBashIfSandboxed": false,
         "allowUnsandboxedCommands": true,
+        "excludedCommands": [
+            "gh *"
+        ],
         "network": {
             "allowedDomains": [
                 "api.github.com"
