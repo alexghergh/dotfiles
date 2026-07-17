@@ -57,6 +57,7 @@
             "Bash(docker logs:*)",
             "Bash(base64:*)",
             "Bash(head:*)",
+            "Bash(tail:*)",
             "Bash(grep:*)",
             "Bash(cat:*)",
             "Bash(wc:*)",
