@@ -44,6 +44,8 @@
             "Bash(git worktree list)",
             "Bash(git worktree list:*)",
             "Bash(gh api:*)",
+            "Bash(sed --sandbox:*)",
+            "Bash(awk --sandbox:*)",
             "Bash(uv run mypy:*)",
             "Bash(uv run ruff:*)",
             "Bash(uv run black:*)",
@@ -199,6 +201,17 @@
                         "command": "python3 /home/alex/.claude/hooks/ascii-check.py",
                         "timeout": 10,
                         "statusMessage": "Checking edit for non-ascii characters"
+                    }
+                ]
+            },
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/sed-awk-guard.py",
+                        "timeout": 10,
+                        "statusMessage": "Checking sed/awk flags for malicious behavior"
                     }
                 ]
             }

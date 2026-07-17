@@ -46,6 +46,10 @@ Keep implementations simple and direct:
 - delete unused code outright: no backwards-compat shims, no re-exports "just in case", no unused `_var` renames or "removed" markers for deleted code
 - do not introduce obvious bugs, security issues, race conditions or unnecessary complexity
 
+### Shell Text Processing
+
+For read-only `sed`/`awk` in shell commands, pass `--sandbox` as the first flag: `sed --sandbox -n '1,20p' file`, `awk --sandbox '{print $1}' file`. Never modify files through `sed` or `awk` (in-place edits with `-i`, profile dumps etc.); use the editing tools instead.
+
 ### Prose Style
 
 The rules below cover comments, docstrings, commit messages, and `.md` docs, unless the project has a conflicting local convention.
