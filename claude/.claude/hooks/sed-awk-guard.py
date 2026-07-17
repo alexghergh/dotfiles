@@ -66,6 +66,11 @@ AWK_LONG = {
 _ASSIGN_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 _WRAPPER_ARG_RE = re.compile(r"^[0-9]+[smhd]?$")
 
+# a sed script that is one line address (a line number or $) or range plus the
+# p command; provably read-only (prints, never exec/read/write) regardless of
+# --sandbox, so it can auto-approve without it
+_PRINT_RE = re.compile(r"^(\d+|\$)(,(\d+|\$))?p$")
+
 # shell operators, longest match first; redirects mark the command, separators
 # end it
 _OPS = [
@@ -233,6 +238,46 @@ def check_flags(base, args):
     return None, saw_sandbox, saw_helpver
 
 
+def pure_print(cmd):
+    """True when cmd is a sed line-print (`-n '<addr>p'`) with no external script.
+
+    The read-only whitelist plus a positional script matching _PRINT_RE make the
+    invocation provably print-only, so it is safe without --sandbox. External
+    scripts (-e/-f/--expression/--file/--source) and any arg-taking flag are
+    rejected: the script must be the first positional so it can be inspected here.
+    """
+    if cmd["redirect"] or any(exp for _, exp in cmd["words"]):
+        return False
+    idx, base = resolve_base(cmd["words"])
+    if base != "sed":
+        return False
+    suppress = False
+    positionals = []
+    seen_ddash = False
+    for tok in (t for t, _ in cmd["words"][idx + 1:]):
+        if seen_ddash or not tok.startswith("-") or tok == "-":
+            positionals.append(tok)
+        elif tok == "--":
+            seen_ddash = True
+        elif tok.startswith("--"):
+            name = tok.split("=", 1)[0]
+            if name in ("--quiet", "--silent"):
+                suppress = True
+            elif name in ("--expression", "--file", "--source", "--line-length"):
+                return False
+            elif name not in SED_LONG:
+                return False
+        else:
+            for ch in tok[1:]:
+                if ch == "n":
+                    suppress = True
+                elif ch in SED_ARG:
+                    return False
+                elif ch not in SED_CLUSTER:
+                    return False
+    return suppress and bool(positionals) and bool(_PRINT_RE.match(positionals[0]))
+
+
 def check_command(cmd):
     """Return an ask-reason for a sed/awk command outside the inert shape, else None."""
     words = cmd["words"]
@@ -263,9 +308,19 @@ def check_command(cmd):
         return reason
     if saw_helpver:
         return None
-    if not saw_sandbox:
+    if not saw_sandbox and not pure_print(cmd):
         return f"{base}: an auto-approved sed/awk command must pass --sandbox"
     return None
+
+
+def emit(decision, reason):
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": decision,
+            "permissionDecisionReason": reason,
+        }
+    }))
 
 
 def main():
@@ -295,13 +350,15 @@ def main():
                 break
 
     if reason:
-        print(json.dumps({
-            "hookSpecificOutput": {
-                "hookEventName": "PreToolUse",
-                "permissionDecision": "ask",
-                "permissionDecisionReason": reason,
-            }
-        }))
+        emit("ask", reason)
+        return
+
+    # a standalone sed line-print has no allow rule to approve it (only
+    # --sandbox forms do), so grant it here; gated to a single simple command so
+    # the decision can never cover a hidden compound segment
+    if (commands is not None and len(commands) == 1 and pure_print(commands[0])
+            and "--sandbox" not in [t for t, _ in commands[0]["words"]]):
+        emit("allow", "sed line-print is read-only")
 
 
 main()
