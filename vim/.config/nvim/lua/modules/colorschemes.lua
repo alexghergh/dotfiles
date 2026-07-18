@@ -125,6 +125,7 @@ local function melange()
         ['CodeCompanionChatStatusOption'] = { fg = '#c1a78e', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#3a3f4a', bold = true },
+        ['CodeCompanionChatQueuedMessage'] = { bg = '#3a3f4a' },
     }
 end
 

@@ -576,6 +576,13 @@ return {
                             description = '[Adapter] Change adapter',
                             callback = change_adapter_override,
                         },
+                        -- queue a message mid-stream, while the LLM is streaming; this is NOT a core
+                        -- built-in exposed feature: a local branch implements the functionality
+                        queue_message = {
+                            modes = { n = 'gq' },
+                            description = 'Queue a message during a streaming turn',
+                            callback = 'keymaps.queue_message',
+                        },
                         goto_file_under_cursor = {
                             modes = { n = 'gf' }, -- neovim gf, overrides codecompanion's gR
                             description = 'Open file under cursor, with markdown line awareness',
