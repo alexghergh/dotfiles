@@ -52,8 +52,8 @@ personality = "pragmatic"
 # /tmp, or read-only otherwise
 sandbox_mode = "read-only"
 
-model = "gpt-5.5"
-model_reasoning_effort = "xhigh"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "ultra"
 
 project_doc_fallback_filenames = ["CLAUDE.md"]
 
@@ -80,3 +80,9 @@ max_depth = 2
 [[hooks.PreToolUse]]
 matcher = "Edit|Write"
 hooks = [{ type = "command", command = "python3 /home/alex/.claude/hooks/ascii-check.py", timeout = 10 }]
+
+[hooks.state]
+
+[hooks.state."/home/alex/.codex/config.toml:pre_tool_use:0:0"]
+trusted_hash = "sha256:4710522c001e046c66a4b46900d2ee6a110031999b6014fb037796de5090c754"
+enabled = true
