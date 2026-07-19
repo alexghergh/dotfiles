@@ -186,6 +186,7 @@ local function tokyonight()
         ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#2a2d40', bold = true },
+        ['CodeCompanionChatQueuedMessage'] = { bg = '#3a3f4a' },
     }
 end
 
