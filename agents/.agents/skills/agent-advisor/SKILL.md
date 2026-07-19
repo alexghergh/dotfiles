@@ -23,6 +23,8 @@ Sandbox requirement (applies to every recipe below): advisor CLIs initialize per
 
 Write the prompt to a temp file first, then redirect that file into the advisor CLI's stdin. This keeps the prompt on a single channel and sidesteps heredoc/quoting/variable-expansion pitfalls. Never pass the prompt as a positional argument — some advisor CLIs will silently wait on stdin when both are provided.
 
+The `<model>` and `<effort>` switches below are optional. Omit the corresponding switch when the user does not specify it.
+
 ### Claude Code
 
 ```bash
@@ -35,6 +37,8 @@ cat > "$PROMPT_FILE" <<'EOF'
 <question>
 EOF
 claude -p \
+  --model <model> \
+  --effort <effort> \
   --disable-slash-commands \
   --no-session-persistence \
   --permission-mode dontAsk \
@@ -56,6 +60,8 @@ cat > "$PROMPT_FILE" <<'EOF'
 EOF
 codex \
   --disable multi_agent \
+  --model <model> \
+  -c 'model_reasoning_effort="<effort>"' \
   exec \
   --ephemeral \
   --sandbox read-only \
