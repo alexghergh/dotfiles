@@ -436,7 +436,7 @@ return {
                             formatted_name = glyphs.codex .. ' Codex',
                             defaults = {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
-                                auth_method = 'chatgpt', -- 'openai-api-key'|'codex-api-key'|'chatgpt'
+                                auth_method = 'chat-gpt', -- 'api-key'|'chat-gpt'
                             },
                         })
                     end,
