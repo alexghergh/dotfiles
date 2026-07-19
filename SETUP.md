@@ -79,4 +79,4 @@ just `npm install -g @openai/codex`
 
 ACP servers:
 - claude-agent-acp: `npm install -g @agentclientprotocol/claude-agent-acp`
-- codex-acp: download the binary from the codex-acp repo's releases page
+- codex-acp: `npm install -g @agentclientprotocol/codex-acp`
