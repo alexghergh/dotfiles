@@ -438,6 +438,7 @@ return {
                                 timeout = 20000, -- codecompanion's own timeout is 20 seconds for connection init
                                 auth_method = 'chat-gpt', -- 'api-key'|'chat-gpt'
                             },
+                            env = { INITIAL_AGENT_MODE = 'read-only' },
                         })
                     end,
                     claude_code = function()
