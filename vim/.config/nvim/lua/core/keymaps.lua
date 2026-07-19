@@ -105,7 +105,7 @@ vim.keymap.set('n', '<Leader>wh', '<Cmd>vertical resize -10<CR>', { desc = 'Resi
 vim.keymap.set('n', '<Leader>wl', '<Cmd>vertical resize +10<CR>', { desc = 'Resize window width (+10)' })
 vim.keymap.set('n', '<Leader>w=', '<Cmd>wincmd =<CR>', { desc = 'Make windows equal' })
 vim.keymap.set('n', '<C-w><Leader>o', '<C-w><C-^>', { desc = 'Split and edit alternate file' })
-vim.keymap.set('n', '<C-w>L', '<Cmd>leftabove vnew | wincmd l<CR>', { desc = 'New vertical window (empty buffer)' })
+vim.keymap.set('n', '<C-w>L', '<Cmd>leftabove vnew<CR>', { desc = 'New vertical window (empty buffer)' })
 
 --
 -- diagnostics/quickfix/location lists keymaps
