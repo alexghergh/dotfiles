@@ -78,6 +78,7 @@ abbr --add gsh      git show
 abbr --add gd       git diff
 abbr --add gds      git diff --staged
 abbr --add gdc      git diff --cached # same as the above
+abbr --add gires    git restore
 abbr --add grs      git restore --staged
 abbr --add gst      git stash
 abbr --add gsp      git stash pop
