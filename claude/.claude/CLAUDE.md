@@ -26,8 +26,18 @@ inferring freeness from similar commands or from other standing rules.
 - The settings ask-list (state-modifying git, `rm`, `mv`, `npm`, `pip`) and
   deny-list (`git push`, `sudo`, ...) prompt or block by design; the standing
   rules already reserve those for the user.
+- Temp files go under `/tmp/claude`, never `$TMPDIR`: the variable is not
+  consistently exposed across sandboxed / unsandboxed shells and background
+  tasks (claude-code #63313, #15700, #78687), while `/tmp/claude` sits on the
+  sandbox write allowlist and works in every mode. `mkdir` prompts: check with a
+  free `ls /tmp/claude` first and create the directory only when that shows it
+  actually missing.
 
 Sub-agents follow the same command discipline. Foreground sub-agents pass
 permission prompts through; background sub-agents auto-deny calls that would
 prompt. Keep work that may require approval in the foreground, and do not end
-the turn until every started sub-agent has finished.
+the turn until every started sub-agent has finished. Briefs to sub-agents
+restate this discipline explicitly; do not rely on inherited context. One
+logical command per call: a fetch loop or shell function chaining many
+commands into a single call is unreviewable and forbidden even when every
+piece is individually allowlisted.
