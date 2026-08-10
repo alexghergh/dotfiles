@@ -29,9 +29,8 @@ inferring freeness from similar commands or from other standing rules.
 - Temp files go under `/tmp/claude`, never `$TMPDIR`: the variable is not
   consistently exposed across sandboxed / unsandboxed shells and background
   tasks (claude-code #63313, #15700, #78687), while `/tmp/claude` sits on the
-  sandbox write allowlist and works in every mode. `mkdir` prompts: check with a
-  free `ls /tmp/claude` first and create the directory only when that shows it
-  actually missing.
+  sandbox write allowlist and works in every mode. A `SessionStart` hook creates
+  the directory, so write into it directly; never `mkdir` it.
 
 Sub-agents follow the same command discipline. Foreground sub-agents pass
 permission prompts through; background sub-agents auto-deny calls that would

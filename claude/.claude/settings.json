@@ -215,6 +215,18 @@
                     }
                 ]
             }
+        ],
+        "SessionStart": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "mkdir -p /tmp/claude",
+                        "timeout": 10
+                    }
+                ]
+            }
         ]
     },
     "autoUpdatesChannel": "latest",
