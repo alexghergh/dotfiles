@@ -229,6 +229,7 @@
             }
         ]
     },
+    "cleanupPeriodDays": 90,
     "autoUpdatesChannel": "latest",
     "env": {
         "DISABLE_AUTOUPDATER": "1",
