@@ -212,6 +212,18 @@
                         "command": "python3 /home/alex/.claude/hooks/sed-awk-guard.py",
                         "timeout": 10,
                         "statusMessage": "Checking sed/awk flags for malicious behavior"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/git-c-guard.py",
+                        "timeout": 10,
+                        "statusMessage": "Checking for git -C"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/tmpdir-guard.py",
+                        "timeout": 10,
+                        "statusMessage": "Checking for $TMPDIR"
                     }
                 ]
             }
@@ -223,6 +235,42 @@
                     {
                         "type": "command",
                         "command": "mkdir -p /tmp/claude",
+                        "timeout": 10
+                    }
+                ]
+            }
+        ],
+        "SubagentStart": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/subagent-gate.py",
+                        "timeout": 10
+                    }
+                ]
+            }
+        ],
+        "SubagentStop": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/subagent-gate.py",
+                        "timeout": 10
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/subagent-gate.py",
                         "timeout": 10
                     }
                 ]
