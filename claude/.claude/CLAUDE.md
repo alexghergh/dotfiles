@@ -17,9 +17,16 @@ inferring freeness from similar commands or from other standing rules.
 - Read-only shell (`ls`, `find`, `rg`, `cat`, `head`, `grep`, `echo`) runs free
   in the sandbox; the dedicated Read / Grep / Glob tools stay preferred, but a
   read-only shell fallback is not a prompt risk.
-- `sed` / `awk` prompt as leading commands even with `--sandbox`; read file
-  slices via Read (`offset` / `limit`) instead of `sed -n`. Do not rely on an
-  allowlisted pipeline leader to make a later command prompt-free.
+- `sed` / `awk` are exec-capable, so no prefix allow rule fires for them: a file
+  operand prompts from any pipeline position, in or out of the working
+  directory. Prefer a prompt-free substitute where one covers the need: Read
+  (`offset` / `limit`) or `head -n END | tail -n COUNT` for line slices, `cut`
+  for columns, `jq` for JSON, `grep -n` / `-c` / `-oE` for matches, Grep (`-A` /
+  `-B` / `-C`) for context. `cut` runs free despite being absent from the allow
+  list; `sort` carries a write-capable `-o`, so assume it prompts. When a
+  `sed` / `awk` one-liner is clearly correct and shorter than the substitute,
+  use it and accept the one prompt. Do not rely on an allowlisted pipeline
+  leader to make a later command prompt-free.
 - `uv run [--no-sync] ruff / black / mypy / pytest` are allowlisted but fail
   inside the sandbox (uv cache lock on a read-only fs); running them costs one
   deliberate sandbox-disable ask per batch - accepted, not avoidable.
