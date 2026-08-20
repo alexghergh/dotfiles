@@ -15,6 +15,7 @@
 
 # claude: keep these tracked (CLAUDE.md, settings, skills, commands, hooks)
 !/claude/.claude/CLAUDE.md
+!/claude/.claude/directives.md
 !/claude/.claude/settings.json
 !/claude/.claude/commands/
 !/claude/.claude/commands/**

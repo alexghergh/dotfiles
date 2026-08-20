@@ -297,6 +297,25 @@
                         "timeout": 10
                     }
                 ]
+            },
+            {
+                "matcher": "compact|resume",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "cat ~/.claude/directives.md"
+                    }
+                ]
+            }
+        ],
+        "UserPromptSubmit": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "cat ~/.claude/directives.md"
+                    }
+                ]
             }
         ],
         "SubagentStart": [
