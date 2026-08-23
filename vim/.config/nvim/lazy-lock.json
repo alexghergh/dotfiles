@@ -5,7 +5,7 @@
   "blink.lib": { "branch": "main", "commit": "5876dd95deeb70aadbe9f1c0b7117a135061cdac" },
   "clangd_extensions.nvim": { "branch": "main", "commit": "78c2ecd659d54972be17aa6ba2deac3c53223b80" },
   "cmp-wezterm": { "branch": "main", "commit": "bec8a4207fd81a34e285925f6e969943856aaddb" },
-  "codecompanion.nvim": { "branch": "main", "commit": "c8bd2d0ff58b75d9a76f0a17115581754824b725" },
+  "codecompanion.nvim": { "branch": "local-patches", "commit": "d2385b1d86020a6ac3ce129d4666eb43464cf833" },
   "codediff.nvim": { "branch": "main", "commit": "7608f3b436ce1f84a4888f75e53079caa981a2e9" },
   "conform.nvim": { "branch": "master", "commit": "619363c30309d29ffa631e67c8183f2a72caa373" },
   "eyeliner.nvim": { "branch": "main", "commit": "8f197eb30cecdf4c2cc9988a5eecc6bc34c0c7d6" },
@@ -30,7 +30,7 @@
   "nvim-notify": { "branch": "master", "commit": "8701bece920b38ea289b457f902e2ad184131a5d" },
   "nvim-tmux-navigation": { "branch": "main", "commit": "4898c98702954439233fdaf764c39636681e2861" },
   "nvim-treesitter": { "branch": "main", "commit": "4916d6592ede8c07973490d9322f187e07dfefac" },
-  "nvim-treesitter-textobjects": { "branch": "main", "commit": "851e865342e5a4cb1ae23d31caf6e991e1c99f1e" },
+  "nvim-treesitter-textobjects": { "branch": "main", "commit": "898ee307df58f854d11cd7edd06472574d48014e" },
   "nvim-web-devicons": { "branch": "master", "commit": "dad71387de386a946b123079d0e53f23028f3abd" },
   "pairs-jump.nvim": { "branch": "main", "commit": "bfe9656079bd209ada8d2f45504427e07064c0b3" },
   "plenary.nvim": { "branch": "master", "commit": "74b06c6c75e4eeb3108ec01852001636d85a932b" },
@@ -48,5 +48,5 @@
   "vim-surround": { "branch": "master", "commit": "3d188ed2113431cf8dac77be61b842acb64433d9" },
   "vim-unimpaired": { "branch": "master", "commit": "db65482581a28e4ccf355be297f1864a4e66985c" },
   "which-key.nvim": { "branch": "main", "commit": "3aab2147e74890957785941f0c1ad87d0a44c15a" },
-  "yanky.nvim": { "branch": "main", "commit": "020c22d0cfa60358569e49d1d7b91630f175aef0" }
+  "yanky.nvim": { "branch": "main", "commit": "dd6689fdda85f66cab7d9b1a1664625f3be0920d" }
 }

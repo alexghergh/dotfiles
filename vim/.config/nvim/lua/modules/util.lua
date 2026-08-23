@@ -107,6 +107,7 @@ return {
             quickfile = {}, -- speed up initial file open by deferring plugin FileType events
             bufdelete = {}, -- exiting a buffer won't close its window; a previously opened buffer will take its place (see config below)
             scroll = {}, -- smooth scrolling
+            animate = { fps = 30 }, -- every animation frame is a full redraw; snacks defaults to 120
 
             -- indent guides + current-scope highlight
             indent = {
@@ -125,6 +126,25 @@ return {
         },
         config = function(_, opts)
             require('snacks').setup(opts)
+
+            -- an animated scroll costs one full redraw per frame, so long jumps get expensive
+            -- in proportion to redraw cost; skip the animation past two screens, which keeps
+            -- <C-u>/<C-d>/<C-b>/<C-f> animated (they scroll at most one screen) while gg, G
+            -- and distant search jumps cost a single redraw
+            local scroll = require('snacks.scroll')
+            local check = scroll.check
+            scroll.check = function(win)
+                local changes = vim.v.event[tostring(win)]
+                if changes and math.abs(changes.topline) > vim.api.nvim_win_get_height(win) * 2 then
+                    local enabled = vim.g.snacks_scroll
+                    vim.g.snacks_scroll = false
+                    check(win) -- drops the stale cached view instead of animating towards it
+                    vim.g.snacks_scroll = enabled
+                end
+                -- re-seeds the cached view at the post-jump position; a zero delta here means
+                -- no animation now, but the scroll right after a capped jump still animates
+                return check(win)
+            end
 
             -- override telescope's buffer-picker delete (<C-d>) to route through Snacks.bufdelete so window
             -- layout is preserved; deferred until telescope loads (snacks has priority=1000 and loads first)

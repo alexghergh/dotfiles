@@ -27,7 +27,13 @@ return {
 
             -- movement
             vim.keymap.set({ 'n', 'x', 'o' }, 'S', function()
-                require('leap').leap({ opts = require('leap.user').with_traversal_keys('S', 's') })
+                require('leap').leap({
+                    -- windows = { current_win } makes leap search the whole visible window (from
+                    -- w0 to w$) instead of only forward from cursor; matches `<Plug>(leap)` behavior
+                    windows = { vim.api.nvim_get_current_win() },
+                    inclusive = true,
+                    opts = require('leap.user').with_traversal_keys('S', 's'),
+                })
             end, { desc = 'Leap in file' })
             vim.keymap.set('n', 'gs', '<Plug>(leap-anywhere)', { desc = 'Leap from window' })
 
