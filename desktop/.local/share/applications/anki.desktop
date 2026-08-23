@@ -2,9 +2,9 @@
 Name=Anki
 Comment=An intelligent spaced-repetition memory training program
 GenericName=Flashcards
-Exec=/home/alex/packages/anki-pyenv/bin/anki %f
-TryExec=/home/alex/packages/anki-pyenv/bin/anki
-Icon=anki
+Exec=/home/alex/packages/anki-26.08.1/anki-linux/anki %f
+TryExec=/home/alex/packages/anki-26.08.1/anki-linux/anki
+Icon=/home/alex/packages/anki-26.08.1/anki-linux/anki.png
 Categories=Education;Languages;KDE;Qt;
 Terminal=false
 Type=Application

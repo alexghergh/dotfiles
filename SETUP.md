@@ -64,13 +64,27 @@ Restore them on the new machine:
     chmod 700 ~/.local/share/kwalletd
     chmod 600 ~/.local/share/kwalletd/* ~/.config/kwalletrc ~/.config/kwalletmanagerrc
 
-## npm
+### Anki
+
+Install the official Linux ARM64 bundle from https://apps.ankiweb.net/ under
+`~/packages/anki-<version>/anki-linux`. Do not use the old Python virtual
+environment.
+
+Anki data, including profiles, media, add-ons, and preferences, lives in
+`~/.local/share/Anki2`. Copy it from the previous machine or restore it from a
+backup.
+
+After installing a new Anki version, update the `Exec`, `TryExec`, and `Icon`
+paths in `desktop/.local/share/applications/anki.desktop` to point at the new
+bundle.
+
+### npm
 
 Set the global prefix so packages install under the user's home:
 
     npm config set prefix ~/.npm-global
 
-## AI code agents + ACP servers
+### AI code agents + ACP servers
 
 Agents:
 - claude code: follow the [instructions](https://code.claude.com/docs/en/setup)
