@@ -43,7 +43,10 @@ local languages = {
     },
     c_family = {
         filetypes = { 'c', 'cpp' },
-        lsp = { 'clangd' }, -- this also runs 'clang-tidy' as linter in LSP mode
+        -- clangd publishes no linux-arm64 binary (clangd releases and the mason registry are x64-only); the
+        -- only arm64 artifact is the full LLVM release tarball; but it is ~11 GB unpacked, so install through
+        -- the distro package manager instead (fedora: clang-tools-extra; possibly different on other systems)
+        lsp = { { name = 'clangd', install = 'ignore' } }, -- also runs 'clang-tidy' as linter in LSP mode
         formatters = { 'clang-format' },
         linters = {
             { name = 'cppcheck', install = 'ignore' }, -- installed through package manager

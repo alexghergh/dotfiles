@@ -18,13 +18,7 @@ return {
     -- see :h mason.nvim
     {
         'mason-org/mason.nvim',
-        opts = {
-            -- registries for config download
-            registries = {
-                'github:alexghergh/mason-registry', -- clangd arm64 support
-                'github:mason-org/mason-registry',
-            },
-        },
+        opts = {},
     },
 
     -- auto-install lsp servers + formatters/linters on new setups
