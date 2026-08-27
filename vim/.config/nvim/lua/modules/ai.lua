@@ -14,24 +14,39 @@ cw.add_2cellwidth_glyph(glyphs.claude_code)
 
 -- emit an OSC 2 attention marker when a CodeCompanion chat requires attention (either pending
 -- tool approval or finished execution); clear on window refocused
-glyphs.attention_marker = '🔴'
+glyphs.tool_attention_marker = '🔴'
+glyphs.finished_attention_marker = '🟢'
 
-cw.add_2cellwidth_glyph(glyphs.attention_marker)
+cw.add_2cellwidth_glyph(glyphs.tool_attention_marker)
+cw.add_2cellwidth_glyph(glyphs.finished_attention_marker)
 
-local attn_mark = glyphs.attention_marker .. ' '
-local function set_attention_marker()
+local function set_attention_marker(marker)
     local current = vim.opt.titlestring:get()
-    if current:sub(1, #attn_mark) ~= attn_mark then
-        vim.opt.titlestring = attn_mark .. current
-        vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+
+    -- priority is given to tool approvals, even if another chat finished
+    if current:sub(1, #glyphs.tool_attention_marker) == glyphs.tool_attention_marker then
+        return
+    elseif current:sub(1, #glyphs.finished_attention_marker) == glyphs.finished_attention_marker then
+        if marker == glyphs.finished_attention_marker then
+            return
+        end
+        current = current:sub(#glyphs.finished_attention_marker + 2)
     end
+
+    vim.opt.titlestring = marker .. ' ' .. current
+    vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
 end
 local function clear_attention_marker()
     local current = vim.opt.titlestring:get()
-    if current:sub(1, #attn_mark) == attn_mark then
-        vim.opt.titlestring = current:sub(#attn_mark + 1)
-        vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+
+    if current:sub(1, #glyphs.tool_attention_marker) == glyphs.tool_attention_marker then
+        vim.opt.titlestring = current:sub(#glyphs.tool_attention_marker + 2)
+    elseif current:sub(1, #glyphs.finished_attention_marker) == glyphs.finished_attention_marker then
+        vim.opt.titlestring = current:sub(#glyphs.finished_attention_marker + 2)
+    else
+        return
     end
+    vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
 end
 
 -- Helper Methods
@@ -938,7 +953,9 @@ return {
                 callback = function(req)
                     -- set attention marker on wezterm tab when pane is explicitly unfocused
                     if vim.g.wezterm_pane_focused == false then
-                        set_attention_marker()
+                        local marker = req.match == 'CodeCompanionToolApprovalRequested' and glyphs.tool_attention_marker
+                            or glyphs.finished_attention_marker
+                        set_attention_marker(marker)
                     end
 
                     local bufnr = (req.data and req.data.bufnr) or req.buf
