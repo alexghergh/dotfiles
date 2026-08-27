@@ -54,6 +54,10 @@ For read-only `sed`/`awk` in shell commands, pass `--sandbox` as the first flag:
 
 The rules below cover comments, docstrings, commit messages, and `.md` docs, unless the project has a conflicting local convention.
 
+Plain register. Write prose you would say out loud to a colleague: plain sentences, everyday verbs. No session jargon or metaphors ("gets its slice"), no coined pet names for concepts ("twins"), no stacked-noun compression ("parser-less deployment" -> "a deployment without a reasoning parser"), no framework jargon for effects the reader sees ("fails collection" -> "doesn't run these tests"). Name the system-level actor ("the service"), not its internal components, unless the component matters. Human-sounding beats shorter. The floor: the reader must be able to reconstruct what happens (order, timing, shape) from the prose alone; ambiguity there means the trim went too far.
+
+Two postures. Code, comments, and docstrings are a polished presentation to the outside world: compressed constraint statements, mechanics in the code; function docstrings default to one plain sentence naming the callable's role. Commit bodies are a diary to the maintainer: lead with the conceptual change, before/after framing welcome ("Previously ...; the service now ..."); keep the non-obvious decision and the why; implementation details come last or not at all; never an enumeration of the diff's behaviors - the code already states them. Length follows need: labeled trailers (`Tests:`, `Docs:`) and genuine back story are fine; an overstuffed body signals a mis-scoped commit, not words to cut.
+
 ASCII-only. No em-dashes, curly quotes, arrows, or unicode ellipses; use `-`, `'`, `"`, `->`, `...` instead. Never use `--` as prose punctuation; prefer `-`. Literal CLI flags and code stay verbatim.
 
 American English spellings: `color`, `initialize`, `analyze` - not `colour`, `initialise`, `analyse`. Third-party names stay verbatim.
@@ -88,19 +92,20 @@ Function and class docstrings stay short: one line or a short paragraph stating 
 
 #### Rewrite Examples
 
-Before/after pairs. The first three `wrong` versions commit anti-patterns from the list above; the last two show the boundary cases - a comment that should be long, and one that should not exist.
+Before/after pairs. The first four `wrong` versions commit anti-patterns from the sections above; the next two show the boundary cases - a comment that should be long, and one that should not exist; the last shows the docstring default.
 
 Justification vocabulary, trivia asides, sentence-per-period rhythm:
 
 ```lua
 -- wrong
--- separate github PAT for this command, distinct from the system's gh so the plugin's
--- blast radius stays auditable; classic PAT with `repo` scope (read+write). requires curl
--- since gh ignores arbitrary tokens on demand. token stored in KWallet (KDE)
+-- separate github PAT for this command, distinct from the system's gh so the
+-- plugin's blast radius stays auditable; classic PAT with `repo` scope
+-- (read+write). requires curl since gh ignores arbitrary tokens on demand.
+-- token stored in KWallet (KDE)
 
 -- right
--- separate github PAT for this command, distinct from the system's gh; requires curl
--- since gh cannot use arbitrary tokens on demand; token stored in kwallet
+-- github PAT for this command, stored in kwallet, and used with curl, rather
+-- than gh; gh itself can only use one token at a time
 ```
 
 Restating the function name and narrating the future; the checkable constraint stays:
@@ -127,9 +132,20 @@ Historical narration instead of the present constraint:
 offsets: list[int] | None
 
 # right
-# source offsets surfaced by the parser when the tokenizer provides them;
-# None when the input carried none
+# `[]` when the tokenizer tracked offsets but the input produced none; None
+# when tracking was off, because e.g. streamed input has no stable byte offsets
 offsets: list[int] | None
+```
+
+Spec-speak register; the same fact in plain words:
+
+```python
+# wrong
+# deferred-callback invocation on stream finalization preserves event
+# ordering guarantees
+
+# right
+# the callback runs only after the stream ends, so events keep their order
 ```
 
 Over-trimming - a thin one-liner that hides the derivation; long is right when every clause is a checkable fact:
@@ -140,11 +156,11 @@ Over-trimming - a thin one-liner that hides the derivation; long is right when e
 _APPROX_BYTES_PER_ROW = 512
 
 # right
-# flat bytes-per-row heuristic for sizing the prefetch batch; biased toward
-# overestimation so batches flush slightly early; the vendor driver assumes
-# 1024, but on this schema (short varchar columns, no blobs) the measured
-# average is closer to 512; an exact figure would require a full table scan
-# at startup
+# bytes-per-row heuristic for sizing the prefetch batch; overestimates on
+# purpose so a batch flushes early rather than overflows; the vendor
+# driver assumes 1024, but on this schema (short varchars, no blobs) the
+# measured average is closer to 512; an exact figure would need a full
+# table scan at startup
 _APPROX_BYTES_PER_ROW = 512
 ```
 
@@ -157,6 +173,21 @@ DEFAULT_TIMEOUT_SECONDS = 30
 
 # right
 DEFAULT_TIMEOUT_SECONDS = 30
+```
+
+Docstring bleeding mechanics; the default is one plain sentence naming the role:
+
+```python
+# wrong
+"""
+Build the per-run scheduler input: initial state seed and runtime
+config. On first run, seeds the full state. On resume, passes only the
+new job entry and the reset per-run counter; the rest is reloaded from
+the checkpoint by the scheduler.
+"""
+
+# right
+"""Build the state that a run starts with."""
 ```
 
 Self-check before shipping a comment: delete every clause that can only be believed - praise, future promises outside a `TODO:`, deliberation with no surviving constraint; keep every clause that can be checked - facts, constraints, pointers a future reader needs. If nothing survives, delete the comment.
@@ -224,6 +255,47 @@ Do not add new tests unless the project already has them or the user explicitly 
 Never force-push, amend published commits, or skip hooks without explicit permission.
 
 Prefer small, focused commits.
+
+### Commit Messages
+
+The diary posture from Prose Style, shown on rewrites:
+
+```text
+wrong - enumerates the diff, compresses into spec-speak:
+
+    Env overrides get their slice: `APP_PORT` landing on the parsed
+    config, layering as its own source ahead of file values, staying
+    attached per key across a reload, riding the merged result rather
+    than a separate map. A second spelling folds into the same place -
+    the raw string an unquoted YAML scalar leaves sitting in `port`.
+
+right - category-level, the non-obvious fronted, the why kept:
+
+    Add tests covering config loading, both files and env overrides.
+    For overrides, the tests cover whether an env value correctly wins
+    over its file counterpart for each config source.
+
+    A second test defends against an unquoted YAML scalar: the loader
+    may still receive `port` as a string, and without coercion it ends
+    up compared against an int at bind time.
+
+wrong - implementation details in the lead, semicolon chain:
+
+    Both upload entry points launch the transfer at the call site;
+    abandoning, closing, or cancelling a progress handle never affects
+    the transfer; a transfer whose failure goes unobserved raises the
+    new UnobservedTransferError (original failure on __cause__) once at
+    the next entry point.
+
+right - conceptual change first, before/after framing:
+
+    Add a test suite to pin the intended transfer lifecycle. Previously,
+    this was undefined behavior, since the caller had to drive the whole
+    upload. The client now starts the transfer in the background and
+    only exposes a progress view to the caller; callers are free to
+    observe the transfer or not; the transfer itself is unaffected and
+    finishes in the background.
+```
 
 ### Attribution
 
