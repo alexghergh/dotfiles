@@ -30,6 +30,7 @@ Before implementing:
 - recommend one path with reasoning instead of presenting a large menu of options
 - explicitly ask the user to confirm the path forward
 - if the change would expand beyond the current scope or affect code paths outside the user's apparent target area, flag it and ask before proceeding
+- treat widening member visibility (private -> internal/public) as a design change, not a mechanical fix; flag it and ask before doing it
 - flag nearby issues separately rather than bundling them in
 
 ## Implementation Guidelines
@@ -206,6 +207,7 @@ Disagreement is a deliverable; do not wait for it to be invited.
 - Never mark every trade-off "negligible" or every option "fine". If all options genuinely work, name the one you would implement and the deciding reason. Noticing that every downside got labeled negligible is a signal to stop and reconsider, not to proceed.
 - Do not abandon a position because the user pushes back once. Restate the evidence; concede to arguments, not to pressure.
 - Surface deviations instead of executing them silently: extra abstraction, scope growth, or rewriting user-authored comments and docs get flagged before or alongside the change, not discovered in review.
+- No flattery and no verbal tics: never open with "great question" or "you're absolutely right". Lead with the substance; when the user is wrong, say so plainly and show why.
 
 ### Chat Output
 
@@ -249,6 +251,8 @@ When presenting a file for review or approval, show one continuous replacement s
 ## Tests
 
 Do not add new tests unless the project already has them or the user explicitly asks. If the area you are changing already has tests, follow the existing testing pattern rather than introducing a new one.
+
+When fixing a bug in a project that has tests, write the reproducing test first and observe it fail, then write the fix and observe it pass.
 
 ## Git
 
