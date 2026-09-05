@@ -263,6 +263,40 @@ local function show_and_yank_chat_session_id()
     vim.fn.setreg('+', session_id)
 end
 
+-- delete the current chat's ACP session on the agent, then close the chat buffer
+local function delete_current_acp_session()
+    -- get the current chat
+    local chat = require('codecompanion').last_chat()
+    if not chat or not chat.acp_connection then
+        return vim.notify('No active ACP CodeCompanion chat', vim.log.levels.WARN)
+    end
+
+    local conn = chat.acp_connection
+    if not conn:is_connected() or not conn.session_id then
+        return vim.notify('No ACP session yet connected', vim.log.levels.WARN)
+    end
+
+    if not conn:can_delete_session() then
+        return vim.notify('Current ACP agent does not support session/delete', vim.log.levels.WARN)
+    end
+
+    local session_id = conn.session_id
+    if vim.fn.confirm(string.format('Delete ACP session %s?', session_id), '&Yes\n&No', 2) ~= 1 then
+        return
+    end
+
+    if not conn:session_delete(session_id) then
+        -- both claude and codex agents only persist a session once it has a first message, so
+        -- deleting a chat without any prompts fails with "session not found"
+        return vim.notify('session/delete failed (sessions with no messages are not persisted at all)', vim.log.levels.ERROR)
+    end
+
+    vim.notify('ACP session deleted: ' .. session_id, vim.log.levels.INFO)
+
+    -- close the chat exactly like the buffer-local <C-c> keymap does
+    require('codecompanion.interactions.chat.keymaps').close.callback(chat)
+end
+
 -- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
 local function toast_notify(header, body)
     local title = 'Neovim AI'
@@ -1004,6 +1038,11 @@ return {
                 show_and_yank_chat_session_id()
             end, { nargs = 0 })
 
+            -- user command to delete the current chat's session on the agent
+            vim.api.nvim_create_user_command('CodeCompanionSessionDelete', function()
+                delete_current_acp_session()
+            end, { nargs = 0 })
+
             -- expand cc to CodeCompanion in the command line, but only for the exact :cc command
             vim.cmd.cnoreabbrev([[<expr> cc getcmdtype() == ':' && getcmdline() ==# 'cc' ? 'CodeCompanion' : 'cc']])
 
@@ -1133,6 +1172,14 @@ return {
                 '<Leader>cs',
                 '<Cmd>CodeCompanionSessionLoad<CR>',
                 { desc = 'Restore Code companion ACP session by session id' }
+            )
+
+            -- delete the current ACP session on the agent and close the chat
+            vim.keymap.set(
+                'n',
+                '<Leader>cD',
+                '<Cmd>CodeCompanionSessionDelete<CR>',
+                { desc = 'Delete current Code companion ACP session' }
             )
         end,
     },

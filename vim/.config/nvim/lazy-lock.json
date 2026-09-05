@@ -5,7 +5,7 @@
   "blink.lib": { "branch": "main", "commit": "5876dd95deeb70aadbe9f1c0b7117a135061cdac" },
   "clangd_extensions.nvim": { "branch": "main", "commit": "78c2ecd659d54972be17aa6ba2deac3c53223b80" },
   "cmp-wezterm": { "branch": "main", "commit": "bec8a4207fd81a34e285925f6e969943856aaddb" },
-  "codecompanion.nvim": { "branch": "local-patches", "commit": "d2385b1d86020a6ac3ce129d4666eb43464cf833" },
+  "codecompanion.nvim": { "branch": "local-patches", "commit": "015f07f79b93bfdc67fdfeab3b966aeb9f51a070" },
   "codediff.nvim": { "branch": "main", "commit": "7608f3b436ce1f84a4888f75e53079caa981a2e9" },
   "conform.nvim": { "branch": "master", "commit": "619363c30309d29ffa631e67c8183f2a72caa373" },
   "eyeliner.nvim": { "branch": "main", "commit": "8f197eb30cecdf4c2cc9988a5eecc6bc34c0c7d6" },
