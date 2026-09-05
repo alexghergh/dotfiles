@@ -149,8 +149,9 @@ local function ensure_acp_connection(chat, close_on_failure)
     return true
 end
 
--- invoke CodeCompanion's built-in /resume workflow; uses a new chat if the current chat is not empty
-local function load_acp_session_by_resume()
+-- invoke CodeCompanion's built-in /resume workflow; uses a new chat if the current chat is not empty;
+-- pass { cwd = false } to list the sessions of all directories instead of just the current one
+local function load_acp_session_by_resume(resume_opts)
     local config = require('codecompanion.config')
     local resume = require('codecompanion.interactions.chat.slash_commands.builtin.resume')
 
@@ -174,38 +175,26 @@ local function load_acp_session_by_resume()
         return false
     end
 
+    -- forward the cwd scope to the built-in through its slash command config
+    local cmd_config = config.interactions.chat.slash_commands['resume']
+    if resume_opts and resume_opts.cwd ~= nil then
+        cmd_config = vim.tbl_deep_extend('force', {}, cmd_config, { opts = { cwd = resume_opts.cwd } })
+    end
+
     -- execute the built-in resume command
     resume
         ---@diagnostic disable-next-line: missing-fields
         .new({
             Chat = chat,
-            config = config.interactions.chat.slash_commands['resume'],
+            config = cmd_config,
         })
         :execute()
 
     return true
 end
 
--- load an ACP session by id using CodeCompanion's built-in session/load functionality
-local function load_acp_session_by_id(session_id)
-    -- obtain the session id; if not passed on the command line, open a vim.ui.input text box
-    session_id = type(session_id) == 'string' and vim.trim(session_id) or ''
-    if session_id == '' then
-        vim.ui.input({ prompt = 'ACP session id to restore: ' }, function(input)
-            input = type(input) == 'string' and vim.trim(input) or ''
-            if input ~= '' then
-                load_acp_session_by_id(input)
-            end
-        end)
-        return
-    end
-
-    -- obtain the target chat into which to load the session; either this chat or new chat
-    local chat, is_new_chat = get_target_chat_for_resumed_acp_session()
-    if not chat or not ensure_acp_connection(chat, is_new_chat) then
-        return false
-    end
-
+-- load a session into the given chat via session/load, replaying its history into the buffer
+local function _load_session_into_chat(chat, is_new_chat, session_id)
     local conn = chat.acp_connection
     if not conn or not conn:can_load_session() then
         if is_new_chat then
@@ -243,6 +232,29 @@ local function load_acp_session_by_id(session_id)
         { bufnr = chat.bufnr, id = chat.id, session_id = conn.session_id, title = chat.title }
     )
     return true
+end
+
+-- load an ACP session by id using CodeCompanion's built-in session/load functionality
+local function load_acp_session_by_id(session_id)
+    -- obtain the session id; if not passed on the command line, open a vim.ui.input text box
+    session_id = type(session_id) == 'string' and vim.trim(session_id) or ''
+    if session_id == '' then
+        vim.ui.input({ prompt = 'ACP session id to restore: ' }, function(input)
+            input = type(input) == 'string' and vim.trim(input) or ''
+            if input ~= '' then
+                load_acp_session_by_id(input)
+            end
+        end)
+        return
+    end
+
+    -- obtain the target chat into which to load the session; either this chat or new chat
+    local chat, is_new_chat = get_target_chat_for_resumed_acp_session()
+    if not chat or not ensure_acp_connection(chat, is_new_chat) then
+        return false
+    end
+
+    return _load_session_into_chat(chat, is_new_chat, session_id)
 end
 
 -- show the ACP session id for the current chat
@@ -1158,6 +1170,11 @@ return {
                 { desc = 'List and resume Code companion ACP sessions for current adapter' }
             )
 
+            -- same as above, but across all sessions (all directories)
+            vim.keymap.set('n', '<Leader>cL', function()
+                load_acp_session_by_resume({ cwd = false })
+            end, { desc = 'List and resume Code companion ACP sessions from all directories' })
+
             -- show the current session id, should be easier to resume a future session
             vim.keymap.set(
                 'n',
@@ -1175,12 +1192,7 @@ return {
             )
 
             -- delete the current ACP session on the agent and close the chat
-            vim.keymap.set(
-                'n',
-                '<Leader>cD',
-                '<Cmd>CodeCompanionSessionDelete<CR>',
-                { desc = 'Delete current Code companion ACP session' }
-            )
+            vim.keymap.set('n', '<Leader>cD', '<Cmd>CodeCompanionSessionDelete<CR>', { desc = 'Delete current Code companion ACP session' })
         end,
     },
 }
