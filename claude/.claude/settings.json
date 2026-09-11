@@ -13,6 +13,7 @@
         "haiku"
     ],
     "effortLevel": "max",
+    "outputStyle": "Concise",
     "attribution": {
         "commit": "",
         "pr": ""
