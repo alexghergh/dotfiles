@@ -721,6 +721,7 @@ return {
                     window = {
                         buflisted = true,
                     },
+                    fold_reasoning = false,
                 },
                 diff = {
                     threshold_for_chat = 0, -- never show diffs in chat buffer
