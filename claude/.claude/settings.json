@@ -244,7 +244,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "notify-send 'Claude Code' 'Claude Code needs your attention'"
+                        "command": "[ -n \"$CLAUDE_NO_DESKTOP_NOTIFY\" ] || notify-send -a 'Claude Code' -i claude 'Claude Code' 'Claude Code needs your attention'"
                     }
                 ]
             }

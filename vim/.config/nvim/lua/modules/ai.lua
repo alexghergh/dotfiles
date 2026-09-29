@@ -511,6 +511,8 @@ return {
                             env = {
                                 -- this requires kwallet on kde
                                 CLAUDE_CODE_OAUTH_TOKEN = 'cmd:kwallet-query -r claude_code_oauth -f codecompanion kdewallet',
+                                -- read by the notification hook in claude's settings.json; no desktop popups inside neovim
+                                CLAUDE_NO_DESKTOP_NOTIFY = '1',
                             },
                         })
                     end,
