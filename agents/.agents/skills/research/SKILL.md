@@ -50,9 +50,9 @@ If the library isn't installed locally, say so — do not guess based on the REA
 
 Web evidence may be dated. If the local install is version X and the docs describe version Y, that's a **version-skew** finding, not a contradiction — call it out.
 
-### Probes (main agent only)
+### Probes
 
-When the question depends on runtime behavior, write and run a short script that answers it. Sub-agents cannot execute; only the main agent runs probes.
+When the question depends on runtime behavior, write and run a short script that answers it. Probes usually run in a sub-agent, which keeps the script and its output out of the main context.
 
 Good candidates:
 - "Does `os.listdir` return sorted output on this filesystem?" — 3-line Python.
@@ -73,7 +73,7 @@ Don't paper over disagreements — they're often the actual finding.
 
 ## Sub-agent delegation
 
-Optional, not required. Local-code reads and web searches can be delegated to a sub-agent when parallelising helps; probes cannot (sub-agents can't execute code). If the question is small enough to answer in one or two file reads, don't bother with delegation — inline is faster.
+Optional, not required. Local-code reads, web searches, and probes can all be delegated to a sub-agent when parallelizing helps. If the question is small enough to answer in one or two file reads, don't bother with delegation — inline is faster.
 
 ## Output
 

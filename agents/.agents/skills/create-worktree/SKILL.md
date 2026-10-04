@@ -5,36 +5,8 @@ description: Create a git worktree for parallel development on a new branch.
 
 # Create Worktree
 
-Create a git worktree to work on a separate branch in parallel without switching the current checkout. Present the user with the git worktree command before running and ask for confirmation. Upon completion of changes, prompt the user on whether to remove the worktree. Do not automatically do that.
+Create a git worktree to work on a separate branch in parallel without switching the current checkout. Put it in a sibling directory named after the project and the feature, e.g. `../myproject-fix-auth`.
 
-## Note on uncommitted changes
+Show the user the `git worktree add` command and ask for confirmation before running it. When the work is done, ask whether to remove the worktree; never remove it on your own.
 
-`git worktree add` does not require a clean working tree. The current checkout keeps its uncommitted changes and the new worktree starts clean. Proceed without blocking. If you notice uncommitted changes that look relevant to the new branch, mention them in passing and ask, but do not force a stash/commit step by default.
-
-## Usage
-
-```bash
-git worktree add <path> -b <new-branch> [<start-point>]
-```
-
-- `<path>`: directory for the new worktree (e.g., `../project-feature-name`)
-- `-b <new-branch>`: create and check out a new branch
-- `<start-point>`: base commit or branch (defaults to HEAD)
-
-## Example
-
-```bash
-git worktree add ../myproject-fix-auth -b fix/auth-token-refresh origin/main
-```
-
-This creates a worktree at `../myproject-fix-auth` on a new branch `fix/auth-token-refresh` based on `origin/main`.
-
-## Cleanup
-
-```bash
-git worktree remove <path>
-```
-
-## Reference
-
-https://git-scm.com/docs/git-worktree
+Uncommitted changes in the current checkout don't block `git worktree add`. If some look relevant to the new branch, mention them and ask, but don't force a stash or commit.

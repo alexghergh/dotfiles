@@ -1,164 +1,97 @@
 ---
 name: review
-description: Maintainer-style code review for local changes, PRs, branches, diffs, worktrees, or whole codebases. Runs three first-pass sub-agents (precision, explorer, documentation) in parallel and spawns fresh deeper passes when needed. Use when the user says "review this", "review the PR", "review this branch", "review the diff", or wants a repo audit.
+description: Maintainer-style code review of uncommitted changes, a commit, a branch, a PR, or a whole codebase. Reports only defects with a concrete failure scenario, scales the number of reviewers to the size of the change, and verifies findings before reporting them. Use when the user says "review this", "review the PR", "review this branch", "review the diff", or wants a repo audit.
 allowed-tools: Agent Read Grep Glob Bash
 ---
 
-# Maintainer Review
+# Review
 
-Review code as the maintainer of the codebase, not as the author of the implementation.
-Do not defend a patch just because it is locally coherent.
-Judge whether it is the apt change for this repository.
+Review as the maintainer of the codebase, not as the author of the change: judge whether this is the right change for this repository, not only whether it is coherent on its own. The review is read-only; report findings, and fix them only when the user asks.
 
-## Workflow
+## What counts as a finding
 
-1. Identify the review target:
-   - targeted change review for a diff, file set, PR, branch, or worktree
-   - whole-codebase review for repo-wide structure and implementation quality
-   - if unclear, stop and prompt the user
-2. Spawn three first-pass sub-agents in parallel and keep their responsibilities separate. Include the [Fowler smell baseline](#fowler-smell-baseline) below in every sub-agent's brief as judgment calls, not hard violations.
+Report a problem only when all of these hold:
 
-### Targeted change review
+- The change introduces it, newly exposes it, or fails a stated requirement of the requested change (e.g. the task names two input forms and the fix covers one). Unrelated pre-existing problems are out of scope.
+- You can write a concrete failure scenario: `input or state -> code path -> wrong result`, naming the actual functions and lines. A candidate you can't write this way is not a finding.
+- It is one specific, actionable problem, not a general concern about the codebase.
+- It isn't flagged only because the behavior changed: an intentional change is fine unless it breaks a requirement or a contract that other code depends on.
+- The author would fix it if they knew, and the fix doesn't demand more rigor than the rest of the codebase has.
 
-Spawn:
-- `precision reviewer`
-  - inspect the changed files, immediate callers or callees, and nearby tests
-  - surface concrete correctness bugs, regressions, direct test gaps, and obvious integration mistakes
-  - stay close to the target and optimize for immediate actionable findings
-- `explorer reviewer`
-  - inspect surrounding modules, extension points, similar implementations elsewhere in the repo, and local architecture docs when present
-  - judge whether the change uses the right seam, layer, and repo pattern
-  - review from a third-person maintainer perspective and look for system-fit problems that are easy to miss when staying near the diff
-- `documentation reviewer`
-  - inspect the changed code and the docs that touch it — docstrings, inline comments, `.md` files (README, ARCHITECTURE, per-module docs)
-  - on the changed code, assess whether public interfaces, non-obvious logic, invariants, assumptions, and side effects are documented adequately, and whether comment style matches the surrounding code
-  - on `.md` files and adjacent prose, flag anything the change made stale, misleading, or contradicted — and anything that should have been updated but wasn't
-  - findings can be blocking when a public interface is undocumented or documentation actively misleads
+The scenario form covers more than runtime bugs:
 
-### Whole-codebase review
+- Docs and comments: see "Docs" below.
+- Maintainability and system fit: name a maintenance cost the change creates today, or a documented extension contract it breaks; an imagined future editing mistake is not enough.
+- Repo rules: a change that breaks a rule in `AGENTS.md`, `CLAUDE.md`, or another project instruction file is a finding without a scenario; cite the rule's file and line instead.
 
-Spawn:
-- `implementation reviewer`
-  - inspect representative hotspots and concrete code paths for correctness risks, weak or misleading tests where tests already exist, and practical implementation issues
-  - focus on low-level realities, not just structure
-- `architecture reviewer`
-  - inspect the repo at a high level for layering, seams, consistency, and duplication
-  - focus on the forest, not individual trees
-- `documentation reviewer`
-  - inspect the repo's documentation surface — README, ARCHITECTURE, AGENTS, per-module docs, and docstrings on public interfaces
-  - flag missing public-interface documentation, stale or contradictory `.md` prose, and docstring/comment coverage gaps on non-obvious logic
-  - findings can be blocking when the repo's public surface is undocumented or actively misleads
+Don't report style a formatter or linter enforces, nitpicks a senior maintainer wouldn't raise, speculation that something "may affect" other code without naming that code, or performance problems unless the user asked or you can show the scenario for a severe regression.
 
-3. Collect all three first-pass summaries and produce a quick overview.
-4. If any first pass already surfaces clear blocking issues or enough actionable findings, surface them promptly instead of spending time on unnecessary deeper review.
-5. If deeper review is warranted, spawn fresh focused sub-agents for the next passes. Do not continue with the original sub-agents; keep contexts narrow.
-6. Choose deeper reviewers based on what the first pass uncovered. Common follow-up reviewers:
-   - `correctness reviewer`
-   - `tests reviewer`
-   - `system-fit reviewer`
-   - `repo-consistency reviewer`
-7. Do not run a dedicated performance review unless the user explicitly asks for one.
-8. If an obvious catastrophic performance regression appears during another pass, report it as a finding, but do not branch into a full performance review unless requested.
+Prefer no finding over a weak one; "No findings." is a complete result. After the first finding, keep going until the whole change is checked.
 
-## Fowler smell baseline
+## Checks before any conclusion
 
-Baseline set of Fowler code smells (*Refactoring*, ch. 3) that every sub-agent brief includes. Applied as judgment calls, not hard violations. Repo-documented standards always override the baseline. Skip anything tooling already enforces.
+Run these on every changed code path; they catch what reading the diff alone misses:
 
-Each smell reads *what it is* → *how to fix*; match it against the diff:
+1. Function resolution: for each call the change adds or relies on, confirm which definition actually runs - local, module, import, builtin, or override. Name shadowing and wrong overloads hide here.
+2. Sufficiency: does the change fix the root cause, or only the symptom the author saw?
+3. Regression paths: for each changed behavior, trace at least one caller outside the diff that depends on it and confirm it still works.
 
-- **Mysterious Name** — a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
-- **Duplicated Code** — the same logic shape appears in more than one hunk or file. → extract the shared shape, call it from both.
-- **Feature Envy** — a method that reaches into another object's data more than its own. → move the method onto the data it envies.
-- **Data Clumps** — the same few fields or params keep traveling together (a type wanting to be born). → bundle them into one type, pass that.
-- **Primitive Obsession** — a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
-- **Repeated Switches** — the same `switch` / `if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
-- **Shotgun Surgery** — one logical change forces scattered edits across many files. → gather what changes together into one module.
-- **Divergent Change** — one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
-- **Speculative Generality** — abstraction, parameters, or hooks added for needs the spec doesn't have. → delete it; inline back until a real need shows.
-- **Message Chains** — long `a.b().c().d()` navigation the caller shouldn't depend on. → hide the walk behind one method on the first object.
-- **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
-- **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
+Apply the checks that fit the changed behavior. Config and dependency changes need their consumers checked; purely editorial changes (docs wording, formatting) and bugs obvious within one function need no tracing.
 
-## Review Priorities
+## Docs
 
-Apply these priorities in order.
+Docs are part of the change, held to the same bar as code: accurate, up to date, covering what a reader needs to use and change the code, and short - a short doc that covers everything beats a long reference. Search the docs, comments, docstrings, and help text for every name, flag, and behavior the change touches, and report:
 
-1. correctness, regressions, security-sensitive mistakes, and whether the change solves the right problem (and *only* that problem — flag scope creep if the diff includes work beyond the stated ask)
-2. system fit, integration quality, and codebase consistency
-3. documentation quality — docstrings and comments on the changed code (public interfaces, non-obvious logic, invariants, assumptions, side effects); `.md` files that should reflect the change (README, ARCHITECTURE, per-module docs); existing docs now stale or misleading
-4. tests for changed behavior
-5. performance, only when explicitly requested
+- Stale or wrong: a doc the change contradicts. Scenario: "a reader follows `README.md:40`, passes `--foo`, and gets an unknown-flag error".
+- Missing: the change adds or alters behavior, an interface, or a workflow that no doc covers, or that lacks docs the project's instruction files ask for. Scenario: a reader can't use or change the code correctly without reading the implementation.
+- Bloated: docs the change adds or grows that restate the code, list detail a reader gets faster from the code, or repeat another doc. Name the cut.
 
-Use the following severity examples to keep labels consistent:
-- high: guaranteed merge blockers, user-visible breakage, or immediate correctness/security regressions
-- medium: likely regressions or integration risks that are fixable but should be addressed before merge
-- low: localized maintainability, consistency, or clarity issues that improve quality but do not block merge
+## Target
 
-Use this grading convention internally when judging review quality from sub-agents, but don't expose this to the user:
-- **5**: no meaningful regressions found and the change is behaviorally sound for the stated scope
-- **4**: mostly good; only minor edge follow-ups or low-risk concerns
-- **3**: important issues remain and the change should be improved before full trust
-- **2**: significant regressions or high-risk problems are likely
-- **1**: blocking issue; do not merge as written
+- Uncommitted changes: `git diff HEAD`, plus untracked files.
+- A commit: `git show <sha>`.
+- A branch: `git diff <base>...<branch>` - three dots diff against the merge base, so only committed work that would merge gets reviewed; leave uncommitted changes out unless asked. Use the base's upstream when it is ahead of the local base branch.
+- A PR: `gh pr diff <n>`, with `gh pr view <n>` for the stated intent.
+- Unclear: ask.
 
-Do not let lower-priority concerns drown out merge-blocking correctness or integration issues.
+Read the project's instruction files that apply to the changed files, and the commit or PR description for intent.
 
-## References
+## Scale reviewers to the change
 
-Use the reference files selectively. Not every review needs every reference.
+Size exactly what you are reviewing: `--stat` with the same range as the review diff, plus untracked files for uncommitted changes. Reviewer briefs use that same range.
 
-- [correctness.md](references/correctness.md) - bugs, regressions, wrong assumptions, broken behavior
-- [architecture.md](references/architecture.md) - system fit, layering, extension points, repo patterns
-- [tests.md](references/tests.md) - coverage of changed behavior, test quality, avoiding test theater
-- [documentation.md](references/documentation.md) - stale or missing docs, misleading comments, public interface docs
-- [security.md](references/security.md) - vulnerabilities, boundary validation, secrets handling
-- [maintainability.md](references/maintainability.md) - changeability, coupling, structural friction
-- [clean-code.md](references/clean-code.md) - naming, duplication, dead code, local readability
-- [performance.md](references/performance.md) - opt-in performance review only
+- Small (under ~50 lines, 1-2 files): review it yourself, without sub-agents, including system fit - whether the change uses the right seam, layer, and existing repo pattern.
+- Medium (~50-200 lines, or 3-5 files): one reviewer sub-agent takes the whole diff while you check system fit - whether the change uses the right seam, layer, and existing repo pattern.
+- Large (over ~200 lines, or more than 5 files): split the diff by area (a module or a group of related files) and give each area its own reviewer, plus one system-fit reviewer that reads across areas. Split by area, not by kind of problem; each reviewer applies every rule here to its slice.
 
-## Output Format
+A reviewer brief contains the diff range and its area, the stated intent, the instruction files to read, the "What counts as a finding", "Checks before any conclusion", and "Docs" sections verbatim, and the output format below. It also says the review is read-only, and that the assigned area limits which findings the reviewer reports, not which code it may read. Never require findings in particular categories; every finding meets the same bar.
 
-Prefer list output over tables. The result should be easy to scan in a terminal.
+## Verify before reporting
 
-### Quick Overview
+Every candidate finding gets a separate verification pass against the cited code and the stated requirements:
 
-Start with the three first-pass summaries:
+- Small changes: re-check each finding yourself by re-reading the cited code path.
+- Medium changes: cross-check the reviewer's findings yourself, and have the reviewer check yours.
+- Large changes: give each P0-P2 finding to a fresh sub-agent whose job is to break the scenario using the code; check P3 findings yourself.
+
+Report only findings the verification supports. A question that verification couldn't settle goes under residual risks, not under findings. Merge findings that share a location and a fix.
+
+## Whole-codebase review
+
+There is no change, so the "introduced by the change" rule falls away; every other rule stays. Pick representative hotspots - high churn in `git log --name-only`, core modules, untested code - rather than skimming every file, and split them across reviewers by area as in a large review. Report a recurring problem once, listing every location.
+
+## Output
+
+Findings first, most severe first:
 
 ```text
-quick overview:
-- precision reviewer: one or two concrete issues or "no immediate blockers found"
-- explorer reviewer: one or two system-fit issues or "no broader fit issues found"
-- documentation reviewer: one or two doc gaps or "no meaningful documentation issues"
+[P1] Imperative title - path/to/file.py:42
+One paragraph: the failure scenario, and the inputs or conditions it depends on.
 ```
 
-For whole-codebase review, replace the reviewer labels with `implementation reviewer`, `architecture reviewer`, and `documentation reviewer`.
+- P0: breaks release or core usage for everyone, with no special inputs.
+- P1: should be fixed before merge.
+- P2: a real defect to fix soon.
+- P3: low impact, still worth fixing.
 
-### Findings
-
-Report findings in this order:
-
-```text
-blocking issues:
-1. high — `path/to/file.py:42` — concrete bug, regression, or wrong integration point
-
-merge-readiness issues:
-1. medium — `path/to/file.py:87` — missing or misleading tests, comments, or maintainability issue that should be fixed
-
-consistency and architecture concerns:
-1. medium — `path/to/file.py:12` — inconsistent repo pattern or wrong layer for the behavior
-
-documentation:
-1. medium — `README.md` — installation section still refers to a removed `--foo` flag
-
-performance:
-- not reviewed
-```
-
-If performance was requested, then append the list with the actual findings.
-
-If no findings are discovered, say so explicitly and then list residual risks or review limits.
-
-## Review Limits
-
-When the request is narrow, keep the review narrow unless a first-pass reviewer finds a good reason to widen it.
-When the request is broad, prefer representative hotspots and recurring patterns over shallow commentary on every file.
+Cite locations in the file-reference format your instructions ask for, with short line ranges. For a change, keep citations inside the diff where possible and end with one line saying whether any confirmed finding blocks the change. For a whole-codebase review, end with what the review covered. Then list residual risks: test gaps on changed behavior, unsettled questions, and areas left unreviewed.

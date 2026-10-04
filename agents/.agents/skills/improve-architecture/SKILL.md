@@ -49,7 +49,7 @@ For each candidate, render a card with:
 
 End the report with a **Top recommendation** section: which candidate you'd tackle first and why.
 
-Do NOT propose interfaces yet. After the file is written, ask the user: "Which of these would you like to explore?"
+Leave interfaces out of the report; they come out of the grilling loop in step 3. After the file is written, ask the user: "Which of these would you like to explore?"
 
 ### 3. Grilling loop
 
