@@ -18,6 +18,9 @@ local function colorscheme_defaults()
         ['WinSeparator'] = { fg = '#000000', bg = 'None' },
         ['VertSplit'] = { link = 'WinSeparator' },
 
+        -- keep treesitter's color for python docstrings
+        ['@lsp.typemod.string.documentation.python'] = { link = '@string.documentation' },
+
         -- LuaSnip
         ['LuasnipInsertNodeActiveDot'] = { fg = '#86e1fc' },
         ['LuasnipChoiceNodeActiveDot'] = { fg = '#ff966c' },
