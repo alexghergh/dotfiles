@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -z "$STOW_FOLDERS" ]; then
-    STOW_FOLDERS="desktop,fonts,user_scripts,fish,git,vim,wezterm,agents,codex,claude"
+    STOW_FOLDERS="desktop,fonts,user_scripts,fish,git,vim,wezterm,agents,codex,claude,llms"
 fi
 
 if [ -z "$DOTFILES" ]; then
@@ -10,7 +10,14 @@ fi
 
 # for each dotfiles folder, "stow" it
 for stow_folder in $(echo "$STOW_FOLDERS" | sed "s/,/ /g"); do
-    stow --restow --verbose --dir="$DOTFILES" --target="$HOME" "$stow_folder"
+    if [ "$stow_folder" = "llms" ]; then
+        # for llms, create the directory and symlink individual files inside,
+        # so btrfs can correctly keep track of the directory itself (see SETUP.md
+        # for more instructions on correctly doing btrfs subvolume)
+        stow --restow --verbose --no-folding --dir="$DOTFILES" --target="$HOME" "$stow_folder"
+    else
+        stow --restow --verbose --dir="$DOTFILES" --target="$HOME" "$stow_folder"
+    fi
 done
 unset stow_folder
 

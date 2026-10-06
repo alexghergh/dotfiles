@@ -1,7 +1,7 @@
-function lmgo --description "LLM inference through llama-server router mode. See also llama-server-models.ini."
+function lmgo --description "LLM inference through llama-server router mode."
     # set log path
     set -l default_log_path "$XDG_DATA_HOME/llama-server"
-    set -l config_path "$XDG_CONFIG_HOME/fish/functions/llama-server-models.ini"
+    set -l config_path "$PACKAGES/llms/llama-server-models.ini"
 
     # use env variables if set
     if set -q LLAMA_SERVER_LOG_PATH

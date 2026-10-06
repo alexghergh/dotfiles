@@ -78,6 +78,20 @@ After installing a new Anki version, update the `Exec`, `TryExec`, and `Icon`
 paths in `desktop/.local/share/applications/anki.desktop` to point at the new
 bundle.
 
+### Local LLMs
+
+Keep downloaded models in `~/packages/llms` as a Btrfs subvolume to exclude them
+from home snapshots. The `llms` Stow package links only
+`llama-server-models.ini` into that directory; the installer disables directory
+folding for this package. Edit the linked preset beside the models to update the
+tracked copy in dotfiles. `lmgo` reads `$PACKAGES/llms/llama-server-models.ini`.
+
+On a new machine, create the model subvolume before stowing the preset:
+
+    mkdir -p ~/packages
+    btrfs subvolume create ~/packages/llms
+    STOW_FOLDERS=llms sh install
+
 ### npm
 
 Set the global prefix so packages install under the user's home:
