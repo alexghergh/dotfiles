@@ -1,0 +1,8 @@
+prefix_rule(pattern=["gh", "api"], decision="allow")
+prefix_rule(pattern=["base64", "-d"], decision="allow")
+prefix_rule(pattern=["head"], decision="allow")
+prefix_rule(pattern=["nl"], decision="allow")
+prefix_rule(pattern=["wc"], decision="allow")
+prefix_rule(pattern=["rg"], decision="allow")
+prefix_rule(pattern=["sed", "--sandbox"], decision="allow")
+prefix_rule(pattern=["awk", "--sandbox"], decision="allow")
