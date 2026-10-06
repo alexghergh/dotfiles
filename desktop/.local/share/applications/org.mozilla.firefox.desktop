@@ -44,8 +44,9 @@ Comment[sk]=Prehliadanie internetu
 Comment[sv]=Surfa på webben
 # Fedora's aarch64 Firefox build uses glibc malloc (`--disable-jemalloc`);
 # glibc's 64-bit default allows up to 8 arenas per online CPU, so cap Firefox
-# at 2 arenas per process to reduce allocator fragmentation and retained memory
-Exec=/usr/bin/env GLIBC_TUNABLES=glibc.malloc.arena_max=2 /usr/bin/firefox %u
+# at 2 arenas per process to reduce allocator fragmentation and retained memory;
+# also disable huge-page allocations (32MiB default on asahi)
+Exec=/usr/bin/env GLIBC_TUNABLES='glibc.malloc.arena_max=2:glibc.malloc.hugetlb=0' /usr/bin/firefox %u
 Icon=firefox
 Terminal=false
 Type=Application
@@ -162,7 +163,7 @@ Name[wo]=Palanteer bu bees
 Name[xh]=Ifestile entsha
 Name[zh_CN]=新建窗口
 Name[zh_TW]=開新視窗
-Exec=/usr/bin/env GLIBC_TUNABLES=glibc.malloc.arena_max=2 /usr/bin/firefox --new-window %u
+Exec=/usr/bin/env GLIBC_TUNABLES='glibc.malloc.arena_max=2:glibc.malloc.hugetlb=0' /usr/bin/firefox --new-window %u
 
 [Desktop Action new-private-window]
 Name=Open a New Private Window
@@ -270,11 +271,11 @@ Name[wo]=Panlanteeru biir bu bees
 Name[xh]=Ifestile yangasese entsha
 Name[zh_CN]=新建隐私浏览窗口
 Name[zh_TW]=新增隱私視窗
-Exec=/usr/bin/env GLIBC_TUNABLES=glibc.malloc.arena_max=2 /usr/bin/firefox --private-window %u
+Exec=/usr/bin/env GLIBC_TUNABLES='glibc.malloc.arena_max=2:glibc.malloc.hugetlb=0' /usr/bin/firefox --private-window %u
 
 [Desktop Action profile-manager-window]
 Name=Open the Profile Manager
 Name[cs]=Správa profilů
 Name[de]=Profilverwaltung öffnen
 Name[fr]=Ouvrir le gestionnaire de profils
-Exec=/usr/bin/env GLIBC_TUNABLES=glibc.malloc.arena_max=2 /usr/bin/firefox --ProfileManager
+Exec=/usr/bin/env GLIBC_TUNABLES='glibc.malloc.arena_max=2:glibc.malloc.hugetlb=0' /usr/bin/firefox --ProfileManager
