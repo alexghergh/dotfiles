@@ -58,17 +58,28 @@ return {
             --   vim.lsp.config('*', {
             --       capabilities = require('<cmp>').default_capabilities(),
             --   })
-            vim.lsp.config('basedpyright', {
-                settings = {
-                    basedpyright = {
-                        analysis = {
-                            autoSearchPaths = true,
-                            typeCheckingMode = 'standard',
-                        },
-                        disableOrganizeImports = true,
-                    },
-                },
-            })
+
+            -- vim.lsp.config('basedpyright', {
+            --     settings = {
+            --         basedpyright = {
+            --             analysis = {
+            --                 autoSearchPaths = true,
+            --                 typeCheckingMode = 'standard',
+            --             },
+            --             disableOrganizeImports = true,
+            --         },
+            --     },
+            -- })
+
+            -- vim.lsp.config('pyrefly', {
+            --     settings = {
+            --         python = {
+            --             pyrefly = {
+            --                 typeCheckingMode = 'default'
+            --             }
+            --         }
+            --     }
+            -- })
 
             vim.lsp.config('clangd', {
                 cmd = {

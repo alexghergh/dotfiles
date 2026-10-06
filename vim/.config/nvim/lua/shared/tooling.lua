@@ -30,7 +30,9 @@ local languages = {
     python = {
         filetypes = { 'python' },
         lsp = {
-            'basedpyright',
+            -- 'basedpyright',
+            'ty',
+            -- 'pyrefly',
             'ruff', -- as linter, for formatting see below and lua/modules/format.lua
         },
         formatters = {
