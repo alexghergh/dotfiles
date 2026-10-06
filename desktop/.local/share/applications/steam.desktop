@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Steam
+Exec=/home/alex/.local/bin/steam %U
+TryExec=/home/alex/.local/bin/steam
+Icon=/home/alex/packages/steam-arm64/steam.svg
+Terminal=false
+Categories=Game;
+MimeType=x-scheme-handler/steam;
+StartupWMClass=steam
