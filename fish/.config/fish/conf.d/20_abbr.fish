@@ -67,6 +67,7 @@ abbr --add gco      git checkout
 abbr --add gcb      git checkout -b
 abbr --add gsw      git switch
 abbr --add gc       git commit
+abbr --add gcn      git commit --no-verify
 abbr --add gca      git commit --amend
 abbr --add gcan     git commit --amend --no-edit
 abbr --add gp       git push
