@@ -7,7 +7,7 @@
         "opus",
         "haiku"
     ],
-    "effortLevel": "max",
+    "effortLevel": "xhigh",
     "outputStyle": "Concise",
     "attribution": {
         "commit": "",
