@@ -481,6 +481,8 @@ return {
     -- also see lua/modules/statusline.lua for statusline component
     {
         'olimorris/codecompanion.nvim',
+        -- fork with local patches; lazy never touches this; manually pull and rebase
+        dir = '~/packages/codecompanion.nvim',
         dependencies = {
             'nvim-lua/plenary.nvim',
             'nvim-treesitter/nvim-treesitter',
