@@ -475,6 +475,28 @@ local function change_adapter_override(chat)
     end)
 end
 
+-- separator chunks spreading the `prefix`1 .. `prefix`<n> highlight ramp over `width` cells
+local function ramp_separator_chunks(separator, width, prefix)
+    local steps = 0
+    while vim.fn.hlexists(prefix .. (steps + 1)) == 1 do
+        steps = steps + 1
+    end
+
+    steps = math.min(steps, width)
+
+    local chunks = {}
+    local filled = 0
+    for step = 1, steps do
+        local cells = math.floor(width * step / steps) - filled
+        filled = filled + cells
+        if cells > 0 then
+            table.insert(chunks, { string.rep(separator, cells), prefix .. step })
+        end
+    end
+
+    return chunks
+end
+
 return {
     -- LLM code-assistant
     --
@@ -705,9 +727,11 @@ return {
                     fold_context = true,
                     show_header_separator = true,
                     separator = ' ',
-                    -- also see the render override below for the chat header
+                    -- also see the render override below for the chat header token display
                     token_count = function(tokens)
-                        return ' ' .. tokens .. ' tokens '
+                        -- group the digits in threes, 123456789 -> 123.456.789
+                        local grouped = tostring(tokens):reverse():gsub('(%d%d%d)', '%1.'):reverse():gsub('^%.', '')
+                        return ' ' .. grouped .. ' tokens '
                     end,
                     floating_window = {
                         width = function() -- dynamic detection based on window size
@@ -760,57 +784,44 @@ return {
                 return self
             end
 
-            -- chat header layout, replacing core render_headers() and tokens.display(): the
-            -- separator bar is painted with the CodeCompanionChatSeparatorLead<n> and
-            -- CodeCompanionChatSeparatorFade<n> ramps from colorschemes.lua, a rounded glyph caps
-            -- the header on the left, and the token count on the right
+            -- chat header layout, replacing the built-in: the separator bar is painted with the CodeCompanionChatSeparatorLead<n> and
+            -- CodeCompanionChatSeparatorFade<n> ramps from colorschemes.lua, a rounded glyph caps the header on the left
             local chat_ui = require('codecompanion.interactions.chat.ui')
-            local tokens_util = require('codecompanion.utils.tokens')
             local cc_config = require('codecompanion.config')
             local header_ns = vim.api.nvim_create_namespace('CodeCompanion-headers')
             local header_cap = ''
 
-            -- separator chunks spreading the `prefix`1 .. `prefix`<n> highlight ramp over `width` cells
-            local function ramp(separator, width, prefix)
-                local steps = 0
-                while vim.fn.hlexists(prefix .. (steps + 1)) == 1 do
-                    steps = steps + 1
-                end
-                steps = math.min(steps, width)
-                local chunks = {}
-                local filled = 0
-                for step = 1, steps do
-                    local cells = math.floor(width * step / steps) - filled
-                    filled = filled + cells
-                    if cells > 0 then
-                        table.insert(chunks, { string.rep(separator, cells), prefix .. step })
-                    end
-                end
-                return chunks
-            end
-
+            -- nicer display for chat headers ("## Me" / "## CodeCompanion"), overrides the built-in one
             function chat_ui:render_headers()
                 if not cc_config.display.chat.show_header_separator then
                     return
                 end
-                local separator = cc_config.display.chat.separator
+
                 local llm_role = self.roles.llm
                 if type(llm_role) == 'function' then
                     llm_role = llm_role(self.adapter)
                 end
+
                 local width = vim.go.columns
                 if self:is_visible() then
                     width = vim.api.nvim_win_get_width(self.winnr) - vim.fn.getwininfo(self.winnr)[1].textoff
                 end
 
+                local separator = cc_config.display.chat.separator
+
                 vim.api.nvim_buf_clear_namespace(self.chat_bufnr, header_ns, 0, -1)
+
                 for line, content in ipairs(vim.api.nvim_buf_get_lines(self.chat_bufnr, 0, -1, false)) do
-                    if content:match('^## ' .. vim.pesc(self.roles.user)) or content:match('^## ' .. vim.pesc(llm_role)) then
+                    -- a reply heading like '## Messages' isn't taken for '## Me'
+                    if
+                        content:match('^## ' .. vim.pesc(self.roles.user) .. '%s*$')
+                        or content:match('^## ' .. vim.pesc(llm_role) .. '%s*$')
+                    then
                         local col = vim.fn.strwidth(content) - vim.fn.strwidth(separator)
                         local bar_width = width - col - 1
                         local lead = math.min(20, math.floor(bar_width / 4))
-                        local bar = ramp(separator, lead, 'CodeCompanionChatSeparatorLead')
-                        vim.list_extend(bar, ramp(separator, bar_width - lead, 'CodeCompanionChatSeparatorFade'))
+                        local bar = ramp_separator_chunks(separator, lead, 'CodeCompanionChatSeparatorLead')
+                        vim.list_extend(bar, ramp_separator_chunks(separator, bar_width - lead, 'CodeCompanionChatSeparatorFade'))
 
                         vim.api.nvim_buf_set_extmark(self.chat_bufnr, header_ns, line - 1, 0, {
                             virt_text = { { header_cap, 'CodeCompanionChatHeaderCap' } },
@@ -826,12 +837,25 @@ return {
                             end_col = col + 1,
                             hl_group = 'CodeCompanionChatHeader',
                         })
+
+                        -- blank out the '## ' marker; render-markdown puts its level-2 icon there at priority 4096
+                        vim.api.nvim_buf_set_extmark(self.chat_bufnr, header_ns, line - 1, 0, {
+                            virt_text = { { '   ', 'CodeCompanionChatHeader' } },
+                            virt_text_pos = 'overlay',
+                            priority = 4200,
+                        })
                     end
                 end
             end
 
             function tokens_util.display(args)
+
+
+            -- token count display override
+            local tokens_util = require('codecompanion.utils.tokens')
+            tokens_util.display = function(args)
                 vim.api.nvim_buf_clear_namespace(args.bufnr, args.ns_id, 0, -1)
+
                 local query = vim.treesitter.query.get('markdown', 'tokens')
                 local root = args.parser:parse({ args.start_row - 1, -1 })[1]:root()
                 local header
@@ -840,10 +864,13 @@ return {
                         header = node
                     end
                 end
+
                 if not header then
                     return
                 end
+
                 local _, _, end_row = header:range()
+
                 vim.api.nvim_buf_set_extmark(args.bufnr, args.ns_id, end_row - 1, 0, {
                     virt_text = { { args.token_str, 'CodeCompanionChatTokens' } },
                     virt_text_pos = 'right_align',
