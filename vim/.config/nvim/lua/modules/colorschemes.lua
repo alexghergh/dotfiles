@@ -12,6 +12,24 @@
 -- this env var gets set up by wezterm
 local theme_style = vim.env.DOTFILES_THEME_STYLE == 'light' and 'light' or 'dark'
 
+-- mix two '#rrggbb' colors, weight being the share of the first
+local function blend(color, base, weight)
+    local mixed = 0
+    for shift = 0, 16, 8 do
+        local channel = bit.band(bit.rshift(tonumber(color:sub(2), 16), shift), 0xff) * weight
+            + bit.band(bit.rshift(tonumber(base:sub(2), 16), shift), 0xff) * (1 - weight)
+        mixed = bit.bor(mixed, bit.lshift(math.floor(channel + 0.5), shift))
+    end
+    return string.format('#%06x', mixed)
+end
+
+-- define `prefix`1 .. `prefix`<steps> as backgrounds running from one color to another
+local function define_background_ramp(prefix, from, to, steps)
+    for step = 1, steps do
+        vim.api.nvim_set_hl(0, prefix .. step, { bg = blend(to, from, (step - 1) / (steps - 1)) })
+    end
+end
+
 local function colorscheme_defaults()
     return {
         -- neovim window separators
@@ -27,7 +45,6 @@ local function colorscheme_defaults()
 
         -- CodeCompanion
         ['CodeCompanionChatSeparator'] = { bg = '#b26a00' },
-        ['CodeCompanionChatTokens'] = { fg = '#ebccc5' },
 
         -- lightbulb code actions
         ['LightBulbVirtualText'] = { fg = '#ffc777' },
@@ -128,6 +145,9 @@ local function melange()
         ['CodeCompanionChatStatusOption'] = { fg = '#c1a78e', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#3a3f4a', bold = true },
+        ['CodeCompanionChatHeader'] = { fg = '#ebc06d', bg = '#3a332e' },
+        ['CodeCompanionChatHeaderCap'] = { fg = '#3a332e', bg = editor_bg },
+        ['CodeCompanionChatTokens'] = { fg = '#c1a78e' },
         ['CodeCompanionChatQueuedMessage'] = { fg = '#ece1d7', bg = status2_bg },
         ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
     }
@@ -190,6 +210,9 @@ local function tokyonight()
         ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#2a2d40', bold = true },
+        ['CodeCompanionChatHeader'] = { fg = '#ffc777', bg = '#38343d' },
+        ['CodeCompanionChatHeaderCap'] = { fg = '#38343d', bg = editor_bg },
+        ['CodeCompanionChatTokens'] = { fg = '#828bb8' },
         ['CodeCompanionChatQueuedMessage'] = { fg = status2_fg, bg = status2_bg },
         ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
     }
@@ -206,6 +229,14 @@ local _colorscheme_functions_table = {
     ['tokyonight-day'] = tokyonight,
 }
 
+-- the chat header bar in codecompanion is painted with these ramps: the header background
+-- blending into the separator, then the separator fading into the editor background
+local function define_codecompanion_chat_header_ramps(spec)
+    local editor_bg = string.format('#%06x', vim.api.nvim_get_hl(0, { name = 'Normal', link = false }).bg or 0)
+    define_background_ramp('CodeCompanionChatSeparatorLead', spec.CodeCompanionChatHeader.bg, spec.CodeCompanionChatSeparator.bg, 16)
+    define_background_ramp('CodeCompanionChatSeparatorFade', spec.CodeCompanionChatSeparator.bg, editor_bg, 16)
+end
+
 -- run on :colorscheme (re)load
 vim.api.nvim_create_autocmd('ColorScheme', {
     callback = function()
@@ -221,6 +252,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
             for hi, opts in pairs(spec) do
                 vim.api.nvim_set_hl(0, hi, opts)
             end
+            define_codecompanion_chat_header_ramps(spec)
         else
             vim.schedule(function()
                 vim.notify("Colorscheme '" .. match .. "' is not correctly configured (see 'colorschemes.lua').", vim.log.levels.ERROR)
