@@ -1,25 +1,62 @@
 local cw = require('shared.setcellwidths')
 
 -- Glyphs / Icons
--- glyphs for the codecompanion adapters should be added here; these glyphs, depending on the font, may
--- use 1-cell widths or 1.5-cell widths; in order for nvim not to bug out, normalize them to 2-cell widths
 -- stylua: ignore
 local glyphs = {
-    codex       = '',
-    claude_code = '',
+    -- codecompanion adapters
+    codex       = { '', widen = true },
+    claude_code = { '', widen = true },
+
+    -- wezterm tab attention markers (OSC 2); clear on window focus
+    tool_attention_marker       = { '🔴', widen = true },
+    finished_attention_marker   = { '🟢', widen = true },
+
+    -- chat header icons, drawn on the "## Me" / "## CodeCompanion" lines
+    header_cap = { '', widen = false },
+
+    -- chat sub-header icons, drawn on the "### Reasoning" / "### Response" lines
+    reasoning           = { '󰧑', widen = true },
+    response            = { '󰭹', widen = true },
+    subhead_separator   = { '─', widen = false },
 }
 
-cw.add_2cellwidth_glyph(glyphs.codex)
-cw.add_2cellwidth_glyph(glyphs.claude_code)
+-- depending on the font, some glyphs may use 1-cell widths or 1.5-cell widths; normalize to 2-cell widths so nvim doesn't bug out
+for name, glyph in pairs(glyphs) do
+    if glyph.widen then
+        cw.add_2cellwidth_glyph(glyph[1])
+    end
+    glyphs[name] = glyph[1]
+end
 
--- emit an OSC 2 attention marker when a CodeCompanion chat requires attention (either pending
--- tool approval or finished execution); clear on window refocused
-glyphs.tool_attention_marker = '🔴'
-glyphs.finished_attention_marker = '🟢'
+-- Helper Methods
 
-cw.add_2cellwidth_glyph(glyphs.tool_attention_marker)
-cw.add_2cellwidth_glyph(glyphs.finished_attention_marker)
+--- Chat UI/UX --------------------------------------------------------------
 
+-- separator chunks spreading the `prefix`1 .. `prefix`<n> highlight ramp over `width` cells
+local function ramp_separator_chunks(separator, width, prefix)
+    local steps = 0
+    while vim.fn.hlexists(prefix .. (steps + 1)) == 1 do
+        steps = steps + 1
+    end
+
+    steps = math.min(steps, width)
+
+    local chunks = {}
+    local filled = 0
+    for step = 1, steps do
+        local cells = math.floor(width * step / steps) - filled
+        filled = filled + cells
+        if cells > 0 then
+            table.insert(chunks, { string.rep(separator, cells), prefix .. step })
+        end
+    end
+
+    return chunks
+end
+
+--- Notifications -----------------------------------------------------------
+
+-- prefix the terminal tab title (OSC 2) with an attention marker; a pending tool approval marker wins over a finished one
 local function set_attention_marker(marker)
     local current = vim.opt.titlestring:get()
 
@@ -36,6 +73,8 @@ local function set_attention_marker(marker)
     vim.opt.titlestring = marker .. ' ' .. current
     vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
 end
+
+-- remove the attention marker from the terminal tab title, if any
 local function clear_attention_marker()
     local current = vim.opt.titlestring:get()
 
@@ -49,10 +88,95 @@ local function clear_attention_marker()
     vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
 end
 
--- Helper Methods
--- generic helpers for CodeCompanion
--- implement missing ACP functionality, like session load by id etc., and other generic stuff (keymaps etc.);
--- these methods do use internal functionality, so expect breakage on updates
+-- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
+local function toast_notify(header, body)
+    local title = 'Neovim AI'
+    local wezterm_available = vim.fn.executable('wezterm') == 1
+
+    -- get the wezterm tab id (unfortunately this is more complicated than a simple translation of pane id -> tab id)
+    local pane_num = tonumber(vim.env.WEZTERM_PANE)
+    if pane_num and wezterm_available then
+        local list_result = vim.system({ 'wezterm', 'cli', 'list', '--format', 'json' }, { text = true }):wait()
+
+        -- if wezterm is installed, we have to iterate on the list of results; this is a list of _panes_,
+        -- each with a window id, tab id, and pane id; we have to skip other windows, and we have to count
+        -- the tab number in the current window
+        if list_result.code == 0 then
+            local panes = vim.json.decode(list_result.stdout)
+            local tab_number = 1
+            local last_window_id
+            local last_tab_id
+
+            for _, pane in ipairs(panes) do
+                if pane.window_id ~= last_window_id then
+                    last_window_id = pane.window_id
+                    last_tab_id = pane.tab_id
+                    tab_number = 1
+                elseif pane.tab_id ~= last_tab_id then
+                    last_tab_id = pane.tab_id
+                    tab_number = tab_number + 1
+                end
+
+                if pane.pane_id == pane_num then
+                    title = string.format('%s (tab %d)', title, tab_number)
+                    break
+                end
+            end
+        end
+    end
+
+    if vim.fn.executable('notify-send') ~= 1 then
+        return
+    end
+
+    local notify_cmd = {
+        'notify-send',
+        '--app-name',
+        title,
+        '--transient',
+        '--expire-time',
+        '6000',
+        -- always expose a button, but only handle the callback for some configured terminals (like wezterm); see more below
+        '--action',
+        'open=Go to conversation',
+        header,
+        body,
+    }
+
+    -- upon callback, extract whether the button was pressed; if yes, switch
+    -- focus the conversation when the current terminal supports it
+    vim.system(notify_cmd, { text = true }, function(result)
+        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or not pane_num or not wezterm_available then
+            return
+        end
+
+        vim.system({ 'wezterm', 'cli', 'activate-pane', '--pane-id', tostring(pane_num) }, { text = true }, function(activate_result)
+            if activate_result.code ~= 0 then
+                return
+            end
+
+            -- only needed on KDE Plasma Wayland as a workaround to focus the Wezterm instance;
+            -- X11 / other compositors like sway etc. support this natively
+            vim.schedule(function()
+                -- the mechanism looks at the wezterm Unix socket, extracts the PID, and
+                -- launches kdotool to focus that specific window in the wayland compositor
+                local gui_pid = (vim.env.WEZTERM_UNIX_SOCKET or ''):match('gui%-sock%-(%d+)$')
+                if
+                    not gui_pid
+                    or vim.env.XDG_SESSION_TYPE ~= 'wayland'
+                    or (vim.env.XDG_CURRENT_DESKTOP or ''):upper():match('KDE') == nil
+                    or vim.fn.executable('kdotool') ~= 1
+                then
+                    return
+                end
+
+                vim.system({ 'kdotool', 'search', '--all', '--pid', gui_pid, '.*', 'windowactivate' }, { text = true })
+            end)
+        end)
+    end)
+end
+
+--- ACP session management --------------------------------------------------
 
 -- determine whether the current chat buffer is "dirty", i.e. has an unsubmitted user text draft
 local function chat_has_user_draft(chat)
@@ -309,93 +433,7 @@ local function delete_current_acp_session()
     require('codecompanion.interactions.chat.keymaps').close.callback(chat)
 end
 
--- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
-local function toast_notify(header, body)
-    local title = 'Neovim AI'
-    local wezterm_available = vim.fn.executable('wezterm') == 1
-
-    -- get the wezterm tab id (unfortunately this is more complicated than a simple translation of pane id -> tab id)
-    local pane_num = tonumber(vim.env.WEZTERM_PANE)
-    if pane_num and wezterm_available then
-        local list_result = vim.system({ 'wezterm', 'cli', 'list', '--format', 'json' }, { text = true }):wait()
-
-        -- if wezterm is installed, we have to iterate on the list of results; this is a list of _panes_,
-        -- each with a window id, tab id, and pane id; we have to skip other windows, and we have to count
-        -- the tab number in the current window
-        if list_result.code == 0 then
-            local panes = vim.json.decode(list_result.stdout)
-            local tab_number = 1
-            local last_window_id
-            local last_tab_id
-
-            for _, pane in ipairs(panes) do
-                if pane.window_id ~= last_window_id then
-                    last_window_id = pane.window_id
-                    last_tab_id = pane.tab_id
-                    tab_number = 1
-                elseif pane.tab_id ~= last_tab_id then
-                    last_tab_id = pane.tab_id
-                    tab_number = tab_number + 1
-                end
-
-                if pane.pane_id == pane_num then
-                    title = string.format('%s (tab %d)', title, tab_number)
-                    break
-                end
-            end
-        end
-    end
-
-    if vim.fn.executable('notify-send') ~= 1 then
-        return
-    end
-
-    local notify_cmd = {
-        'notify-send',
-        '--app-name',
-        title,
-        '--transient',
-        '--expire-time',
-        '6000',
-        -- always expose a button, but only handle the callback for some configured terminals (like wezterm); see more below
-        '--action',
-        'open=Go to conversation',
-        header,
-        body,
-    }
-
-    -- upon callback, extract whether the button was pressed; if yes, switch
-    -- focus the conversation when the current terminal supports it
-    vim.system(notify_cmd, { text = true }, function(result)
-        if result.code ~= 0 or vim.trim(result.stdout or '') ~= 'open' or not pane_num or not wezterm_available then
-            return
-        end
-
-        vim.system({ 'wezterm', 'cli', 'activate-pane', '--pane-id', tostring(pane_num) }, { text = true }, function(activate_result)
-            if activate_result.code ~= 0 then
-                return
-            end
-
-            -- only needed on KDE Plasma Wayland as a workaround to focus the Wezterm instance;
-            -- X11 / other compositors like sway etc. support this natively
-            vim.schedule(function()
-                -- the mechanism looks at the wezterm Unix socket, extracts the PID, and
-                -- launches kdotool to focus that specific window in the wayland compositor
-                local gui_pid = (vim.env.WEZTERM_UNIX_SOCKET or ''):match('gui%-sock%-(%d+)$')
-                if
-                    not gui_pid
-                    or vim.env.XDG_SESSION_TYPE ~= 'wayland'
-                    or (vim.env.XDG_CURRENT_DESKTOP or ''):upper():match('KDE') == nil
-                    or vim.fn.executable('kdotool') ~= 1
-                then
-                    return
-                end
-
-                vim.system({ 'kdotool', 'search', '--all', '--pid', gui_pid, '.*', 'windowactivate' }, { text = true })
-            end)
-        end)
-    end)
-end
+--- Chat keymaps ------------------------------------------------------------
 
 -- goto file action using gf in codecompanion chat buffers; this looks at whether there exists a
 -- window on the left of the chat, and if yes reuses that, otherwise opens new split on the left
@@ -473,28 +511,6 @@ local function change_adapter_override(chat)
             on_adapter_ready()
         end
     end)
-end
-
--- separator chunks spreading the `prefix`1 .. `prefix`<n> highlight ramp over `width` cells
-local function ramp_separator_chunks(separator, width, prefix)
-    local steps = 0
-    while vim.fn.hlexists(prefix .. (steps + 1)) == 1 do
-        steps = steps + 1
-    end
-
-    steps = math.min(steps, width)
-
-    local chunks = {}
-    local filled = 0
-    for step = 1, steps do
-        local cells = math.floor(width * step / steps) - filled
-        filled = filled + cells
-        if cells > 0 then
-            table.insert(chunks, { string.rep(separator, cells), prefix .. step })
-        end
-    end
-
-    return chunks
 end
 
 return {
@@ -766,6 +782,8 @@ return {
 
             local group = vim.api.nvim_create_augroup('CodeCompanion', {})
 
+            --- Chat UI/UX --------------------------------------------------
+
             -- override core set_title() to keep the buffer name short; the title can be a
             -- whole first prompt (codex session/list preview, claude before its generated
             -- title lands), so the buffer gets the first line cut to 80 characters while the
@@ -789,7 +807,6 @@ return {
             local chat_ui = require('codecompanion.interactions.chat.ui')
             local cc_config = require('codecompanion.config')
             local header_ns = vim.api.nvim_create_namespace('CodeCompanion-headers')
-            local header_cap = ''
 
             -- nicer display for chat headers ("## Me" / "## CodeCompanion"), overrides the built-in one
             function chat_ui:render_headers()
@@ -922,93 +939,7 @@ return {
                 end,
             })
 
-            -- visual statusline indication when an LLM is processing input
-            -- we're actually sending a list of currently open chat buffers; this way
-            -- we can have a status indicator per LLM session; inline and cmd interactions
-            -- also get an indicator, but they're not directly associated with chat buffers,
-            -- they are instead bound to the current (non-CodeCompanion) open buffer
-            local status, gl = pcall(require, 'galaxyline')
-            if status ~= false then
-                -- shape of gl.galaxyline_code_companion_buffer_status (read by statusline.lua):
-                --   - chat[bufnr]    : 0 = ready
-                --                      1 = processing
-                --                      2 = pending tool approval
-                --                      nil = closed
-                --   - one_off[bufnr] : 1 = processing
-                --                      nil = idle/absent
-                local function get_galaxyline_status_table()
-                    if gl.galaxyline_code_companion_buffer_status == nil then
-                        gl.galaxyline_code_companion_buffer_status = {
-                            chat = {},
-                            one_off = {},
-                        }
-                    end
-
-                    local status_table = gl.galaxyline_code_companion_buffer_status
-                    status_table.chat = status_table.chat or {}
-                    status_table.one_off = status_table.one_off or {}
-                    return status_table
-                end
-
-                -- dispatch for the six User events that affect the codecompanion status line info
-                vim.api.nvim_create_autocmd({ 'User' }, {
-                    pattern = {
-                        'CodeCompanionRequestStarted',
-                        'CodeCompanionRequestFinished',
-                        'CodeCompanionChatCreated',
-                        'CodeCompanionChatClosed',
-                        'CodeCompanionToolApprovalRequested',
-                        'CodeCompanionToolApprovalFinished',
-                    },
-                    group = group,
-                    callback = function(req)
-                        local bufnr = req.data and req.data.bufnr
-                        if not bufnr then
-                            return
-                        end
-                        local status_table = get_galaxyline_status_table()
-                        local interaction = req.data.interaction
-
-                        -- on request started / finished, update the status
-                        if req.match == 'CodeCompanionRequestStarted' then
-                            if interaction == 'chat' then
-                                status_table.chat[bufnr] = 1
-                            else
-                                status_table.one_off[bufnr] = 1
-                            end
-                        elseif req.match == 'CodeCompanionRequestFinished' then
-                            if interaction == 'chat' then
-                                status_table.chat[bufnr] = 0
-                            else
-                                status_table.one_off[bufnr] = nil
-                            end
-
-                        -- on chat created, append a new buffer to status;
-                        -- on chat closed, delete the buffer
-                        elseif req.match == 'CodeCompanionChatCreated' then
-                            status_table.chat[bufnr] = 0
-                        elseif req.match == 'CodeCompanionChatClosed' then
-                            status_table.chat[bufnr] = nil
-
-                        -- tool approval mid-turn, pause the spinner; the underlying request is
-                        -- still in flight, so on resolution we go back to processing (1), not ready
-                        elseif req.match == 'CodeCompanionToolApprovalRequested' then
-                            status_table.chat[bufnr] = 2
-                        elseif req.match == 'CodeCompanionToolApprovalFinished' then
-                            -- "View" only opens the diff preview, doesn't resolve the prompt;
-                            -- the 2 -> 1 transition is also guarded because when the user cancels
-                            -- mid-turn on a tool approval, the usual events don't fire
-                            -- correctly; instead, they fire as ToolApprovalFinished
-                            -- _after_ a RequestFinished, so the transitions are wrong
-                            if req.data.choice ~= 'View' and status_table.chat[bufnr] == 2 then
-                                status_table.chat[bufnr] = 1
-                            end
-                        end
-
-                        gl.load_galaxyline()
-                    end,
-                })
-            end
+            --- Winbar / Statusline -----------------------------------------
 
             -- show adapter / model / mode / reasoning info in the chat's winbar:
             --   - chat creation / open / clear / stop populate or reset the information
@@ -1110,6 +1041,96 @@ return {
                     end
                 end,
             })
+
+            -- visual statusline indication when an LLM is processing input
+            -- we're actually sending a list of currently open chat buffers; this way
+            -- we can have a status indicator per LLM session; inline and cmd interactions
+            -- also get an indicator, but they're not directly associated with chat buffers,
+            -- they are instead bound to the current (non-CodeCompanion) open buffer
+            local status, gl = pcall(require, 'galaxyline')
+            if status ~= false then
+                -- shape of gl.galaxyline_code_companion_buffer_status (read by statusline.lua):
+                --   - chat[bufnr]    : 0 = ready
+                --                      1 = processing
+                --                      2 = pending tool approval
+                --                      nil = closed
+                --   - one_off[bufnr] : 1 = processing
+                --                      nil = idle/absent
+                local function get_galaxyline_status_table()
+                    if gl.galaxyline_code_companion_buffer_status == nil then
+                        gl.galaxyline_code_companion_buffer_status = {
+                            chat = {},
+                            one_off = {},
+                        }
+                    end
+
+                    local status_table = gl.galaxyline_code_companion_buffer_status
+                    status_table.chat = status_table.chat or {}
+                    status_table.one_off = status_table.one_off or {}
+                    return status_table
+                end
+
+                -- dispatch for the six User events that affect the codecompanion status line info
+                vim.api.nvim_create_autocmd({ 'User' }, {
+                    pattern = {
+                        'CodeCompanionRequestStarted',
+                        'CodeCompanionRequestFinished',
+                        'CodeCompanionChatCreated',
+                        'CodeCompanionChatClosed',
+                        'CodeCompanionToolApprovalRequested',
+                        'CodeCompanionToolApprovalFinished',
+                    },
+                    group = group,
+                    callback = function(req)
+                        local bufnr = req.data and req.data.bufnr
+                        if not bufnr then
+                            return
+                        end
+                        local status_table = get_galaxyline_status_table()
+                        local interaction = req.data.interaction
+
+                        -- on request started / finished, update the status
+                        if req.match == 'CodeCompanionRequestStarted' then
+                            if interaction == 'chat' then
+                                status_table.chat[bufnr] = 1
+                            else
+                                status_table.one_off[bufnr] = 1
+                            end
+                        elseif req.match == 'CodeCompanionRequestFinished' then
+                            if interaction == 'chat' then
+                                status_table.chat[bufnr] = 0
+                            else
+                                status_table.one_off[bufnr] = nil
+                            end
+
+                        -- on chat created, append a new buffer to status;
+                        -- on chat closed, delete the buffer
+                        elseif req.match == 'CodeCompanionChatCreated' then
+                            status_table.chat[bufnr] = 0
+                        elseif req.match == 'CodeCompanionChatClosed' then
+                            status_table.chat[bufnr] = nil
+
+                        -- tool approval mid-turn, pause the spinner; the underlying request is
+                        -- still in flight, so on resolution we go back to processing (1), not ready
+                        elseif req.match == 'CodeCompanionToolApprovalRequested' then
+                            status_table.chat[bufnr] = 2
+                        elseif req.match == 'CodeCompanionToolApprovalFinished' then
+                            -- "View" only opens the diff preview, doesn't resolve the prompt;
+                            -- the 2 -> 1 transition is also guarded because when the user cancels
+                            -- mid-turn on a tool approval, the usual events don't fire
+                            -- correctly; instead, they fire as ToolApprovalFinished
+                            -- _after_ a RequestFinished, so the transitions are wrong
+                            if req.data.choice ~= 'View' and status_table.chat[bufnr] == 2 then
+                                status_table.chat[bufnr] = 1
+                            end
+                        end
+
+                        gl.load_galaxyline()
+                    end,
+                })
+            end
+
+            --- Notifications -----------------------------------------------
 
             -- for system toast messages, remember whether the current neovim instance
             -- is focused or not; if it is focused, don't send a toast (used below); also
@@ -1219,20 +1240,53 @@ return {
                 end,
             })
 
-            -- user command to load a session
+            --- ACP session management --------------------------------------
+
+            -- invoke CodeCompanion's built-in ACP session/list resume picker
+            vim.keymap.set(
+                'n',
+                '<Leader>cl',
+                load_acp_session_by_resume,
+                { desc = 'List and resume Code companion ACP sessions for current adapter' }
+            )
+
+            -- same as above, but across all sessions (all directories)
+            vim.keymap.set('n', '<Leader>cL', function()
+                load_acp_session_by_resume({ cwd = false })
+            end, { desc = 'List and resume Code companion ACP sessions from all directories' })
+
+            -- load an ACP session
             vim.api.nvim_create_user_command('CodeCompanionSessionLoad', function(session)
                 load_acp_session_by_id(session.args)
             end, { nargs = '?' })
 
-            -- user command to show and copy to clipboard a session id for the current chat
+            vim.keymap.set(
+                'n',
+                '<Leader>cs',
+                '<Cmd>CodeCompanionSessionLoad<CR>',
+                { desc = 'Restore Code companion ACP session by session id' }
+            )
+
+            -- show and copy to clipboard an ACP session id for the current chat
             vim.api.nvim_create_user_command('CodeCompanionShowSessionId', function()
                 show_and_yank_chat_session_id()
             end, { nargs = 0 })
 
-            -- user command to delete the current chat's session on the agent
+            vim.keymap.set(
+                'n',
+                '<Leader>ci',
+                '<Cmd>CodeCompanionShowSessionId<CR>',
+                { desc = 'Show current ACP session id for Code companion chat' }
+            )
+
+            -- delete the current chat's ACP session on the agent
             vim.api.nvim_create_user_command('CodeCompanionSessionDelete', function()
                 delete_current_acp_session()
             end, { nargs = 0 })
+
+            vim.keymap.set('n', '<Leader>cD', '<Cmd>CodeCompanionSessionDelete<CR>', { desc = 'Delete current Code companion ACP session' })
+
+            --- Chat keymaps ------------------------------------------------
 
             -- expand cc to CodeCompanion in the command line, but only for the exact :cc command
             vim.cmd.cnoreabbrev([[<expr> cc getcmdtype() == ':' && getcmdline() ==# 'cc' ? 'CodeCompanion' : 'cc']])
@@ -1340,38 +1394,6 @@ return {
                     })
                     :find()
             end, { desc = 'Open Code companion settings picker' })
-
-            -- invoke CodeCompanion's built-in ACP session/list resume picker
-            vim.keymap.set(
-                'n',
-                '<Leader>cl',
-                load_acp_session_by_resume,
-                { desc = 'List and resume Code companion ACP sessions for current adapter' }
-            )
-
-            -- same as above, but across all sessions (all directories)
-            vim.keymap.set('n', '<Leader>cL', function()
-                load_acp_session_by_resume({ cwd = false })
-            end, { desc = 'List and resume Code companion ACP sessions from all directories' })
-
-            -- show the current session id, should be easier to resume a future session
-            vim.keymap.set(
-                'n',
-                '<Leader>ci',
-                '<Cmd>CodeCompanionShowSessionId<CR>',
-                { desc = 'Show current ACP session id for Code companion chat' }
-            )
-
-            -- restore ACP session from session id
-            vim.keymap.set(
-                'n',
-                '<Leader>cs',
-                '<Cmd>CodeCompanionSessionLoad<CR>',
-                { desc = 'Restore Code companion ACP session by session id' }
-            )
-
-            -- delete the current ACP session on the agent and close the chat
-            vim.keymap.set('n', '<Leader>cD', '<Cmd>CodeCompanionSessionDelete<CR>', { desc = 'Delete current Code companion ACP session' })
         end,
     },
 }
