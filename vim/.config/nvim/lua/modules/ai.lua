@@ -865,6 +865,36 @@ return {
                 end,
             })
 
+            -- render-markdown redraws on editor events (TextChanged, CursorMoved, ...), which don't
+            -- fire for text streamed into a chat window that isn't focused; redraw on every change
+            -- instead to the chat buffer, at most once per 100 ms
+            vim.api.nvim_create_autocmd('FileType', {
+                group = group,
+                pattern = 'codecompanion',
+                callback = function(args)
+                    local bufnr = args.buf
+                    if vim.b[bufnr].render_markdown_on_change then
+                        return
+                    end
+                    vim.b[bufnr].render_markdown_on_change = true
+                    local pending = false
+                    vim.api.nvim_buf_attach(bufnr, false, {
+                        on_lines = function()
+                            if pending then
+                                return
+                            end
+                            pending = true
+                            vim.defer_fn(function()
+                                pending = false
+                                if vim.api.nvim_buf_is_valid(bufnr) then
+                                    pcall(require('render-markdown').render, { buf = bufnr })
+                                end
+                            end, 100)
+                        end,
+                    })
+                end,
+            })
+
             -- visual statusline indication when an LLM is processing input
             -- we're actually sending a list of currently open chat buffers; this way
             -- we can have a status indicator per LLM session; inline and cmd interactions
