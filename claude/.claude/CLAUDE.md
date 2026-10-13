@@ -11,6 +11,10 @@ inferring freeness from similar commands or from other standing rules.
 - `git -C <path> ...` matches no allow pattern and always prompts; the plain cwd
   forms (`git status`, `git diff`, `git log`, `git show`, ...) run free. Never
   use `-C` - run git from the repo cwd.
+- Shell variables and expansions (`d=/some/path; grep x "$d"/file`, `$VAR`,
+  `$(...)`) always prompt: a bare assignment matches no allow rule, and the
+  permission check cannot resolve a path built from an expansion. Write paths
+  out in full, even when that repeats them.
 - Chains and pipelines run without a prompt only when every subcommand is
   independently allowlisted or read-only (`git log --oneline && git branch -v`,
   `cat X | head -3`).
