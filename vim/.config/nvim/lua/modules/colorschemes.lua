@@ -128,7 +128,8 @@ local function melange()
         ['CodeCompanionChatStatusOption'] = { fg = '#c1a78e', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#867462', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#3a3f4a', bold = true },
-        ['CodeCompanionChatQueuedMessage'] = { bg = '#3a3f4a' },
+        ['CodeCompanionChatQueuedMessage'] = { fg = '#ece1d7', bg = status2_bg },
+        ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
     }
 end
 
@@ -189,7 +190,8 @@ local function tokyonight()
         ['CodeCompanionChatStatusOption'] = { fg = '#828bb8', bg = 'None' },
         ['CodeCompanionChatStatusGap'] = { fg = '#3b4261', bg = 'None' },
         ['CodeCompanionChatFocusedStatusLine'] = { fg = '#ece1d7', bg = '#2a2d40', bold = true },
-        ['CodeCompanionChatQueuedMessage'] = { bg = '#3a3f4a' },
+        ['CodeCompanionChatQueuedMessage'] = { fg = status2_fg, bg = status2_bg },
+        ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
     }
 end
 
