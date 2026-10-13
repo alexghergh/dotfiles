@@ -1,9 +1,2 @@
 #!/usr/bin/env sh
-cd "$HOME/packages/steam-arm64" || exit 1
-exec muvm \
-    --env=GDK_NATIVE_WINDOWS=1 \
-    --env="GTK2_RC_FILES=$HOME/.gtkrc-2.0-kde4" \
-    --env="LD_LIBRARY_PATH=$HOME/packages/steam-arm64/steamrtarm64:$HOME/packages/steam-arm64/steamrtarm64/libs" \
-    -- \
-    "$HOME/packages/steam-arm64/steamrtarm64/steam" \
-    -cef-force-occlusion "$@"
+exec "$HOME/packages/steam-arm64/steam" "$@"

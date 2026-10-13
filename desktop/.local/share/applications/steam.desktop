@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=Steam
+Name=Steam (ARM64)
 Exec=/home/alex/.local/bin/steam %U
 TryExec=/home/alex/.local/bin/steam
-Icon=/home/alex/packages/steam-arm64/steam.svg
+Icon=/home/alex/packages/steam-arm64/integration/valve-steam-arm64.svg
 Terminal=false
 Categories=Game;
 MimeType=x-scheme-handler/steam;
