@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-exec "$HOME/packages/steam-arm64/steam" "$@"
+exec "$HOME/packages/steam-arm64/integration/launch-steam.sh" "$@"
