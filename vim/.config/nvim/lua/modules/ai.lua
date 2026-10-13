@@ -733,13 +733,21 @@ return {
         config = function(_, opts)
             require('codecompanion').setup(opts)
 
-            -- override core set_title() to skip the buffer rename; the ACP agent pushes the
-            -- user-typed prompt on every turn; keep chat.title to the default [CodeCompanion]
+            -- override core set_title() to keep the buffer name short; the title can be a
+            -- whole first prompt (codex session/list preview, claude before its generated
+            -- title lands), so the buffer gets the first line cut to 80 characters while the
+            -- registry keeps the full title
             local chat_class = require('codecompanion.interactions.chat')
             local chat_registry = require('codecompanion.interactions.shared.registry')
             function chat_class:set_title(title)
                 self.title = title
+                self.ui.title = title
                 chat_registry.update(self.bufnr, { description = title })
+                local name = vim.trim(title:match('^[^\n]*'))
+                if vim.fn.strchars(name) > 80 then
+                    name = vim.fn.strcharpart(name, 0, 77) .. '...'
+                end
+                pcall(vim.api.nvim_buf_set_name, self.bufnr, name)
                 return self
             end
 
