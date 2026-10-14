@@ -863,8 +863,43 @@ return {
                 end
             end
 
-            function tokens_util.display(args)
+            -- draw the "### Reasoning" / "### Response" sub-headers as a glyph + thin separator
+            local subheader_ns = vim.api.nvim_create_namespace('CodeCompanion-subheaders')
+            local SUBHEADER = { REASONING = '### Reasoning', RESPONSE = '### Response' }
+            local subheader_icons = {
+                [SUBHEADER.REASONING] = glyphs.reasoning,
+                [SUBHEADER.RESPONSE] = glyphs.response,
+            }
+            vim.api.nvim_set_decoration_provider(subheader_ns, {
+                on_win = function(_, _, bufnr)
+                    return vim.bo[bufnr].filetype == 'codecompanion'
+                end,
+                on_line = function(_, winid, bufnr, row)
+                    local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]
+                    local icon = subheader_icons[line]
+                    if not icon then
+                        return
+                    end
 
+                    -- two separators, the title, then separators up to the window's right edge
+                    local separator = glyphs.subhead_separator
+                    local title = string.format(' %s %s ', icon, line:sub(5))
+                    local width = vim.api.nvim_win_get_width(winid) - vim.fn.getwininfo(winid)[1].textoff
+                    local tail = math.max(width - 2 - vim.fn.strdisplaywidth(title), 0)
+
+                    vim.api.nvim_buf_set_extmark(bufnr, subheader_ns, row, 0, {
+                        virt_text = {
+                            { separator:rep(2), 'CodeCompanionChatSubHeaderSeparator' },
+                            { title, 'CodeCompanionChatSubheader' },
+                            { separator:rep(tail), 'CodeCompanionChatSubHeaderSeparator' },
+                        },
+                        virt_text_pos = 'overlay',
+                        -- render-markdown draws its heading icon and background at 4096
+                        priority = 4200,
+                        ephemeral = true,
+                    })
+                end,
+            })
 
             -- token count display override
             local tokens_util = require('codecompanion.utils.tokens')
