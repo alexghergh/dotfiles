@@ -56,7 +56,7 @@ end
 
 --- Notifications -----------------------------------------------------------
 
--- prefix the terminal tab title (OSC 2) with an attention marker; a pending tool approval marker wins over a finished one
+-- prefix the terminal tab title (OSC 2) with an attention marker
 local function set_attention_marker(marker)
     local current = vim.opt.titlestring:get()
 
@@ -318,7 +318,7 @@ local function load_acp_session_by_resume(resume_opts)
 end
 
 -- load a session into the given chat via session/load, replaying its history into the buffer
-local function _load_session_into_chat(chat, is_new_chat, session_id)
+local function load_session_into_chat(chat, is_new_chat, session_id)
     local conn = chat.acp_connection
     if not conn or not conn:can_load_session() then
         if is_new_chat then
@@ -378,7 +378,7 @@ local function load_acp_session_by_id(session_id)
         return false
     end
 
-    return _load_session_into_chat(chat, is_new_chat, session_id)
+    return load_session_into_chat(chat, is_new_chat, session_id)
 end
 
 -- show the ACP session id for the current chat
@@ -473,6 +473,7 @@ local function parse_markdown_file_path()
     end
 end
 
+-- adapter picker for ga in codecompanion chat buffers; switches the adapter only, without chaining into the model picker
 local function change_adapter_override(chat)
     local config = require('codecompanion.config')
     local change_adapter = require('codecompanion.interactions.chat.keymaps.change_adapter')
@@ -674,7 +675,7 @@ return {
                         clear = false, -- interferes with gx open url
                         -- override the built-in adapter switch because it always chains into the ACP model picker, which replaces the
                         -- adapter default model; keep ga for adapter selection only, and expose model / mode / reasoning on a separate
-                        -- keymap (see below); this method copies almost word for the word the internal functionality
+                        -- keymap (see below); this method copies almost word for word the internal functionality
                         change_adapter = {
                             modes = { n = 'ga' },
                             description = '[Adapter] Change adapter',
@@ -802,13 +803,10 @@ return {
                 return self
             end
 
-            -- chat header layout, replacing the built-in: the separator bar is painted with the CodeCompanionChatSeparatorLead<n> and
-            -- CodeCompanionChatSeparatorFade<n> ramps from colorschemes.lua, a rounded glyph caps the header on the left
+            -- nicer display for chat headers ("## Me" / "## CodeCompanion"), replacing the built-in
             local chat_ui = require('codecompanion.interactions.chat.ui')
             local cc_config = require('codecompanion.config')
             local header_ns = vim.api.nvim_create_namespace('CodeCompanion-headers')
-
-            -- nicer display for chat headers ("## Me" / "## CodeCompanion"), overrides the built-in one
             function chat_ui:render_headers()
                 if not cc_config.display.chat.show_header_separator then
                     return
@@ -841,7 +839,7 @@ return {
                         vim.list_extend(bar, ramp_separator_chunks(separator, bar_width - lead, 'CodeCompanionChatSeparatorFade'))
 
                         vim.api.nvim_buf_set_extmark(self.chat_bufnr, header_ns, line - 1, 0, {
-                            virt_text = { { header_cap, 'CodeCompanionChatHeaderCap' } },
+                            virt_text = { { glyphs.header_cap, 'CodeCompanionChatHeaderCap' } },
                             virt_text_pos = 'inline',
                             priority = 100,
                         })
@@ -981,7 +979,7 @@ return {
                     local label = chat.adapter and chat.adapter.formatted_name
 
                     -- model
-                    local meta = _G.codecompanion_chat_metadata[bufnr] or {}
+                    local meta = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[bufnr] or {}
                     local model = meta.adapter and meta.adapter.model
                     if type(model) == 'function' then
                         model = model()
@@ -1209,7 +1207,7 @@ return {
 
                     -- if the current neovim instance is not focused or the chat buffer is
                     -- hidden, send message; otherwise, user sees chat already
-                    if vim.g.wezterm_pane_focused ~= nil and vim.g.wezterm_pane_focused == false or bufinfo.hidden == 1 then
+                    if vim.g.wezterm_pane_focused == false or bufinfo.hidden == 1 then
                         local chat = require('codecompanion').buf_get_chat(bufnr)
                         if not chat then
                             return
@@ -1221,7 +1219,7 @@ return {
                             title = string.format('⚠️ %s requested tool use', chat.adapter.formatted_name)
                             body = req.data.name .. (req.data.args ~= nil and ': ' .. req.data.args or '')
                         elseif req.match == 'CodeCompanionRequestFinished' then
-                            local last_message
+                            local last_message = ''
 
                             if type(chat._toast_output_chunks) == 'table' then
                                 -- use the built output chunks (see above autocommand)
@@ -1303,7 +1301,7 @@ return {
             end, { desc = 'Open Code companion actions' })
 
             -- show a picker for model / mode / reasoning (last 2 only work for ACP paths)
-            vim.keymap.set('n', '<leader>cm', function()
+            vim.keymap.set('n', '<Leader>cm', function()
                 local chat = require('codecompanion').last_chat()
                 if not chat then
                     return
