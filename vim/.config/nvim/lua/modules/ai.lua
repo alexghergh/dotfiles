@@ -923,7 +923,7 @@ return {
 
                 vim.api.nvim_buf_set_extmark(args.bufnr, args.ns_id, end_row - 1, 0, {
                     virt_text = { { args.token_str, 'CodeCompanionChatTokens' } },
-                    virt_text_pos = 'right_align',
+                    virt_text_pos = 'eol',
                     priority = 110,
                     hl_mode = 'combine',
                 })
