@@ -138,7 +138,7 @@
     "sandbox": {
         "enabled": true,
         "failIfUnavailable": true,
-        "autoAllowBashIfSandboxed": false,
+        "autoAllowBashIfSandboxed": true,
         "allowUnsandboxedCommands": true,
         "excludedCommands": [
             "gh *"
@@ -150,6 +150,9 @@
         },
         "filesystem": {
             "allowWrite": [],
+            "denyWrite": [
+                "~/**/.git"
+            ],
             "denyRead": [
                 "~/.ssh",
                 "~/.gnupg",
