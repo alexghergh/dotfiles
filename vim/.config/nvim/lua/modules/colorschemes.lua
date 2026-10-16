@@ -151,7 +151,7 @@ local function melange()
         ['CodeCompanionChatSubheader'] = { fg = '#c1a78e', bg = editor_bg, italic = true },
         ['CodeCompanionChatSubHeaderSeparator'] = { fg = '#867462', bg = editor_bg },
         ['CodeCompanionChatQueuedMessage'] = { fg = '#ece1d7', bg = status2_bg },
-        ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
+        ['CodeCompanionChatQueuedPending'] = { fg = '#c1a78e', bg = '#3a332e', italic = true },
     }
 end
 
@@ -218,7 +218,7 @@ local function tokyonight()
         ['CodeCompanionChatSubheader'] = { fg = '#82aaff', bg = editor_bg, italic = true },
         ['CodeCompanionChatSubHeaderSeparator'] = { fg = '#3b4261', bg = editor_bg },
         ['CodeCompanionChatQueuedMessage'] = { fg = status2_fg, bg = status2_bg },
-        ['CodeCompanionChatQueuedPending'] = { fg = '#d0d0d0', bg = statusline_bg, italic = true, dim = true },
+        ['CodeCompanionChatQueuedPending'] = { fg = '#828bb8', bg = '#2a2d40', italic = true },
     }
 end
 
