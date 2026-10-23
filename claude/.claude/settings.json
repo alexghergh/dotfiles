@@ -8,6 +8,7 @@
         "haiku"
     ],
     "effortLevel": "xhigh",
+    "idleCompaction": false,
     "outputStyle": "Concise",
     "attribution": {
         "commit": "",
