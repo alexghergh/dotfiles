@@ -64,6 +64,36 @@ Restore them on the new machine:
     chmod 700 ~/.local/share/kwalletd
     chmod 600 ~/.local/share/kwalletd/* ~/.config/kwalletrc ~/.config/kwalletmanagerrc
 
+### Fonts
+
+The `fonts` Stow package only carries the custom icon font and the fontconfig
+setup. Install everything else from where it is packaged (e.g. on Fedora):
+
+    sudo dnf install rsms-inter-vf-fonts adwaita-sans-fonts \
+      cascadia-fonts-all fira-code-fonts jetbrains-mono-fonts-all \
+      adobe-source-code-pro-fonts source-foundry-hack-fonts powerline-fonts \
+      google-noto-fonts-all google-roboto-fonts google-roboto-condensed-fonts
+
+Inter is the KDE system font (matches Apples' font; set it in System Settings);
+Adwaita Sans is the Thunderbird UI font; the monospace fonts are the WezTerm
+fallback chain for code.
+
+Other fonts without a package go in `/usr/local/share/fonts/<first letter>/`.
+Some of them may not be redistributable, so they stay out of this repo. Download
+them manually or copy from the previous machine:
+
+- Nerd Fonts from https://github.com/ryanoasis/nerd-fonts/releases:
+  `NerdFontsSymbolsOnly`, `JetBrainsMono`, `FiraCode`, `Hack`, `AnonymousPro`,
+  `ProFont`
+- Klee One and Zen Maru Gothic from https://fonts.google.com
+- SF Mono from https://developer.apple.com/fonts (Apple license, no
+  redistribution)
+- Meiryo and Klingon pIqaD HaSta: copy from the previous machine
+
+Then rebuild the font cache:
+
+    fc-cache -f
+
 ### Anki
 
 Install the official Linux ARM64 bundle from https://apps.ankiweb.net/ under
