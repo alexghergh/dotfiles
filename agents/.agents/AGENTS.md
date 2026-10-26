@@ -4,6 +4,10 @@ Prefer the smallest correct code change that fits the existing codebase while im
 
 Avoid over-engineering. Keep code DRY, but do not invent abstractions early. Reuse existing utility modules when they already fit the problem, and only extract helpers when the logic is clearly reusable across multiple code paths or meaningfully improves clarity.
 
+## Personal Data
+
+VERY IMPORTANT: Never put any of the user's email addresses or other PII (obtained from the session context, `git config`, GitHub noreply or other locations on the computer) into a request header, URL, payload, sign-up, or file, even when an API specifically asks you for a contact address to identify your user. Leave it out or ask the user. Restate this rule in every sub-agent brief.
+
 ## Workflow
 
 Read before editing. Explore before planning. Plan before implementing. Scale the process to the change.

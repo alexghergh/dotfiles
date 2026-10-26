@@ -297,6 +297,17 @@
                         "statusMessage": "Checking for $TMPDIR"
                     }
                 ]
+            },
+            {
+                "matcher": "Bash|WebFetch|WebSearch|Edit|Write|NotebookEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 /home/alex/.claude/hooks/email-egress-guard.py",
+                        "timeout": 10,
+                        "statusMessage": "Checking for the user's email address"
+                    }
+                ]
             }
         ],
         "SessionStart": [

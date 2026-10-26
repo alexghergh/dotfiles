@@ -81,6 +81,12 @@ max_depth = 2
 matcher = "Edit|Write"
 hooks = [{ type = "command", command = "python3 /home/alex/.claude/hooks/ascii-check.py", timeout = 10 }]
 
+# email address gate; same script as claude code's PreToolUse hook; codex
+# reports shell commands as `Bash`
+[[hooks.PreToolUse]]
+matcher = "Bash|Edit|Write"
+hooks = [{ type = "command", command = "python3 /home/alex/.claude/hooks/email-egress-guard.py", timeout = 10 }]
+
 [hooks.state]
 
 [hooks.state."/home/alex/.codex/config.toml:pre_tool_use:0:0"]
