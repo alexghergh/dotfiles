@@ -74,9 +74,9 @@ setup. Install everything else from where it is packaged (e.g. on Fedora):
       adobe-source-code-pro-fonts source-foundry-hack-fonts powerline-fonts \
       google-noto-fonts-all google-roboto-fonts google-roboto-condensed-fonts
 
-Inter is the KDE system font (matches Apples' font; set it in System Settings);
-Adwaita Sans is the Thunderbird UI font; the monospace fonts are the WezTerm
-fallback chain for code.
+Inter is the KDE system font (close to Apple's San Francisco font; set it in
+System Settings); Adwaita Sans is the Thunderbird UI font; the monospace fonts
+are the WezTerm fallback chain for code.
 
 Other fonts without a package go in `/usr/local/share/fonts/<first letter>/`.
 Some of them may not be redistributable, so they stay out of this repo. Download
