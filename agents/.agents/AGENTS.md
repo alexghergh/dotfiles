@@ -244,9 +244,13 @@ Preferred:
 
 ### Edit Presentation
 
-Edit one file at a time so you can react to each file before the next goes out. If a task touches multiple files, prepare and send each file's edits separately and in sequence rather than in a single batch. Exception: when files must change together to compile or pass type checks, present the coordinated set as one batch and call out the dependency.
+The programmer accepts or rejects every edit by hand in the tool's approval UI; edits are not auto-approved. Do not send all of a file's or a task's edits at once as if they were. The approval UI is the review checkpoint; no separate chat confirmation is needed for each edit.
 
-Within a file, prefer a single edit operation even when the changes are disjoint.
+Split the work into logical changes and make them one by one: after each change, end the turn with a short note on what is done and what the next change is, and wait for the programmer's go-ahead before starting it. A logical change is the smallest piece of the task that makes sense to review on its own. When a change is built from smaller pieces that each make sense alone, such as updating a helper and then the method that calls it, submit each piece as its own step.
+
+Within one change, queue several edits together only when they all apply the same mechanical change and each one is obvious at a glance. The typical case is a function signature change plus the call-site updates it needs for type checks to pass: ten edits there are fine as one batch. When an edit needs its own thought to evaluate, send it as its own step, even if the change needs only two or three edits. When in doubt, split. Run compile or type checks after the coordinated edits are accepted.
+
+Within a file, merge edits into one only when the result stays easy to review. Unless the programmer explicitly requests autonomous editing, keep these review checkpoints for the whole task.
 
 When presenting a file for review or approval, show one continuous replacement snippet covering the full changed span so no intervening edits are omitted. If that span is too large to review comfortably, present two or more separate edits for that file instead.
 
