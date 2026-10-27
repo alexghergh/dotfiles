@@ -48,6 +48,23 @@ Restore them on the new machine:
     sudo restorecon -Rv /etc/NetworkManager/system-connections
     sudo nmcli connection reload
 
+### System config
+
+`system/etc/` mirrors files that belong in `/etc`. Copy them into place rather
+than stowing:
+
+    sudo install -D -m 644 system/etc/systemd/resolved.conf.d/dns-over-tls.conf /etc/systemd/resolved.conf.d/dns-over-tls.conf
+    sudo systemctl restart systemd-resolved
+
+    sudo install -D -m 644 system/etc/NetworkManager/conf.d/50-no-dhcp-dns.conf /etc/NetworkManager/conf.d/50-no-dhcp-dns.conf
+    sudo systemctl reload NetworkManager
+
+Udev rule for the Mustang amp:
+
+    sudo install -D -m 644 system/etc/udev/rules.d/50-mustang-uaccess.rules /etc/udev/rules.d/50-mustang-uaccess.rules
+    sudo udevadm control --reload
+    sudo udevadm trigger
+
 ### KDE Wallet
 
 KDE Wallet data lives in `~/.local/share/kwalletd`. Copy the wallet data and
