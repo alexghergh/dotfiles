@@ -63,20 +63,8 @@ local function args_list()
     end
 end
 
--- codecompanion statusline symbols we're using: chat ready, pending tool approval, thinking spinner
--- stylua: ignore
-local cc_symbols = {
-    chat_ready              = '',
-    pending_tool_approval   = '󰀪',
-    spinner_list            = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
-}
-
--- the icon glyphs we're using for codecompanion status are drawn at ~1.5 cells, which glitches
--- inside nvim because it assumes width 1; reserve 2 cells for each so the renderer has room and
--- they don't glitch out
-local cw = require('shared.setcellwidths')
-cw.add_2cellwidth_glyph(cc_symbols.chat_ready)
-cw.add_2cellwidth_glyph(cc_symbols.pending_tool_approval)
+-- codecompanion statusline symbols for AI agents: chat ready, pending tool approval, thinking spinner
+local cc_symbols = require('shared.glyphs').codecompanion
 
 -- codecompanion statusline provider; shows information on active / running AI chat sessions
 -- see also lua/modules/ai.lua
@@ -101,7 +89,7 @@ local function codecompanion_status()
     for bufnr, val in pairs(cc_status.one_off or {}) do
         if val == 1 then
             local idx = gl.spinner_idxs[bufnr] or 1
-            one_offs_spinners[#one_offs_spinners + 1] = cc_symbols.spinner_list[idx]
+            one_offs_spinners[#one_offs_spinners + 1] = cc_symbols.spinner[idx]
             active_buffers[bufnr] = true
         end
     end
@@ -130,7 +118,7 @@ local function codecompanion_status()
             symbol = cc_symbols.pending_tool_approval
         elseif val == 1 then
             local idx = gl.spinner_idxs[bufnr] or 1
-            symbol = cc_symbols.spinner_list[idx]
+            symbol = cc_symbols.spinner[idx]
             active_buffers[bufnr] = true
         else
             symbol = cc_symbols.chat_ready
@@ -161,7 +149,7 @@ local function codecompanion_status()
             for bufnr, _ in pairs(active_buffers) do
                 any_active = true
                 local idx = gl.spinner_idxs[bufnr] or 1
-                gl.spinner_idxs[bufnr] = (idx % #cc_symbols.spinner_list) + 1
+                gl.spinner_idxs[bufnr] = (idx % #cc_symbols.spinner) + 1
             end
             if any_active then
                 gl.load_galaxyline()

@@ -1,32 +1,4 @@
-local cw = require('shared.setcellwidths')
-
--- Glyphs / Icons
--- stylua: ignore
-local glyphs = {
-    -- codecompanion adapters
-    codex       = { '', widen = true },
-    claude_code = { '', widen = true },
-
-    -- wezterm tab attention markers (OSC 2); clear on window focus
-    tool_attention_marker       = { '🔴', widen = true },
-    finished_attention_marker   = { '🟢', widen = true },
-
-    -- chat header icons, drawn on the "## Me" / "## CodeCompanion" lines
-    header_cap = { '', widen = false },
-
-    -- chat sub-header icons, drawn on the "### Reasoning" / "### Response" lines
-    reasoning           = { '󰧑', widen = true },
-    response            = { '󰭹', widen = true },
-    subhead_separator   = { '─', widen = false },
-}
-
--- depending on the font, some glyphs may use 1-cell widths or 1.5-cell widths; normalize to 2-cell widths so nvim doesn't bug out
-for name, glyph in pairs(glyphs) do
-    if glyph.widen then
-        cw.add_2cellwidth_glyph(glyph[1])
-    end
-    glyphs[name] = glyph[1]
-end
+local glyphs = require('shared.glyphs').codecompanion
 
 -- Helper Methods
 

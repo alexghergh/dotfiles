@@ -6,23 +6,7 @@
 -- see lua/core/keymaps.lua - diagnostic keymaps
 --
 
--- diagnostic glyphs; tell nvim that each is 2-cell width; in reality, depending
--- on the font, they may be 1-cell or 1.5-cell widths, but that breaks UI without the workaround
--- stylua: ignore
-local glyphs = {
-    error            = '󰅚',
-    warn             = '󰀪',
-    hint             = '󰌶',
-    info             = '',
-    virt_text_prefix = '●',
-}
-
-local cw = require('shared.setcellwidths')
-cw.add_2cellwidth_glyph(glyphs.error)
-cw.add_2cellwidth_glyph(glyphs.warn)
-cw.add_2cellwidth_glyph(glyphs.hint)
-cw.add_2cellwidth_glyph(glyphs.info)
-cw.add_2cellwidth_glyph(glyphs.virt_text_prefix)
+local glyphs = require('shared.glyphs').diagnostics
 
 -- diagnostic gutter signs and line number highlight, virtual text and floating window
 vim.diagnostic.config({
