@@ -39,6 +39,9 @@ config.adjust_window_size_when_changing_font_size = false
 config.initial_rows = 37
 config.initial_cols = 150
 
+-- redraw at 120 Hz; wezterm defaults to 60
+config.max_fps = 120
+
 config.window_padding = {
     left = 5,
     right = 30,
