@@ -14,9 +14,8 @@ return {
             anti_conceal = { enabled = false },
             overrides = {
                 filetype = {
-                    -- on codecompanion buffers, redraw on every change instead of waiting
-                    -- for a debounce, as the text keeps streaming in chat
-                    codecompanion = { debounce = 0 },
+                    -- disable latex formulas in chat buffers; interacts negatively with command-line $VAR in the output
+                    codecompanion = { latex = { enabled = false } },
                 },
             },
         },
