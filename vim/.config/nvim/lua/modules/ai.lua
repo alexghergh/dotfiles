@@ -28,36 +28,35 @@ end
 
 --- Notifications -----------------------------------------------------------
 
--- prefix the terminal tab title (OSC 2) with an attention marker
+-- the terminal tab title (OSC 2) is `[marker or spinner ]<titlestring from lua/core/settings.lua>`
+local base_title
+local attention_marker
+local title_spinner -- current spinner frame while a request runs, see set_title_spinner() below
+
+local function refresh_title()
+    base_title = base_title or vim.o.titlestring
+    local prefix = attention_marker or title_spinner
+    vim.o.titlestring = prefix and (prefix .. ' ' .. base_title) or base_title
+    vim.cmd('redrawstatus') -- nvim re-emits a changed title (OSC 2) when it redraws the statusline
+end
+
+-- prefix the terminal tab title with an attention marker
 local function set_attention_marker(marker)
-    local current = vim.opt.titlestring:get()
-
     -- priority is given to tool approvals, even if another chat finished
-    if current:sub(1, #glyphs.tool_attention_marker) == glyphs.tool_attention_marker then
+    if attention_marker == glyphs.tool_attention_marker then
         return
-    elseif current:sub(1, #glyphs.finished_attention_marker) == glyphs.finished_attention_marker then
-        if marker == glyphs.finished_attention_marker then
-            return
-        end
-        current = current:sub(#glyphs.finished_attention_marker + 2)
     end
-
-    vim.opt.titlestring = marker .. ' ' .. current
-    vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+    attention_marker = marker
+    refresh_title()
 end
 
 -- remove the attention marker from the terminal tab title, if any
 local function clear_attention_marker()
-    local current = vim.opt.titlestring:get()
-
-    if current:sub(1, #glyphs.tool_attention_marker) == glyphs.tool_attention_marker then
-        vim.opt.titlestring = current:sub(#glyphs.tool_attention_marker + 2)
-    elseif current:sub(1, #glyphs.finished_attention_marker) == glyphs.finished_attention_marker then
-        vim.opt.titlestring = current:sub(#glyphs.finished_attention_marker + 2)
-    else
+    if attention_marker == nil then
         return
     end
-    vim.cmd('redraw') -- force nvim to re-emit OSC 2 immediately
+    attention_marker = nil
+    refresh_title()
 end
 
 -- use the system's notify-send to send a toast notification (either on AI message completion, or on tool approval request)
@@ -1073,6 +1072,15 @@ return {
                     status_table.chat = status_table.chat or {}
                     status_table.one_off = status_table.one_off or {}
                     return status_table
+                end
+
+                -- called by the statusline provider on every rebuild with the current spinner
+                -- frame, or nil when no request runs; the title follows the statusline spinner
+                function gl.set_title_spinner(frame)
+                    if frame ~= title_spinner then
+                        title_spinner = frame
+                        refresh_title()
+                    end
                 end
 
                 -- dispatch for the six User events that affect the codecompanion status line info

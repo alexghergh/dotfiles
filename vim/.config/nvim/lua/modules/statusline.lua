@@ -158,6 +158,14 @@ local function codecompanion_status()
         end, 120)
     end
 
+    -- the terminal tab title spins with the running buffer with the lowest bufnr, so the frame
+    -- doesn't jump between buffers; see lua/modules/ai.lua
+    local title_bufnr
+    for bufnr, _ in pairs(active_buffers) do
+        title_bufnr = math.min(title_bufnr or bufnr, bufnr)
+    end
+    gl.set_title_spinner(title_bufnr and cc_symbols.spinner[gl.spinner_idxs[title_bufnr] or 1])
+
     -- finally, return the status line symbols
     local out = ''
     if #one_offs_spinners > 0 then
