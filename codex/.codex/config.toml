@@ -93,6 +93,9 @@ hooks = [{ type = "command", command = "python3 /home/alex/.claude/hooks/email-e
 trusted_hash = "sha256:4710522c001e046c66a4b46900d2ee6a110031999b6014fb037796de5090c754"
 enabled = true
 
+[hooks.state."/home/alex/.codex/config.toml:pre_tool_use:1:0"]
+trusted_hash = "sha256:419b767d636734aa64500964b87d53da308d6e544656abbc9ac907837c930b43"
+
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "thread-name", "context-remaining", "five-hour-limit", "weekly-limit", "context-window-size", "estimated-thread-cost"]
 status_line_use_colors = true
