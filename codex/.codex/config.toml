@@ -53,7 +53,7 @@ personality = "pragmatic"
 sandbox_mode = "read-only"
 
 model = "gpt-6.1-sol"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 
 project_doc_fallback_filenames = ["CLAUDE.md"]
 
