@@ -107,7 +107,7 @@ return {
             quickfile = {}, -- speed up initial file open by deferring plugin FileType events
             bufdelete = {}, -- exiting a buffer won't close its window; a previously opened buffer will take its place (see config below)
             scroll = {}, -- smooth scrolling
-            animate = { fps = 30 }, -- every animation frame is a full redraw; snacks defaults to 120
+            animate = { fps = 120 }, -- animation rendering speed
 
             -- indent guides + current-scope highlight
             indent = {
