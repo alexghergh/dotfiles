@@ -716,10 +716,17 @@ return {
                     show_header_separator = true,
                     separator = ' ',
                     -- also see the render override below for the chat header token display
-                    token_count = function(tokens)
+                    token_count = function(tokens, _, cost)
                         -- group the digits in threes, 123456789 -> 123.456.789
                         local grouped = tostring(tokens):reverse():gsub('(%d%d%d)', '%1.'):reverse():gsub('^%.', '')
-                        return ' ' .. grouped .. ' tokens '
+                        local text = ' ' .. grouped .. ' tokens '
+                        -- the session's cost so far, for agents that report it
+                        if cost then
+                            local amount = cost.currency == 'USD' and ('$%.2f'):format(cost.amount)
+                                or ('%.2f %s'):format(cost.amount, cost.currency)
+                            text = text .. '· ' .. amount .. ' '
+                        end
+                        return text
                     end,
                     floating_window = {
                         width = function() -- dynamic detection based on window size
