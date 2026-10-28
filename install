@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -z "$STOW_FOLDERS" ]; then
-    STOW_FOLDERS="desktop,fonts,user_scripts,fish,git,vim,wezterm,agents,codex,claude,llms,thunderbird"
+    STOW_FOLDERS="desktop,fonts,user_scripts,fish,git,vim,wezterm,agents,codex,claude,agent-notch,llms,thunderbird"
 fi
 
 if [ -z "$DOTFILES" ]; then
@@ -10,13 +10,15 @@ fi
 
 # for each dotfiles folder, "stow" it
 for stow_folder in $(echo "$STOW_FOLDERS" | sed "s/,/ /g"); do
-    if [ "$stow_folder" = "llms" ] || [ "$stow_folder" = "thunderbird" ]; then
+    if [ "$stow_folder" = "llms" ] || [ "$stow_folder" = "thunderbird" ] || [ "$stow_folder" = "agent-notch" ]; then
         # for these, create the directories and symlink individual files inside;
         # for llms, so btrfs can correctly keep track of the directory itself
         # (see SETUP.md for more instructions on correctly doing btrfs
         # subvolume); for thunderbird, so a missing profile directory isn't
         # linked into the repo, which would make Thunderbird write the whole
-        # profile there
+        # profile there; for agent-notch, so a missing ~/.config/systemd isn't
+        # linked into the repo, which would make `systemctl --user enable`
+        # write its links there
         stow --restow --verbose --no-folding --dir="$DOTFILES" --target="$HOME" "$stow_folder"
     else
         stow --restow --verbose --dir="$DOTFILES" --target="$HOME" "$stow_folder"

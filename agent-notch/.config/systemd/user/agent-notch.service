@@ -1,0 +1,12 @@
+[Unit]
+Description=Agent notch: Claude Code and Codex usage on the right screen edge
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/python3 %h/.local/share/agent-notch/agent_notch.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
