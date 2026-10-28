@@ -1,7 +1,7 @@
 local wezterm = require('wezterm')
 local act = wezterm.action
 local background = require('background')
-local battery = require('battery')
+local power = require('power')
 local smart_splits = require('smart-splits')
 
 local config = wezterm.config_builder()
@@ -170,33 +170,113 @@ config.launch_menu = {
     },
 }
 
-wezterm.on('update-right-status', function(window, _)
-    -- "Sun April 22 22:50"
-    local date = wezterm.strftime('%a %b %-d %H:%M')
-    local bat = battery.status()
+-- battery glyph for the charge level, in steps of 10%
+local function battery_icon(capacity, charging)
+    local level = math.floor(capacity / 10 + 0.5) * 10
+    local suffix = '_' .. level
+    if level == 0 then
+        suffix = '_outline'
+    elseif level == 100 and not charging then
+        suffix = ''
+    end
+    return wezterm.nerdfonts[(charging and 'md_battery_charging' or 'md_battery') .. suffix]
+end
 
+-- status bar colors: a warm white, like white under a blue-light filter at about 5000 K, a dimmer
+-- shade of it, and a green and a red, from the afterglow color scheme, for the battery icon
+local bar_colors = {
+    text = '#f5dfcb',
+    dim = '#b8a291',
+    green = '#5ba551',
+    red = '#ff6a6a',
+    -- neovim's background, instead of wezterm's default gray
+    background = '#1b1c29',
+}
+
+-- the tab row in the same colors
+config.window_frame = {
+    active_titlebar_bg = bar_colors.background,
+    inactive_titlebar_bg = '#16161f',
+}
+config.colors.tab_bar = {
+    background = bar_colors.background,
+    active_tab = { bg_color = '#3a3c52', fg_color = bar_colors.text },
+    inactive_tab = { bg_color = bar_colors.background, fg_color = bar_colors.dim },
+    inactive_tab_hover = { bg_color = '#24253a', fg_color = bar_colors.text },
+    inactive_tab_edge = bar_colors.background,
+    new_tab = { bg_color = bar_colors.background, fg_color = bar_colors.dim },
+    new_tab_hover = { bg_color = '#24253a', fg_color = bar_colors.text },
+}
+
+wezterm.on('update-right-status', function(window, _)
     -- display active key table
     local key_tbl = window:active_key_table()
-    if key_tbl then
-        key_tbl = 'KEY TABLE: ' .. key_tbl
-    else
-        key_tbl = ''
-    end
-
-    local sep = wezterm.nerdfonts.ple_left_half_circle_thin
     local status = {
-        { Text = key_tbl },
-        'ResetAttributes',
-        { Foreground = { AnsiColor = 'Yellow' } },
+        { Background = { Color = bar_colors.background } },
+        { Text = key_tbl and 'KEY TABLE: ' .. key_tbl or '' },
     }
-    local right_status = ' ' .. sep .. ' ' .. date .. ' '
-    if bat ~= '' then
-        right_status = ' ' .. sep .. ' ' .. bat .. ' ' .. sep .. ' ' .. date .. ' '
+
+    local function add(color, text)
+        table.insert(status, { Foreground = { Color = color } })
+        table.insert(status, { Text = text })
     end
 
-    table.insert(status, {
-        Text = right_status,
-    })
+    -- segments, each a colored icon and its pieces of text (color, text, color, text, ...), divided
+    -- by a dim chevron
+    local first = true
+    local function segment(icon, icon_color, ...)
+        add(
+            bar_colors.dim,
+            first and '  ' or '   ' .. wezterm.nerdfonts.pl_right_soft_divider .. '   '
+        )
+        add(icon_color, icon .. '  ')
+        for i = 1, select('#', ...), 2 do
+            add(select(i, ...), select(i + 1, ...))
+        end
+        first = false
+    end
+
+    local p = power.status()
+    if p then
+        local charging = p.direction == 'charging'
+        local color = (p.capacity < 20 and bar_colors.red)
+            or (charging and bar_colors.green)
+            or bar_colors.dim
+        segment(battery_icon(p.capacity, charging), color, bar_colors.text, p.battery)
+
+        -- "AC 18.2W", a dim dot, "sys 21.0W", with dim labels
+        local watts = {}
+        for _, name in ipairs({ 'ac', 'sys' }) do
+            if p[name] then
+                if #watts > 0 then
+                    table.insert(watts, bar_colors.dim)
+                    table.insert(watts, '   ·   ')
+                end
+                table.insert(watts, bar_colors.dim)
+                table.insert(watts, (name == 'ac' and 'AC' or 'sys') .. ' ')
+                table.insert(watts, bar_colors.text)
+                table.insert(watts, string.format('%.1fW', p[name]))
+            end
+        end
+        if #watts > 0 then
+            segment(wezterm.nerdfonts.md_lightning_bolt, bar_colors.dim, table.unpack(watts))
+        end
+    end
+
+    -- "Sun Apr 22", "22:50"
+    segment(
+        wezterm.nerdfonts.md_calendar,
+        bar_colors.dim,
+        bar_colors.text,
+        wezterm.strftime('%a %b %-d')
+    )
+    segment(
+        wezterm.nerdfonts.md_clock_outline,
+        bar_colors.dim,
+        bar_colors.text,
+        wezterm.strftime('%H:%M')
+    )
+    add(bar_colors.dim, '  ')
 
     window:set_right_status(wezterm.format(status))
 end)
