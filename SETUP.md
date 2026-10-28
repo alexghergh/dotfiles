@@ -53,12 +53,6 @@ Restore them on the new machine:
 `system/etc/` mirrors files that belong in `/etc`. Copy them into place rather
 than stowing:
 
-    sudo install -D -m 644 system/etc/systemd/resolved.conf.d/dns-over-tls.conf /etc/systemd/resolved.conf.d/dns-over-tls.conf
-    sudo systemctl restart systemd-resolved
-
-    sudo install -D -m 644 system/etc/NetworkManager/conf.d/50-no-dhcp-dns.conf /etc/NetworkManager/conf.d/50-no-dhcp-dns.conf
-    sudo systemctl reload NetworkManager
-
 Udev rule for the Mustang amp:
 
     sudo install -D -m 644 system/etc/udev/rules.d/50-mustang-uaccess.rules /etc/udev/rules.d/50-mustang-uaccess.rules
