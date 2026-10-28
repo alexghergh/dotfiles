@@ -1,0 +1,36 @@
+/* Primary theme (https://github.com/primary-theme/obsidian), adapted for Thunderbird supernova */
+:root {
+  --layout-background-0: hsl(36, 37%, 97%) !important; /* message list, body */
+  --layout-background-1: hsl(35, 36%, 95%) !important; /* folder pane, toolbars */
+  --layout-background-2: hsl(36, 37%, 92%) !important;
+  --layout-background-3: hsl(35, 35%, 90%) !important;
+  --layout-background-4: hsl(36, 37%, 83%) !important;
+  --layout-color-0: hsl(32, 55%, 12%) !important;
+  --layout-color-1: hsl(31, 45%, 20%) !important;
+  --layout-color-2: hsl(34, 30%, 37%) !important;
+  --layout-color-3: hsl(34, 28%, 60%) !important;
+  --layout-border-0: hsl(34, 36%, 88%) !important;
+  --layout-border-1: hsl(34, 37%, 67%) !important;
+  --layout-border-2: hsl(31, 23%, 50%) !important;
+  --selected-item-color: hsl(21, 82%, 55%) !important; /* Primary orange */
+  --selected-item-text-color: hsl(36, 37%, 97%) !important;
+}
+
+/* hide the address book and tasks buttons in the spaces toolbar */
+#addressBookButton, #tasksButton { display: none !important; }
+
+/* unread rows full contrast, read rows dimmed */
+#threadTree tr[data-properties~="unread"]:not(.selected) {
+  color: var(--layout-color-0) !important;
+}
+#threadTree tr:not([data-properties~="unread"]):not(.selected) {
+  color: color-mix(in srgb, currentColor 70%, transparent) !important;
+}
+
+/* the "not read" green dot and the "new message" yellow star get cut off without this */
+#threadTree tr.card-layout .read-status-column { overflow: visible !important; }
+
+/* center the dot and star on the sender line, which is 1.5em tall */
+#threadTree tr.card-layout .read-status {
+  margin-block-start: calc((1.5em - var(--read-status-size)) / 2) !important;
+}

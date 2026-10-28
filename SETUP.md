@@ -81,6 +81,25 @@ Restore them on the new machine:
     chmod 700 ~/.local/share/kwalletd
     chmod 600 ~/.local/share/kwalletd/* ~/.config/kwalletrc ~/.config/kwalletmanagerrc
 
+### Thunderbird
+
+Thunderbird keeps everything in `~/.config/thunderbird`: the profile in
+`default-profile/`, with accounts, saved passwords, add-ons and their settings,
+preferences, filters and the local mail cache.
+
+To move everything, close Thunderbird and copy the whole folder from the old
+machine (official supported way to export / import). The archive holds passwords
+and mail, so keep it private:
+
+    tar -czf ~/thunderbird.tgz -C ~/.config thunderbird
+
+Restore it on the new machine before starting Thunderbird:
+
+    tar -xzf ~/thunderbird.tgz -C ~/.config
+
+Dotfiles here are only a second inspectable copy of adjusted settings, not
+needed on a new machine if restoring through the above route.
+
 ### Fonts
 
 The `fonts` Stow package only carries the custom icon font and the fontconfig
