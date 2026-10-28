@@ -95,6 +95,14 @@ Inter is the KDE system font (close to Apple's San Francisco font; set it in
 System Settings); Adwaita Sans is the Thunderbird UI font; the monospace fonts
 are the WezTerm fallback chain for code.
 
+The generic "Monospace" font name resolves to the code font picked in
+`fonts/.config/fontconfig/conf.d/10-web-fonts.conf`, so switching code fonts
+means changing that file and `wezterm.lua`, nothing else.
+
+Leave anti-aliasing and hinting in System Settings -> Fonts alone: applying them
+writes a rule into `~/.config/fontconfig/fonts.conf` that re-enables hinting for
+icon fonts and makes them look bolder (see `conf.d/20-icon-fonts.conf`).
+
 Other fonts without a package go in `/usr/local/share/fonts/<first letter>/`.
 Some of them may not be redistributable, so they stay out of this repo. Download
 them manually or copy from the previous machine:
