@@ -100,6 +100,11 @@ Restore it on the new machine before starting Thunderbird:
 Dotfiles here are only a second inspectable copy of adjusted settings, not
 needed on a new machine if restoring through the above route.
 
+`thunderbird-addons/` holds sources of local add-ons; `edit-following` adds
+"this and all following occurrences" when editing or deleting an occurrence of a
+recurring event in a calendar (official thunderbird still has this feature
+marked as "not implemented", though it may arrive at some point).
+
 ### Fonts
 
 The `fonts` Stow package only carries the custom icon font and the fontconfig

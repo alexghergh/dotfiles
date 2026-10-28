@@ -23,6 +23,9 @@
 !/claude/.claude/hooks/**
 !/claude/.claude/skills
 
+# thunderbird: add-ons built from thunderbird-addons/
+*.xpi
+
 # agents: keep shared agent config (AGENTS.md, skills, session handoffs)
 /agents/.agents/**
 /agents/.agents/handoffs/

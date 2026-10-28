@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Edit this and following occurrences",
+  "description": "Adds the \"this and all following occurrences\" choice when editing or deleting an occurrence of a recurring event.",
+  "version": "1.0",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "edit-following@dotfiles",
+      "strict_min_version": "128.0"
+    }
+  },
+  "experiment_apis": {
+    "editFollowing": {
+      "schema": "schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "paths": [["editFollowing"]],
+        "script": "api.js",
+        "events": ["startup"]
+      }
+    }
+  }
+}
