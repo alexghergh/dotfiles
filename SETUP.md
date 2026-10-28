@@ -51,7 +51,13 @@ Restore them on the new machine:
 ### System config
 
 `system/etc/` mirrors files that belong in `/etc`. Copy them into place rather
-than stowing:
+than stowing.
+
+NetworkManager defaults for Wi-Fi and wired networks (no hostname sent over
+DHCP, a random MAC address per wired network):
+
+    sudo install -D -m 644 system/etc/NetworkManager/conf.d/50-privacy.conf /etc/NetworkManager/conf.d/50-privacy.conf
+    sudo systemctl reload NetworkManager
 
 Udev rule for the Mustang amp:
 
