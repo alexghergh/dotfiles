@@ -93,7 +93,7 @@ local function restart(now, online)
     state.sys = { tau = WATTS_TAU }
 end
 
-local function battery_text(now, online)
+local function battery_text(now)
     local capacity = read_number(battery_dir .. 'capacity')
     local power_now = read_number(battery_dir .. 'power_now')
     local energy_now = read_number(battery_dir .. 'energy_now')
@@ -107,20 +107,26 @@ local function battery_text(now, online)
     -- sysfs reports micro-watts and micro-watt-hours
     local watts = update(state.battery, now, power_now / 1e6)
     state.direction = direction(state.direction, watts)
+    local text = string.format('%d%%', capacity)
     if now - state.since < SETTLE_SECS then
-        return string.format('%d%%, calculating...', capacity), capacity
+        return text .. ', calculating...', capacity
+    elseif not state.direction then
+        return text, capacity
+    end
+
+    -- under `SWITCH_WATTS` the direction holds, but the time would divide by nearly zero watts,
+    -- e.g. while the average decays after the charger stops at the limit
+    local prefix = state.direction == 'charging' and 'ch. ' or 'disch. '
+    if math.abs(watts) <= SWITCH_WATTS then
+        return prefix .. text, capacity
     elseif state.direction == 'charging' then
         local hours = math.max(energy_full * limit / 100 - energy_now, 0) / 1e6 / watts
         local target = limit < 100 and limit .. '%' or 'full'
-        return string.format('ch. %d%%, ~%s to %s', capacity, hours_minutes(hours), target),
+        return string.format('%s%s, ~%s to %s', prefix, text, hours_minutes(hours), target),
             capacity
-    elseif state.direction == 'draining' then
-        local hours = energy_now / 1e6 / -watts
-        return string.format('disch. %d%%, ~%s rem.', capacity, hours_minutes(hours)), capacity
-    elseif online and limit < 100 and capacity >= limit then
-        return string.format('%d%%, held at %d%%', capacity, limit), capacity
     end
-    return string.format('%d%%', capacity), capacity
+    local hours = energy_now / 1e6 / -watts
+    return string.format('%s%s, ~%s rem.', prefix, text, hours_minutes(hours)), capacity
 end
 
 -- averaged watts of the sensors that read; the charger's input only while it's plugged in
@@ -153,7 +159,7 @@ function power.status()
         restart(now, online)
     end
 
-    local battery, capacity = battery_text(now, online)
+    local battery, capacity = battery_text(now)
     if not battery then
         state.status = nil
         return nil
