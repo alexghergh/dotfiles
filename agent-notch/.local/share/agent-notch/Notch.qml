@@ -223,13 +223,17 @@ Window {
                 spacing: root.ringSpacing
 
                 Repeater {
-                    model: root.list
+                    // a count, not the list: every fetch sends a new list, and a
+                    // list model would rebuild the delegates, whose new
+                    // HoverHandlers briefly all sit at y = 0 and leave
+                    // hoveredIndex on the last ring
+                    model: root.list.length
                     delegate: Item {
                         id: ringBlock
-                        required property var modelData
                         required property int index
+                        readonly property var agent: root.list[index]
                         // the general weekly window, or the first one when an agent has none
-                        readonly property var shown: modelData.windows.find(w => w.name === "Weekly") || modelData.windows[0] || null
+                        readonly property var shown: agent.windows.find(w => w.name === "Weekly") || agent.windows[0] || null
                         readonly property real pctLeft: shown ? root.leftOf(shown) : 0
 
                         width: parent.width
@@ -287,14 +291,14 @@ Window {
                             }
                             Text {
                                 anchors.centerIn: parent
-                                text: root.glyphs[ringBlock.modelData.id] || ""
+                                text: root.glyphs[ringBlock.agent.id] || ""
                                 font.family: "Custom Icon Fonts"
                                 font.pixelSize: 20
                                 color: root.fg
                             }
                             // a failed fetch other than "asked too often"
                             Rectangle {
-                                visible: root.hasError(ringBlock.modelData)
+                                visible: root.hasError(ringBlock.agent)
                                 width: 9
                                 height: 9
                                 radius: 4.5
@@ -312,7 +316,7 @@ Window {
                             text: ringBlock.shown ? Math.round(ringBlock.pctLeft) + "%" : "--"
                             font.pixelSize: 13
                             font.weight: Font.DemiBold
-                            color: root.isStale(ringBlock.modelData) ? root.dim : root.fg
+                            color: root.isStale(ringBlock.agent) ? root.dim : root.fg
                         }
                     }
                 }
