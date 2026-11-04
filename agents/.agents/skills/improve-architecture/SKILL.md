@@ -32,7 +32,7 @@ Apply the **deletion test** (see [Principles](#principles)) to anything you susp
 
 Write a self-contained HTML file to `/tmp/claude/architecture-review-<timestamp>.html` so nothing lands in the repo (`%TEMP%` on Windows). Open it for the user - `xdg-open <path>` on Linux, `open <path>` on macOS, `start <path>` on Windows - and print the absolute path.
 
-The report uses **Tailwind via CDN** for layout and **Mermaid via CDN** for graph-shaped diagrams. Mix Mermaid with hand-crafted CSS/SVG for editorial visuals (mass diagrams, cross-sections). Use Mermaid when relationships are graph-shaped (call graphs, dependencies, sequences); use hand-built divs/SVG when you want something more expressive. Each candidate gets a **before/after visualization**. Be visual - the diagrams do the explaining.
+The report uses inline CSS and **Graphviz** diagrams inlined as SVG, with no scripts or CDNs, so it opens offline, prints, and can be checked from a screenshot before you hand it over. Use Graphviz when relationships are graph-shaped (call graphs, dependencies, numbered flows); use hand-built divs/SVG for editorial visuals (mass diagrams, cross-sections). Each candidate gets a **before/after visualization**. Be visual - the diagrams do the explaining.
 
 See [references/html-report.md](references/html-report.md) for the full HTML scaffold, diagram patterns, and styling notes.
 
