@@ -69,7 +69,7 @@ reads better as:
 > | Least recently used (current) | 0.91 | tie | |
 > | Least frequently used | 0.94 | tie | |
 > | Least recently used, configuration keys pinned | no gain | tie | after a deploy changed the configuration, old values were served until a restart |
-- Use a figure where it shows structure or trend better than text: a system diagram, the flow of one request, a score that changes with a parameter, a distribution across runs. Give each figure a caption saying what to look at, and the meaning of any highlight color. Generate figures with whatever is installed (graphviz, mermaid, matplotlib) and check that they render.
+- Use a figure where it shows structure or trend better than text: a system diagram, the flow of one request, a score that changes with a parameter, a distribution across runs. Give each figure a caption saying what to look at, and the meaning of any highlight color. Generate figures with whatever is installed (graphviz, mermaid, matplotlib) and check that they render. Remove any node, arrow, or label the figure still works without.
 - Use a numbered list for ordered steps and recommendations, a bulleted list for a handful of parallel facts. Do not turn an argument into bullets.
 - Every table and figure is introduced or interpreted by a sentence in the text; the text does not merely repeat what the table shows.
 - Headings in sentence case. Bold only where a reader scanning the page needs an anchor, never as a label on every list item. No emojis, no ALL-CAPS emphasis, no arrows or unicode symbols in prose, no horizontal rules between sections.

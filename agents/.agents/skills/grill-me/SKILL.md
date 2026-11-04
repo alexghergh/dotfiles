@@ -27,7 +27,7 @@ Then loop:
 1. **State your interpretation** — one or two sentences of what you understand so far (the ask on turn 1, the running state after that). Ask the user to correct anything wrong or missing.
 2. **Rank** the pending questions (see [Ranking](#ranking-pending-questions) below). Pick the top one.
 3. **Explore before asking** — if it's answerable without the user, do that. See [Explore first](#explore-first-always) below.
-4. **Ask** the single most consequential unresolved question, with a recommended answer and a one-line reason.
+4. **Ask** the single most consequential unresolved question, with a recommended answer and a one-line reason. The question ends the message; nothing comes after it.
 5. **Wait**.
 6. On answer: update the running decision log. Repeat from step 2.
 
@@ -58,7 +58,7 @@ A good question:
 
 - **Names one decision.** Not "how should this feature work" but "what happens when the input is empty".
 - **Bounds the choice.** Two or three concrete options, not an open essay. If you can't enumerate, you haven't thought about it enough — think, then ask.
-- **Comes with a recommendation.** Your preferred answer + a one-line reason grounded in the codebase, the user's stated goals, or a general engineering principle. The user's job is to react to a proposal, not to design from scratch. If you genuinely can't recommend, say so — "I can't tell, which do you prefer and why?" — but that should be rare.
+- **Comes with a recommendation.** Your preferred answer + a one-line reason grounded in the codebase, the user's stated goals, or a general engineering principle. The user's job is to react to a proposal, not to design from scratch. Word the question so a plain "yes" means your recommendation. If you genuinely can't recommend, say so — "I can't tell, which do you prefer and why?" — but that should be rare.
 - **Anchors on something concrete.** A file, an API call, a user scenario, an existing pattern in the repo. Not on abstract principles.
 - **Explains the second-best option** in one line, so the user sees the shape of the tradeoff without you writing an essay.
 
@@ -83,6 +83,8 @@ Not every category applies every time, but reaching the end of an interview with
 
 Keep a running log as you go. Each entry: **decision + one-line why**. This is the final output — source of truth during the interview, ammunition when questions circle back ("we already decided X on Y grounds"), and a commit-message outline for implementation.
 
+Mark entries where the user punted and your recommendation was adopted with `(my call)`, so they are easy to find and revisit later.
+
 If a decision reverses mid-session, don't delete the earlier entry — add a new one and mark the superseded one. Format:
 
 ```
@@ -98,6 +100,7 @@ You're done when:
 
 - Every category from the checklist is either resolved or explicitly deferred (with reason)
 - You could write a one-paragraph description of what will be built and the user would nod
+- You can predict the user's answer to the next three questions you would ask
 - Ranking pending questions surfaces nothing that would meaningfully change the plan
 
 At that point, output the decision log, ask the user one final question — "anything I missed, or good to build?" — and end.

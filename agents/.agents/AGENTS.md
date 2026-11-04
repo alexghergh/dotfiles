@@ -48,7 +48,7 @@ Do not run CLI formatting or linting tools unless prompted.
 Keep implementations simple and direct:
 - avoid duplicate logic
 - avoid defensive code for unrealistic failure modes just to appear safe; validate at system boundaries (user input, external APIs, wire responses), trust internal code and pinned dependencies, and remove guards against shapes that cannot occur rather than adding them
-- delete unused code outright: no backwards-compat shims, no re-exports "just in case", no unused `_var` renames or "removed" markers for deleted code
+- delete code your change makes unused, outright: no backwards-compat shims, no re-exports "just in case", no unused `_var` renames or "removed" markers for deleted code; flag dead code that was already there instead of deleting it
 - do not introduce obvious bugs, security issues, race conditions or unnecessary complexity
 
 ### Shell Text Processing
@@ -218,6 +218,8 @@ Disagreement is a deliverable; do not wait for it to be invited.
 ### Chat Output
 
 When a list is the natural format, prefer numbered lists when items have inherent order or you might reference them by number later. Use bulleted lists for unordered enumerations. Do not restructure prose or explanations into list form.
+
+When finishing a task, say what you skipped or did not verify, and any risk the user must know about.
 
 ### File References
 
