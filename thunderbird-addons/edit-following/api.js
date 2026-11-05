@@ -9,6 +9,10 @@
  * copy that handles the button, and modifyEventWithDialog() is wrapped to open
  * the editor on the future part of the series. Both functions are restored when
  * the add-on shuts down.
+ *
+ * Double-clicking an event opens a summary window instead of the prompt; its
+ * Edit menu calls the main window's modifyEventWithDialog() without prompting,
+ * so the same choice is added there as a menu item, for the same events.
  */
 
 /* global ExtensionCommon, ExtensionSupport, cal, Services */
@@ -25,6 +29,7 @@ var { cal } = ChromeUtils.importESModule("resource:///modules/calendar/calUtils.
 const LISTENER_ID = "edit-following@dotfiles";
 const MAIN_URL = "chrome://messenger/content/messenger.xhtml";
 const PROMPT_URL = "chrome://calendar/content/calendar-occurrence-prompt.xhtml";
+const SUMMARY_URL = "chrome://calendar/content/calendar-summary-dialog.xhtml";
 
 // the prompt's return values, as in promptOccurrenceModification()
 const CANCEL = 0;
@@ -49,10 +54,12 @@ var editFollowing = class extends ExtensionCommon.ExtensionAPI {
     const { splitSeries } = scope;
 
     ExtensionSupport.registerWindowListener(LISTENER_ID, {
-      chromeURLs: [MAIN_URL, PROMPT_URL],
+      chromeURLs: [MAIN_URL, PROMPT_URL, SUMMARY_URL],
       onLoadWindow(win) {
         if (win.location.href == PROMPT_URL) {
           showFollowingButton(win);
+        } else if (win.location.href == SUMMARY_URL) {
+          addFollowingMenuItem(win, splitSeries);
         } else {
           patchMainWindow(win, splitSeries);
         }
@@ -87,11 +94,37 @@ function showFollowingButton(win) {
   if ((action != "edit" && action != "delete") || args.items.length != 1) {
     return;
   }
-  const item = args.items[0];
-  if (!item.isEvent() || item.getAttendees().length || !item.parentItem.recurrenceInfo) {
+  if (canSplit(args.items[0])) {
+    win.document.getElementById("accept-allfollowing-button").hidden = false;
+  }
+}
+
+/** Add "this and all future occurrences" to the Edit menu of the summary window that double-clicking an event opens. */
+function addFollowingMenuItem(win, splitSeries) {
+  const occurrence = win.arguments[0].calendarEvent;
+  if (occurrence == occurrence.parentItem || !canSplit(occurrence)) {
     return;
   }
-  win.document.getElementById("accept-allfollowing-button").hidden = false;
+
+  const doc = win.document;
+  const menuItem = doc.createXULElement("menuitem");
+  menuItem.setAttribute("label", "Edit this and all future occurrences");
+  menuItem.setAttribute("accesskey", "f");
+  // the same steps as the menu's own items (useEditDialog() in
+  // calendar-summary-dialog.js): the editor opens from the main window once
+  // the summary has closed
+  menuItem.addEventListener("command", () => {
+    win.addEventListener("unload", () => {
+      editFollowingOccurrences(win.opener, splitSeries, occurrence);
+    });
+    win.close();
+  });
+  doc.getElementById("edit-button-context-menu-all-occurrences").before(menuItem);
+}
+
+/** Whether "all following" can handle `item`: an event in a series, without attendees. */
+function canSplit(item) {
+  return item.isEvent() && !item.getAttendees().length && Boolean(item.parentItem.recurrenceInfo);
 }
 
 /** Replace the main window's occurrence prompt and edit function with versions that handle "all following". */
@@ -152,34 +185,46 @@ function patchMainWindow(win, splitSeries) {
     }
 
     const [item, , response] = win.promptOccurrenceModification(aItem, true, "edit");
-    if (response != MODIFY_FOLLOWING) {
-      if (item && response) {
-        originals.modifyEventWithDialog.call(win, item, false, initialDate, aCounterProposal);
-      }
-      return undefined;
+    if (response == MODIFY_FOLLOWING) {
+      editFollowingOccurrences(win, splitSeries, aItem, initialDate, aCounterProposal);
+    } else if (item && response) {
+      originals.modifyEventWithDialog.call(win, item, false, initialDate, aCounterProposal);
     }
-
-    const parent = aItem.parentItem;
-    const split = splitSeries(parent, aItem.recurrenceId);
-    if (!split) {
-      return originals.modifyEventWithDialog.call(win, parent, false, initialDate, aCounterProposal);
-    }
-
-    // the editor works on the future series; on save, add it and shorten the
-    // original as one Undo step; adding first leaves the original untouched
-    // if the new series can't be saved
-    const onSave = (newItem, calendar, originalItem, listener, extResponse) => {
-      win.startBatchTransaction();
-      try {
-        win.doTransaction("add", newItem, calendar, null, listener, extResponse);
-        win.doTransaction("modify", split.past, parent.calendar, parent);
-      } finally {
-        win.endBatchTransaction();
-      }
-    };
-    win.openEventDialog(split.future, parent.calendar, "modify", onSave, initialDate);
     return undefined;
   };
+}
+
+/** Open the editor in the patched main window `win` on the series from `occurrence` on. */
+function editFollowingOccurrences(win, splitSeries, occurrence, initialDate, counterProposal) {
+  const parent = occurrence.parentItem;
+  // an editor already open on this occurrence or on the series would save over
+  // the split, so bring it forward instead, as modifyEventWithDialog() does;
+  // cal.item.findWindow() only sees editors in their own window, not in a tab
+  const openEditor = cal.item.findWindow(occurrence) || cal.item.findWindow(parent);
+  if (openEditor) {
+    openEditor.focus();
+    return;
+  }
+
+  const split = splitSeries(parent, occurrence.recurrenceId);
+  if (!split) {
+    win.editFollowingOriginals.modifyEventWithDialog.call(win, parent, false, initialDate, counterProposal);
+    return;
+  }
+
+  // the editor works on the future series; on save, add it and shorten the
+  // original as one Undo step; adding first leaves the original untouched
+  // if the new series can't be saved
+  const onSave = (newItem, calendar, originalItem, listener, extResponse) => {
+    win.startBatchTransaction();
+    try {
+      win.doTransaction("add", newItem, calendar, null, listener, extResponse);
+      win.doTransaction("modify", split.past, parent.calendar, parent);
+    } finally {
+      win.endBatchTransaction();
+    }
+  };
+  win.openEventDialog(split.future, parent.calendar, "modify", onSave, initialDate);
 }
 
 /** Put back the main window's original functions. */
